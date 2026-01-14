@@ -1,13 +1,14 @@
 cmake_minimum_required(VERSION 3.20)
-project(SimuprocCompiler)
+project(scc)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 file(GLOB_RECURSE SOURCES "src/*.cpp")
-add_executable(SimuprocCompiler ${SOURCES})
+file(COPY ${CMAKE_SOURCE_DIR}/examples DESTINATION ${CMAKE_BINARY_DIR})
+add_executable(scc ${SOURCES})
 
-target_compile_options(SimuprocCompiler PRIVATE
+target_compile_options(scc PRIVATE
     -Wall
     -Wextra
     -Wpedantic
