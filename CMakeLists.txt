@@ -8,6 +8,8 @@ file(GLOB_RECURSE SOURCES "src/*.cpp")
 
 add_executable(scc ${SOURCES})
 
+target_include_directories(scc PRIVATE ${CMAKE_SOURCE_DIR}/src ${CMAKE_SOURCE_DIR}/include)
+
 target_compile_options(scc PRIVATE
     -Wall
     -Wextra
