@@ -19,7 +19,7 @@ target_compile_options(scc PRIVATE
     -Wconversion
     -Wsign-conversion
     -Weffc++
-    -fdiagnostics-color=always
+    -fdiagnostics-color=never
 
     $<$<CONFIG:Debug>:
         -ggdb
