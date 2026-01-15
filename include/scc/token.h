@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include <vector>
 #include <optional>
+#include <iostream>
 
 namespace scc {
 
@@ -22,6 +23,29 @@ namespace scc {
         integral_literal,
         undefined
     };
+
+    inline constexpr std::string_view getTokenType(TokenType type) {
+        switch (type)
+        {
+        case TokenType::open_brace: return "open_brace";
+        case TokenType::close_brace: return "close_brace";
+        case TokenType::open_parenthesis: return "open_parenthesis";
+        case TokenType::close_parenthesis: return "close_parenthesis";
+        case TokenType::semicolon: return "semicolon";
+        case TokenType::int_keyword: return "int_keyword";
+        case TokenType::return_keyword: return "return_keyword";
+        case TokenType::void_keyword: return "void_keyword";
+        case TokenType::identifier: return "identifier";
+        case TokenType::string_literal: return "string_literal";
+        case TokenType::integral_literal: return "integral_literal";
+        case TokenType::undefined: return "undefined";
+        default: return "unknown";
+        }
+    }
+
+    inline std::ostream& operator<<(std::ostream& out, TokenType type){
+        return out << getTokenType(type);
+    }
 
     inline const std::unordered_map<std::string_view, TokenType> keywordMap = {
         {"int", TokenType::int_keyword},
