@@ -20,7 +20,7 @@ namespace scc {
         void_keyword,
         identifier,
         string_literal,
-        integral_literal,
+        integer_constant,
         undefined
     };
 
@@ -37,7 +37,7 @@ namespace scc {
         case TokenType::void_keyword: return "void_keyword";
         case TokenType::identifier: return "identifier";
         case TokenType::string_literal: return "string_literal";
-        case TokenType::integral_literal: return "integral_literal";
+        case TokenType::integer_constant: return "integer_constant";
         case TokenType::undefined: return "undefined";
         default: return "unknown";
         }

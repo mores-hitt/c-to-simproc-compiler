@@ -63,14 +63,14 @@ namespace scc {
 
             } else if (std::isdigit(*p)) {
 
-                std::cout << "start of integral literal?\n";
+                std::cout << "start of integer constant?\n";
                 tokenStart = p;
                 while ( p != end && std::isdigit(*p)) { // keep looping until no more digits
                     p++;
                     columnNumber++;
                 }
                 if (p != end && !scc::isDelimiter(*p) && !std::isspace(*p)) {
-                    std::cerr << "Warning. broken integral literal at " << lineNumber << ". Crazy behaviour incoming\n";
+                    std::cerr << "Warning. broken integer constant at " << lineNumber << ". Crazy behaviour incoming\n";
                 }
 
                 std::cout << "end of integer literal: ";
@@ -79,7 +79,7 @@ namespace scc {
 
                 std::cout << tokenValue << "\n";
 
-                Token token {TokenType::integral_literal, tokenValue, lineNumber};
+                Token token {TokenType::integer_constant, tokenValue, lineNumber};
 
                 tokenVector.push_back(token);
 
