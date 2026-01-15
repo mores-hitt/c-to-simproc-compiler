@@ -31,7 +31,7 @@ The compiler focuses on the *language* itself rather than the *translation envir
 
 ### Phase 1: The Foundation
 
-* [ ] **Project Setup**: CMake configuration and folder structure.
+* [x] **Project Setup**: CMake configuration and folder structure.
 * [ ] **Lexer (Tokenizer)**:
   * [ ] Handle Integers, Identifiers, and Keywords.
   * [ ] Handle Operators (`+`, `-`, `*`, `&`).
