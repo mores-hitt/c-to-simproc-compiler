@@ -16,7 +16,6 @@ namespace scc {
         semicolon,
         int_keyword,
         return_keyword,
-        main_keyword,
         void_keyword,
         identifier,
         string_literal,
@@ -27,7 +26,6 @@ namespace scc {
     inline const std::unordered_map<std::string_view, TokenType> keywordMap = {
         {"int", TokenType::int_keyword},
         {"return", TokenType::return_keyword},
-        {"main", TokenType::main_keyword},
         {"void", TokenType::void_keyword},
     };
 
