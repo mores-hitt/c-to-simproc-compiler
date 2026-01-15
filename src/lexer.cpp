@@ -20,6 +20,7 @@ namespace scc {
         const char* begin {sourceCode.data()};
         const char* end {sourceCode.data() + sourceCode.size()};
         int lineNumber {1};
+        int columnNumber {1};
         const char* tokenStart {nullptr};
         const char* tokenEnd {nullptr};
 
@@ -30,11 +31,13 @@ namespace scc {
         for (auto p {begin}; p != end; p++){
 
             std::cout << "line number: " << lineNumber << ". ";
+            std::cout << "column/character number: " << columnNumber << ". ";
 
             if (*p == '\n') {
 
                 std::cout << "here, a new line: \\n " << "\n";
                 lineNumber++;
+                columnNumber = 1;
                 continue;
 
             } else if (std::isalpha(*p)){
@@ -43,6 +46,7 @@ namespace scc {
                 tokenStart = p;
                 while (p != end && !std::isspace(*p) && !scc::isDelimiter(*p)) { // keep looping until break
                     p++;
+                    columnNumber++;
                 }
                 std::cout << "end of token: ";
                 tokenEnd = p;
@@ -63,6 +67,7 @@ namespace scc {
                 tokenStart = p;
                 while ( p != end && std::isdigit(*p)) { // keep looping until no more digits
                     p++;
+                    columnNumber++;
                 }
                 if (auto next_p = std::next(p); next_p != end && !scc::isDelimiter(*next_p)) {
                     std::cerr << "Warning. broken integral literal at " << lineNumber << ". Crazy behaviour incoming\n";
@@ -85,17 +90,15 @@ namespace scc {
             } else if (std::isspace(*p)) {
 
                 std::cout << "here, a whitespace " << *p << "\n";
-                p++;
-                while (p != end && std::isspace(*p)){
-                    p++;
-                }
-                p--; // while loops leaves p one character forward
+                columnNumber++;
+                
                 continue;
 
             } else {
 
                 std::cout << "here, a delimiter?: " << *p << "\n";
                 tokenVector.push_back(scc::isDelimiter(p, lineNumber));
+                columnNumber++;
 
             }
 
