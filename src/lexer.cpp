@@ -69,7 +69,7 @@ namespace scc {
                     p++;
                     columnNumber++;
                 }
-                if (auto next_p = std::next(p); next_p != end && !scc::isDelimiter(*next_p)) {
+                if (p != end && !scc::isDelimiter(*p) && !std::isspace(*p)) {
                     std::cerr << "Warning. broken integral literal at " << lineNumber << ". Crazy behaviour incoming\n";
                 }
 
