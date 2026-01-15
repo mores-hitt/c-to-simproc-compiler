@@ -12,7 +12,8 @@ namespace scc {
 
         template<typename MapType, typename KeyType> scc::Token Map(
             const KeyType& lookupKey, std::string_view tokenValue,
-            int lineNumber, const MapType& map, const char* categoryName) {
+            int lineNumber, const MapType& map, const char* categoryName,
+            TokenType tokenFallback) {
             
             auto it = map.find(lookupKey);
             
@@ -20,14 +21,14 @@ namespace scc {
                 return Token{it->second, tokenValue, lineNumber};
             } else {
                 std::cerr << "Warning: unknown " << categoryName << " '" << tokenValue << "' on line " << lineNumber << "\n";
-                return Token{TokenType::undefined, tokenValue, lineNumber};
+                return Token{tokenFallback, tokenValue, lineNumber};
             }
         }
 
     }
 
     scc::Token isDelimiter(const char* c, int lineNumber) {
-        return Map(*c, std::string_view(c, 1), lineNumber, delimiterMap, "delimiter");
+        return Map(*c, std::string_view(c, 1), lineNumber, delimiterMap, "delimiter", TokenType::undefined);
     }
 
     bool isDelimiter(char c){
@@ -36,7 +37,7 @@ namespace scc {
 
 
     scc::Token isKeyword(std::string_view word, int lineNumber) {
-        return Map(word, word, lineNumber, keywordMap, "keyword");
+        return Map(word, word, lineNumber, keywordMap, "keyword", TokenType::identifier);
     }
 
 }
