@@ -65,7 +65,8 @@ int main (int argc, char* argv[]) {
     for (size_t i = 0; i < vec.size(); i++)
     {
         std::cout << "Token: " << vec.at(i).value << "\n";
-        std::cout << "Line: " << vec.at(i).lineNumber << "\n\n\n";
+        std::cout << "Line: " << vec.at(i).lineNumber << "\n";
+        std::cout << "Type: " << vec.at(i).type << "\n\n\n";
     }
 
     return 0;
