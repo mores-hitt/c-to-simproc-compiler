@@ -14,6 +14,7 @@ set(SCC_WARNINGS
 
 add_library(scc_lib STATIC
     src/lexer.cpp
+    src/token.cpp
 )
 
 target_include_directories(scc_lib PUBLIC ${CMAKE_SOURCE_DIR}/include)
