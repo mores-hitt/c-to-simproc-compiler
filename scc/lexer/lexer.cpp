@@ -1,5 +1,5 @@
-#include "scc/lexer.h"
-#include "scc/token.h"
+#include "lexer/lexer.h"
+#include "lexer/token.h"
 
 #include <vector>
 #include <string_view>

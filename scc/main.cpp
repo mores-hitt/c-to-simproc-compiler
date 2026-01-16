@@ -1,4 +1,4 @@
-#include "scc/lexer.h"
+#include "lexer/lexer.h"
 
 #include <iostream>
 #include <fstream>
@@ -6,6 +6,7 @@
 #include <filesystem>
 #include <cstddef>
 #include <optional>
+#include <string_view>
 
 std::string getSourceCode(std::string_view path) {
     

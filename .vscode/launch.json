@@ -8,7 +8,7 @@
             "name": "Debug scc",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build/linux-debug/scc",
+            "program": "${workspaceFolder}/build/linux-debug/scc/scc",
             "args": [
                 "${input:testFile}"
             ],
@@ -16,7 +16,20 @@
             "cwd": "${workspaceFolder}",
             "MIMode": "gdb",
             "preLaunchTask": "build-debug"
-        }
+        },
+                {
+            "name": "Debug sp-cli",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/linux-debug/sp-cli/sp-cli",
+            "args": [
+                "${input:testFile}"
+            ],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "MIMode": "gdb",
+            "preLaunchTask": "build-debug"
+        },
     ],
     "inputs": [
         {

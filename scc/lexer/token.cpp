@@ -1,4 +1,4 @@
-#include "scc/token.h"
+#include "lexer/token.h"
 
 #include <string_view>
 #include <iostream>

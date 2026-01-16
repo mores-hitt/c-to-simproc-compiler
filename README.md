@@ -1,70 +1,61 @@
-# SCC: Simuproc C Compiler
+# Simuproc Development Environment
 
 ![Language](https://img.shields.io/badge/language-C%2B%2B17-blue.svg)
 ![Target](https://img.shields.io/badge/target-Simuproc-orange.svg)
 ![Status](https://img.shields.io/badge/status-In%20Development-yellow.svg)
 
-**SCC** is a custom compiler built from scratch in C++17. It compiles a specific subset of the C language into assembly code for **Simuproc**.
+A monorepo containing tools for Simuproc development: a C compiler and CPU emulator.
 
-## 🎯 Project Scope
+## 📦 Projects
 
-**SCC** aims to implement a robust subset of the C language. This project intends to support essential systems programming features targeting the **Simuproc** architecture.
+This repository contains two independent projects:
 
-### Core Features
+### [SCC - Simuproc C Compiler](scc/README.md)
 
-* **Data Types:** Primary support for `int` and `char`.
-* **Memory Management:** Full support for Pointers (`*`), Address-of (`&`), and manual memory manipulation.
-* **Functions:** Support for defining functions, calling conventions, and parameter passing.
-* **Scope & State:** Implementation of block scopes (including variable shadowing) and local/global variable storage.
-* **Control Flow:** `if`, `else`, `while`, and `for` loops.
+A custom C compiler that targets the Simuproc architecture. Compiles a subset of C into Simuproc assembly.
 
-## ⛔ Limitations
+[→ Read more](scc/README.md)
 
-The compiler focuses on the *language* itself rather than the *translation environment*. The following features are **out of scope**:
+### [Simuproc Emulator](sp-cli/README.md)
 
-* **The Preprocessor:** No support for `#include`, `#define`, `#ifdef`, or macros. The compiler expects pure C code.
-* **The Linker:** No multi-file compilation. The entire program must be contained within a single source file (translation unit).
-* **Standard Library:** No libc support (e.g., no `stdio.h`, `string.h`). Output will be handled via intrinsic functions mapping to Simuproc I/O instructions.
-* **Binary Arguments:** The entry point is strictly `int main()`. No command-line arguments (`argc`, `argv`) will be passed to the binary.
+A CLI CPU emulator for the Simuproc architecture. Executes Simuproc assembly code headless, enabling test automation for the compiler.
 
-## 🗺️ Roadmap
+**Key Features:**
 
-### Phase 1: The Foundation
+- Full Simuproc instruction set support
+- Memory simulation
+- IO through standard input and output
 
-* [x] **Project Setup**: CMake configuration and folder structure.
-* [ ] **Lexer (Tokenizer)**:
-  * [ ] Handle Integers, Identifiers, and Keywords.
-  * [ ] Handle Operators (`+`, `-`, `*`, `&`).
-* [ ] **The "Calculator"**:
-  * [ ] Parse simple math expressions.
-  * [ ] Generate Simuproc Assembly
+[→ Read more](sp-cli/README.md)
 
-### Phase 2: State & Control Flow
-
-* [ ] **Symbol Table**: Map variable names to memory addresses.
-* [ ] **Block Scope**: Handle variable shadowing within `{ }`.
-* [ ] **Branching**: Implement `if`, `else`, `while`, and `for`.
-* [ ] **Validation**: Detect loop nesting depth.
-
-### Phase 3: Pointers & Memory
-
-* [ ] **Address-of (`&`)**: logic to load variable addresses.
-* [ ] **Dereference (`*`)**: logic to read/write to addresses stored in registers.
-* [ ] **Pointer Arithmetic**: (Optional) simple addition/subtraction on pointers.
-
-### Phase 4: Functions
-
-* [ ] **Stack Management**: Implement a stack pointer mechanism in Simuproc.
-* [ ] **Call/Return**: Handle `CALL` and `RET` instructions.
-* [ ] **Arguments**: Passing integers/pointers to functions.
-
-## 🛠️ Building the Project
+## 🛠️ Building the Projects
 
 *
 
-## Using SCC
+## 🧪 Testing
 
 *
+
+## 📖 Documentation
+
+- [Compiler Documentation](scc/README.md)
+- [Emulator Documentation](sp-cli/README.md)
+- [Development Roadmap](ROADMAP.md)
+- [Simuproc Architecture Reference](https://sites.google.com/site/simuproc/)
+
+## 🗂️ Repository Structure
+
+```
+.
+├── scc/                  # Simuproc C Compiler
+│   ├── lexer/
+│   └── main.cpp
+├── sp-cli/               # Simuproc Emulator
+│   ├── .../
+│   └── main.cpp
+├── tests/                # Integration tests
+└── CMakeLists.txt        # Root build configuration
+```
 
 ## 📚 References
 
