@@ -72,4 +72,11 @@ namespace sp_cli
         }
     }
 
+    std::string_view Memory::get(int address) {
+        return this->memoryArray.at(static_cast<size_t>(address));
+    }
+
+    void Memory::set(int address, std::string& content) {
+        this->memoryArray[static_cast<size_t>(address)] = content;
+    }
 } // namespace sp_cli

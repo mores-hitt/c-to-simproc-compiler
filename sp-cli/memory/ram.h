@@ -7,6 +7,7 @@
 #include <cstddef>
 #include <iostream>
 #include <string>
+#include <string_view>
 
 namespace sp_cli
 {
@@ -17,15 +18,9 @@ namespace sp_cli
 
         public:
         Memory(std::string& code);
-        
         void print(int begin = 0, int size = static_cast<int>(MAX_ADDRESS));
-
-        /*
-
-        void printMemUntil(int end);
-
-        void printMemFrom(int begin);
-        */
+        std::string_view get(int address);
+        void set(int address, std::string& content);
 
     };
 } // namespace sp_cli
