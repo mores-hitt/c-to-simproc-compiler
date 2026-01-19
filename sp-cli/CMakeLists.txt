@@ -1,7 +1,8 @@
 add_library(sp-cli_lib STATIC
-    #register/address.cpp
-    #register/general_purpose.cpp
+    register/address.cpp
+    register/general_purpose.cpp
     memory/ram.cpp
+    cpu/cpu.cpp
 )
 
 target_include_directories(sp-cli_lib PUBLIC 

@@ -1,10 +1,14 @@
 #include "memory/ram.h"
+#include "cpu/cpu.h"
+#include "register/address.h"
+#include "register/general_purpose.h"
 
 #include <iostream>
 #include <fstream>
 #include <string>
 #include <filesystem>
 #include <cstddef>
+#include <algorithm>
 
 /*
 HERMANO MIO:
@@ -43,6 +47,7 @@ std::string getSourceCode(std::string_view path) {
     std::string sourceCode(fileSize, '\0');
     input_file.read(sourceCode.data(), static_cast<std::streamsize>(fileSize));
 
+    sourceCode.erase(std::remove(sourceCode.begin(), sourceCode.end(), '\r'), sourceCode.end());
     return sourceCode;
 }
 
@@ -69,7 +74,10 @@ int main (int argc, char* argv[]) {
         return 1;
     }
 
-    sp_cli::Memory mem(sourceCode);
-    mem.print(200, 400);
+    //sp_cli::Memory mem(sourceCode);
+    //mem.print(200, 400);
 
+    sp_cli::CPU cpu(sourceCode);
+    cpu.run();
+    cpu.printState();
 }
