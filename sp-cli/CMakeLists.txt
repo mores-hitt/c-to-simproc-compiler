@@ -14,6 +14,10 @@ target_compile_options(sp-cli_lib PRIVATE
     "$<$<CONFIG:Release>:-O3>"
 )
 
+target_compile_definitions(sp-cli_lib PUBLIC
+    "$<$<CONFIG:Debug>:DEBUG_MODE>"
+)
+
 add_executable(sp-cli main.cpp)
 target_link_libraries(sp-cli PRIVATE sp-cli_lib)
 
