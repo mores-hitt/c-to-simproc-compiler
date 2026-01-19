@@ -9,6 +9,7 @@ lib/
 *.dylib
 *.exe
 *.a
+*.txt
 
 CMakeCache.txt
 CMakeFiles/
