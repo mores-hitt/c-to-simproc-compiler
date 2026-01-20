@@ -4,7 +4,7 @@
 
 namespace sp_cli
 {
-    void AddressRegisters::printRegs(std::ostream& out) const {
+    void AddressRegisters::print(std::ostream& out) const {
         out << ARKey::PC << ": "
             << "Dec: " << std::dec << registerArray[toIdx(ARKey::PC)]
             << " Hex: 0x" << std::hex << std::setw(3) << std::setfill('0') 

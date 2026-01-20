@@ -43,6 +43,6 @@ namespace sp_cli
             registerArray[toIdx(key)] = mask(value);
         }
 
-        void printRegs(std::ostream& out = std::cout) const;
+        void print(std::ostream& out = std::cout) const;
     };
 } // namespace sp_cli

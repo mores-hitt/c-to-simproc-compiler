@@ -4,7 +4,7 @@
 
 namespace sp_cli
 {
-    void GeneralPurposeRegisters::printRegs(std::ostream& out) const {
+    void GeneralPurposeRegisters::print(std::ostream& out) const {
         out << GPRKey::AX << ": "
             << "Dec: " << std::dec << registerArray[toIdx(GPRKey::AX)]
             << " Hex: 0x" << std::hex << std::setw(4) << std::setfill('0') 

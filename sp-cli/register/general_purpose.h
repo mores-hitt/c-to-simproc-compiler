@@ -34,7 +34,7 @@ namespace sp_cli
                 registerArray[toIdx(key)] = static_cast<std::uint16_t>(value);
             }
     
-            void printRegs(std::ostream& out = std::cout) const;
+            void print(std::ostream& out = std::cout) const;
     
         };
     
