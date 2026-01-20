@@ -9,7 +9,7 @@ namespace sp_cli
     }
 
     void ControlFlags::clearFlag(Flags flag){
-        this->flags &= ~(1 << static_cast<int>(flag));
+        this->flags &= static_cast<uint8_t>(~(1 << static_cast<int>(flag)));
     }
 
     void ControlFlags::setFlag(Flags flag) {
