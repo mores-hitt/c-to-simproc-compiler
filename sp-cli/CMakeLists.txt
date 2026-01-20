@@ -1,6 +1,7 @@
 add_library(sp-cli_lib STATIC
     register/address.cpp
     register/general_purpose.cpp
+    register/flags.cpp
     memory/ram.cpp
     cpu/cpu.cpp
 )

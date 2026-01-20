@@ -4,6 +4,7 @@
 #include "cpu/instructions.h"
 #include "register/address.h"
 #include "register/general_purpose.h"
+#include "register/flags.h"
 
 #include <string>
 #include <string_view>
@@ -74,13 +75,6 @@ namespace sp_cli
 
         Instruction instruction = stringToInstruction(addressContent);
 
-        #ifdef DEBUG_MODE
-        if (instruction.opcode != SP_INSTRUCTIONS::NO_INST) {
-            instruction.print();
-            std::cout << AR.getSignedReg(ARKey::PC);
-        }
-        #endif
-
         AR.setReg(ARKey::PC, ++PC);
         if (instruction.opcode == SP_INSTRUCTIONS::NO_INST) {
             AR.setReg(ARKey::MAR, static_cast<uint16_t>(10));
@@ -92,20 +86,42 @@ namespace sp_cli
     }
 
     void CPU::runStep() {
-        fetch();
-        // run instruction
-        // print cpu state??
+        #ifdef DEBUG_MODE
+        std::cout << "###################### Program counter: " << AR.getUnsignedReg(ARKey::PC)
+                  << " ########################" << '\n'
+                  << "[DEBUG] Fetching instruction." << '\n';
+        #endif
+
+        Instruction inst = fetch();
+
+        #ifdef DEBUG_MODE
+        std::cout << "[DEBUG] Instruction fetched:" << '\n';
+        inst.print();
+        std::cout << "[DEBUG] Executing " << inst.opcode << '\n';
+        #endif
+
+        execute(inst);
+
+        #ifdef DEBUG_MODE
+        std::cout << "[DEBUG] CPU State after " << inst.opcode <<  '\n'; 
+        printState();
+        std::cout << "#################### End of instruction cycle #####################" << '\n';
+        #endif
     }
 
     void CPU::printState() {
-        this->AR.printRegs();
-        this->GPR.printRegs();
+        this->AR.print();
+        this->GPR.print();
+        this->CF.print();
     }
 
     void CPU::run(){
         int noInstCounter {};
         for (size_t i = 0; i < MAX_ADDRESS; i++) {
             runStep();
+            if (this->terminate) {
+                return;
+            }
             if (static_cast<int>(this->AR.getUnsignedReg(ARKey::MAR)) == 10) {
                 noInstCounter++;
             } else {
