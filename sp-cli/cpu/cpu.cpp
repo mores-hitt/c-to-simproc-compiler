@@ -12,6 +12,20 @@ namespace sp_cli
 {
     CPU::CPU(std::string& code): memory(code){}
 
+    bool CPU::execute(Instruction instruction) {
+        switch (instruction.opcode)
+        {
+        case SP_INSTRUCTIONS::HLT :
+            this->terminate = true;
+            return true;
+            break;
+        default:
+            return true;
+            break;
+        }
+        return false;
+    }
+
     Instruction CPU::stringToInstruction(std::string_view memContent) {
         //read until new line, space or at most 4 characters
         auto it {memContent.cbegin()};

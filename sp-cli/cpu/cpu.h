@@ -24,7 +24,7 @@ namespace sp_cli
 
         Instruction stringToInstruction(std::string_view memContent);
         Instruction fetch();
-        void execute(Instruction instruction);
+        bool execute(Instruction instruction);
 
         public:
         CPU(std::string& code);
