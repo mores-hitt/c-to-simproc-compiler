@@ -7,9 +7,9 @@ This project aims to implement a C compiler following Nora Sandler's *"Writing a
 *Goal: Create a CLI utility to emulate Simuproc behavior. Since the official Simuproc is GUI-only, a scriptable emulator is required for automated compiler testing.*
 
 - [ ] **Architecture Implementation**
-  - [ ] Implement Memory Array: 4096 words (0x000 - 0xFFF).
-  - [ ] Implement General Purpose Registers (AX, BX, CX).
-  - [ ] Implement Addressing Registers (PC, SP, BP, MAR).
+  - [x] Implement Memory Array: 4096 words (0x000 - 0xFFF).
+  - [x] Implement General Purpose Registers (AX, BX, CX).
+  - [x] Implement Addressing Registers (PC, SP, BP, MAR).
   - [ ] Implement remaining registers (IR, control flags).
 - [ ] **Instruction Set Decoder**
   - [ ] Implement Data Movement: `MOV`, `LDA`, `STA`, `LDB`, `STB`.
