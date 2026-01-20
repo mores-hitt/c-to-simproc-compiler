@@ -60,4 +60,25 @@ namespace sp_cli
         return static_cast<size_t>(key);
     }
 
+    enum class Flags {
+        Z,
+        N,
+        C,
+        O
+    };
+
+    constexpr std::string_view getFlagName(Flags flag){
+        switch (flag)
+        {
+        case Flags::Z : return "Zero flag";
+        case Flags::N: return "Negative flag";
+        case Flags::C: return "Carry flag";
+        case Flags::O: return "Overflow flag";
+        }
+        return "UNKNOWN";
+    }
+    
+    inline std::ostream& operator<<(std::ostream& out, Flags flag) {
+        return out << getFlagName(flag);
+    }
 } // namespace sp_cli
