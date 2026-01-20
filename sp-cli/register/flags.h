@@ -15,5 +15,6 @@ namespace sp_cli
         bool getFlag(Flags flag);
         void clearFlag(Flags flag);
         void clear();
+        void print(std::ostream& out = std::cout);
     };
 } // namespace sp_cli
