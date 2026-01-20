@@ -6,6 +6,7 @@
 #include "register/general_purpose.h"
 #include "memory/ram.h"
 #include "cpu/instructions.h"
+#include "register/flags.h"
 
 #include <string_view>
 #include <string>
@@ -18,6 +19,9 @@ namespace sp_cli
         Memory memory;
         GeneralPurposeRegisters GPR {};
         AddressRegisters AR {};
+        ControlFlags CF {};
+        bool terminate {};
+
         Instruction stringToInstruction(std::string_view memContent);
         Instruction fetch();
         void execute(Instruction instruction);
