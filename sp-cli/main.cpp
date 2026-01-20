@@ -79,5 +79,4 @@ int main (int argc, char* argv[]) {
 
     sp_cli::CPU cpu(sourceCode);
     cpu.run();
-    cpu.printState();
 }
