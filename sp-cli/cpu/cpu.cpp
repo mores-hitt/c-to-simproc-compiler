@@ -94,13 +94,7 @@ namespace sp_cli
 
             int address {addressOperandToInt(instruction, Operands::LEFT)};
 
-            std::string content(this->memory.get(address));
-
-            uint16_t bitContent {0};
-
-            if (content != "") {
-                bitContent = static_cast<uint16_t>(std::stoi(content, nullptr, 2));
-            }
+            uint16_t bitContent {memoryContentToI16(address)};
 
             this->GPR.setReg(GPRKey::AX, bitContent);
 
@@ -141,7 +135,7 @@ namespace sp_cli
             // Envía el valor del registro especificado a la pila
             GPRKey operand {registerOperandToKey(instruction, Operands::LEFT)};
             std::string registerContent {registerContentToString(operand)};
-            uint16_t sp = AR.getUnsignedReg(ARKey::SP);
+            uint16_t sp {AR.getUnsignedReg(ARKey::SP)};
             memory.set(sp, registerContent);
             AR.setReg(ARKey::SP, ++sp);
             completeInstruction();
