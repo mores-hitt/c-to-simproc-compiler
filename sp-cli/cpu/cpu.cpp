@@ -8,6 +8,8 @@
 
 #include <string>
 #include <string_view>
+#include <charconv>
+#include <bitset>
 
 namespace sp_cli
 {
@@ -64,6 +66,20 @@ namespace sp_cli
 
             completeInstruction();
 
+            return true;
+
+        }
+        case SP_INSTRUCTIONS::STA : {
+            // Guarde el contenido de AX en la dirección de Memoria especificada.
+            int address {addressOperandToInt(instruction, Operands::LEFT)};
+
+            uint16_t content {GPR.getUnsignedReg(GPRKey::AX)};
+
+            std::string stringContent { std::bitset<16>(content).to_string() };
+
+            this->memory.set(address, stringContent);
+
+            completeInstruction();
             return true;
 
         }
