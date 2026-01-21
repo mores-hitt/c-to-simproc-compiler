@@ -79,7 +79,7 @@ namespace sp_cli
         auto PC {AR.getUnsignedReg(ARKey::PC)};
         auto addressContent {this->memory.get(static_cast<int>(PC))};
 
-        Instruction instruction = stringToInstruction(addressContent);
+        Instruction instruction {stringToInstruction(addressContent)};
 
         AR.setReg(ARKey::PC, ++PC);
         if (instruction.opcode == SP_INSTRUCTIONS::NO_INST) {
