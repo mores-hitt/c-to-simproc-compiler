@@ -14,6 +14,24 @@
 
 namespace sp_cli
 {
+    enum class Operands {
+        LEFT,
+        RIGHT
+    };
+
+    constexpr std::string_view getOperandsName(Operands op) {
+        switch (op)
+        {
+        case Operands::LEFT : return "LEFT";
+        case Operands::RIGHT : return "RIGHT";
+        }
+        return "UNKNOWN";
+    }
+
+    inline std::ostream& operator<<(std::ostream& out, Operands op) {
+        return out << getOperandsName(op);
+    }
+
     struct CPUState {
         const GeneralPurposeRegisters& GPR;
         const AddressRegisters& AR;
