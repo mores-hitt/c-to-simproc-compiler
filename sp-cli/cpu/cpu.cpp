@@ -42,6 +42,33 @@ namespace sp_cli
         return -1;
     }
 
+    GPRKey CPU::registerOperandToKey(Instruction instruction, Operands op) {
+        std::string operand;
+        switch (op)
+        {
+        case Operands::LEFT : {
+            operand = instruction.left_operand;
+            break;
+        }
+        case Operands::RIGHT : {
+            operand = instruction.right_operand;
+            break;
+        }
+        }
+        if (operand == "AX"){
+            return GPRKey::AX;
+        } else if (operand == "BX") {
+            return GPRKey::BX;
+        } else {
+            return GPRKey::CX;
+        }
+    }
+
+    std::string CPU::registerContentToString(GPRKey reg) {
+        uint16_t content {GPR.getUnsignedReg(reg)};
+        return std::bitset<16>(content).to_string();
+    }
+
     void CPU::execute(Instruction instruction) {
         switch (instruction.opcode)
         {
