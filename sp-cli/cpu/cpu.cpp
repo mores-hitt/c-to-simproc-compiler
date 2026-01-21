@@ -60,10 +60,9 @@ namespace sp_cli
             std::string exiMessage {"Ha terminado su ejecución con éxito"};
             completeInstruction(true, false, exitMessage);
             return true;
-            break;
+        }
         default:
             return true;
-            break;
         }
         return false;
     }
@@ -141,7 +140,9 @@ namespace sp_cli
         std::cout << "[DEBUG] Executing " << inst.opcode << '\n';
         #endif
 
-        execute(inst);
+        if (!execute(inst)) {
+            std::cerr << "Error raro idk men";
+        }
 
         #ifdef DEBUG_MODE
         std::cout << "[DEBUG] CPU State after " << inst.opcode <<  '\n'; 
