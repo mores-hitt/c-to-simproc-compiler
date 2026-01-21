@@ -84,6 +84,7 @@ namespace sp_cli
 
         }
         case SP_INSTRUCTIONS::XAB : {
+            // Intercambia los valores de los registros AX y BX
             uint16_t ax {GPR.getUnsignedReg(GPRKey::AX)};
             uint16_t bx {GPR.getUnsignedReg(GPRKey::BX)};
             GPR.setReg(GPRKey::AX, bx);
