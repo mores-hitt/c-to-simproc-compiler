@@ -69,6 +69,15 @@ namespace sp_cli
         return std::bitset<16>(content).to_string();
     }
 
+    uint16_t CPU::memoryContentToI16(int address) {
+        std::string content(this->memory.get(address));
+        uint16_t bitContent {0};
+        if (content != "") {
+            bitContent = static_cast<uint16_t>(std::stoi(content, nullptr, 2));
+        }
+        return bitContent;
+    }
+
     void CPU::execute(Instruction instruction) {
         switch (instruction.opcode)
         {

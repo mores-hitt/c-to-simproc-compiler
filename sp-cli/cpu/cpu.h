@@ -55,6 +55,7 @@ namespace sp_cli
         int addressOperandToInt(Instruction instruction, Operands op);
         GPRKey registerOperandToKey(Instruction instruction, Operands op);
         std::string registerContentToString(GPRKey reg);
+        uint16_t memoryContentToI16(int address);
 
         Instruction stringToInstruction(std::string_view memContent);
         Instruction fetch();
