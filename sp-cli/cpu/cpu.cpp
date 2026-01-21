@@ -83,6 +83,14 @@ namespace sp_cli
             return;
 
         }
+        case SP_INSTRUCTIONS::XAB : {
+            uint16_t ax {GPR.getUnsignedReg(GPRKey::AX)};
+            uint16_t bx {GPR.getUnsignedReg(GPRKey::BX)};
+            GPR.setReg(GPRKey::AX, bx);
+            GPR.setReg(GPRKey::BX, ax);
+            completeInstruction();
+            return;
+        }
         case SP_INSTRUCTIONS::NOP : {
             completeInstruction();
             return;
