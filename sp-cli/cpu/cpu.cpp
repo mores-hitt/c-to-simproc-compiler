@@ -128,6 +128,17 @@ namespace sp_cli
             completeInstruction();
             return;
         }
+        case SP_INSTRUCTIONS::PUSH : {
+            // Envía el valor del registro especificado a la pila
+            GPRKey operand {registerOperandToKey(instruction, Operands::LEFT)};
+            std::string registerContent {registerContentToString(operand)};
+            uint16_t sp = AR.getUnsignedReg(ARKey::SP);
+            memory.set(sp, registerContent);
+            AR.setReg(ARKey::SP, ++sp);
+            completeInstruction();
+            return;
+
+        }
         case SP_INSTRUCTIONS::NOP : {
             completeInstruction();
             return;
