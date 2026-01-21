@@ -104,9 +104,7 @@ namespace sp_cli
             // Guarde el contenido de AX en la dirección de Memoria especificada.
             int address {addressOperandToInt(instruction, Operands::LEFT)};
 
-            uint16_t content {GPR.getUnsignedReg(GPRKey::AX)};
-
-            std::string stringContent { std::bitset<16>(content).to_string() };
+            std::string stringContent { registerContentToString(GPRKey::AX)};
 
             this->memory.set(address, stringContent);
 
