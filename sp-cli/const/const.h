@@ -10,4 +10,5 @@ namespace sp_cli {
     inline constexpr int MEMORY_SIZE = 16;
     inline constexpr int TOTAL_AR = 4;
     inline constexpr int TOTAL_GPR = 3;
+    inline constexpr int MEMORY_PRINT_WINDOW = 20;
 } // namespace sp_cli
