@@ -236,6 +236,10 @@ namespace sp_cli
         int size = MEMORY_PRINT_WINDOW + this->AR.getUnsignedReg(ARKey::PC);
 
         this->memory.print(start, size);
+
+        // print stack memory
+        std::cout << "\n" << "STACK MEMORY:\n";
+        this->memory.print(STACK_ADDRESS, MEMORY_PRINT_WINDOW);
     }
 
     void CPU::run(){
