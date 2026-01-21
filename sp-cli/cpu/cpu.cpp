@@ -22,8 +22,43 @@ namespace sp_cli
     bool CPU::execute(Instruction instruction) {
         switch (instruction.opcode)
         {
-        case SP_INSTRUCTIONS::HLT :
-            this->terminate = true;
+        case SP_INSTRUCTIONS::NO_INST : {
+            std::string exiMessage {"Intento de ejecución de una dirección de memoria en blanco en la dir: " + this->AR.getUnsignedReg(ARKey::PC)};
+            completeInstruction(true, true, exitMessage);
+            return false;
+        }
+        case SP_INSTRUCTIONS::LDA : {
+            /*
+            Cargue en AX el contenido de la dirección de Memoria especificada. 
+            Si es que es una instrucción, tirar error
+            */
+
+            std::string left_op(instruction.left_operand);
+
+            int address = std::stoi(left_op);
+
+            std::string content(this->memory.get(address));
+
+            uint16_t bitContent {0};
+
+            if (content != "") {
+                bitContent = static_cast<uint16_t>(std::stoi(content, nullptr, 2));
+            }
+
+            this->GPR.setReg(GPRKey::AX, bitContent);
+
+            completeInstruction();
+
+            return true;
+
+        }
+        case SP_INSTRUCTIONS::NOP : {
+            completeInstruction();
+            return true;
+        }
+        case SP_INSTRUCTIONS::HLT : {
+            std::string exiMessage {"Ha terminado su ejecución con éxito"};
+            completeInstruction(true, false, exitMessage);
             return true;
             break;
         default:
