@@ -13,7 +13,11 @@
 
 namespace sp_cli
 {
-    CPU::CPU(std::string& code): memory(code), exitMessage(" "){}
+    CPU::CPU(std::string& code): memory(code), exitMessage(" "){
+        uint16_t bp {STACK_ADDRESS};
+        AR.setReg(ARKey::BP, bp);
+        AR.setReg(ARKey::SP, bp);
+    }
 
     void CPU::completeInstruction(bool terminate, bool error, std::string exitMessage){
         this->error = error;
