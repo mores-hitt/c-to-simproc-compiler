@@ -142,6 +142,24 @@ namespace sp_cli
             return;
 
         }
+        case SP_INSTRUCTIONS::POP : {
+            /*
+            Trae de la Pila el ultimo Valor llevado por PUSH (indicado por el registro SP)
+            y lo almacena en el registro especificado.
+            */
+            uint16_t sp {AR.getUnsignedReg(ARKey::SP)};
+            uint16_t content {memoryContentToI16(--sp)};
+
+            std::string clear("");
+            memory.set(sp, clear);
+
+            GPRKey reg {registerOperandToKey(instruction, Operands::LEFT)};
+            GPR.setReg(reg, content);
+            AR.setReg(ARKey::SP, sp);
+            completeInstruction();
+            return;
+
+        }
         case SP_INSTRUCTIONS::NOP : {
             completeInstruction();
             return;
