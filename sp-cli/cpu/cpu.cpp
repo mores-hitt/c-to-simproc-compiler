@@ -119,6 +119,13 @@ namespace sp_cli
         this->AR.print();
         this->GPR.print();
         this->CF.print();
+        int start = this->AR.getUnsignedReg(ARKey::PC) > MEMORY_PRINT_WINDOW ?
+                    this->AR.getUnsignedReg(ARKey::PC) - MEMORY_PRINT_WINDOW:
+                    0;
+        
+        int size = MEMORY_PRINT_WINDOW + this->AR.getUnsignedReg(ARKey::PC);
+
+        this->memory.print(start, size);
     }
 
     void CPU::run(){
