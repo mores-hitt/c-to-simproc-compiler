@@ -50,9 +50,7 @@ namespace sp_cli
             Si es que es una instrucción, tirar error
             */
 
-            std::string left_op(instruction.left_operand);
-
-            int address = std::stoi(left_op);
+            int address {addressOperandToInt(instruction, Operands::LEFT)};
 
             std::string content(this->memory.get(address));
 
