@@ -92,6 +92,13 @@ namespace sp_cli
             completeInstruction();
             return;
         }
+        case SP_INSTRUCTIONS::CLA : {
+            // Hace AX = 0
+            uint16_t zero {};
+            GPR.setReg(GPRKey::AX, zero);
+            completeInstruction();
+            return;
+        }
         case SP_INSTRUCTIONS::NOP : {
             completeInstruction();
             return;
