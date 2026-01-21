@@ -21,6 +21,8 @@ namespace sp_cli
         AddressRegisters AR {};
         ControlFlags CF {};
         bool terminate {};
+        bool error {};
+        std::string exitMessage;
 
         Instruction stringToInstruction(std::string_view memContent);
         Instruction fetch();
