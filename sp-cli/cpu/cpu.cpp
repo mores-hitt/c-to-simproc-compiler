@@ -11,7 +11,13 @@
 
 namespace sp_cli
 {
-    CPU::CPU(std::string& code): memory(code){}
+    CPU::CPU(std::string& code): memory(code), exitMessage(" "){}
+
+    void CPU::completeInstruction(bool terminate, bool error, std::string exitMessage){
+        this->error = error;
+        this->terminate = terminate;
+        this->exitMessage = exitMessage;
+    }
 
     bool CPU::execute(Instruction instruction) {
         switch (instruction.opcode)

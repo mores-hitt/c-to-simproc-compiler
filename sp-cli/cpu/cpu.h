@@ -24,6 +24,7 @@ namespace sp_cli
         bool error {};
         std::string exitMessage;
 
+        void completeInstruction(bool terminate = false, bool error = false, std::string exitMessage = "Everything good");
         Instruction stringToInstruction(std::string_view memContent);
         Instruction fetch();
         bool execute(Instruction instruction);
