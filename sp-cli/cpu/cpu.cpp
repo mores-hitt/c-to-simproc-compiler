@@ -19,6 +19,23 @@ namespace sp_cli
         this->exitMessage = exitMessage;
     }
 
+    int CPU::addressOperandToInt(Instruction instruction, Operands op) {
+        switch (op)
+        {
+        case Operands::LEFT : {
+            std::string left_op(instruction.left_operand);
+            return std::stoi(left_op);
+        }
+        case Operands::RIGHT : {
+            std::string right_op(instruction.left_operand);
+            return std::stoi(right_op);
+        }
+        default:
+            return -1;
+        }
+        return -1;
+    }
+
     bool CPU::execute(Instruction instruction) {
         switch (instruction.opcode)
         {

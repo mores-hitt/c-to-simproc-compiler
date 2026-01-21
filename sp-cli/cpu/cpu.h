@@ -52,9 +52,11 @@ namespace sp_cli
         std::string exitMessage;
 
         void completeInstruction(bool terminate = false, bool error = false, std::string exitMessage = "Everything good");
+        int addressOperandToInt(Instruction instruction, Operands op);
         Instruction stringToInstruction(std::string_view memContent);
         Instruction fetch();
         bool execute(Instruction instruction);
+
 
         public:
         CPU(std::string& code);
