@@ -35,6 +35,7 @@ namespace sp_cli
                 }
                 buffer.append(start, it);
                 std::from_chars(buffer.data(), buffer.data() + buffer.size(), address);
+                continue;
                 //check if the number is between 0 and 0xFFF
             } else {
 
