@@ -122,8 +122,7 @@ namespace sp_cli
     }
 
     void CPU::run(){
-        int noInstCounter {};
-        for (size_t i = 0; i < MAX_ADDRESS; i++) {
+        for (size_t i {0}; i < MAX_ADDRESS; i++) {
             runStep();
             if (this->terminate) {
                 return;
