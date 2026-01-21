@@ -38,13 +38,13 @@ namespace sp_cli
         return -1;
     }
 
-    bool CPU::execute(Instruction instruction) {
+    void CPU::execute(Instruction instruction) {
         switch (instruction.opcode)
         {
         case SP_INSTRUCTIONS::NO_INST : {
             std::string exiMessage {"Intento de ejecución de una dirección de memoria en blanco en la dir: " + this->AR.getUnsignedReg(ARKey::PC)};
             completeInstruction(true, true, exitMessage);
-            return false;
+            return;
         }
         case SP_INSTRUCTIONS::LDA : {
             /*
@@ -66,7 +66,7 @@ namespace sp_cli
 
             completeInstruction();
 
-            return true;
+            return;
 
         }
         case SP_INSTRUCTIONS::STA : {
@@ -80,22 +80,22 @@ namespace sp_cli
             this->memory.set(address, stringContent);
 
             completeInstruction();
-            return true;
+            return;
 
         }
         case SP_INSTRUCTIONS::NOP : {
             completeInstruction();
-            return true;
+            return;
         }
         case SP_INSTRUCTIONS::HLT : {
             std::string exiMessage {"Ha terminado su ejecución con éxito"};
             completeInstruction(true, false, exitMessage);
-            return true;
+            return;
         }
         default:
-            return true;
+            return;
         }
-        return false;
+        return;
     }
 
     Instruction CPU::stringToInstruction(std::string_view memContent) {
@@ -171,9 +171,7 @@ namespace sp_cli
         std::cout << "[DEBUG] Executing " << inst.opcode << '\n';
         #endif
 
-        if (!execute(inst)) {
-            std::cerr << "Error raro idk men";
-        }
+        execute(inst);
 
         #ifdef DEBUG_MODE
         std::cout << "[DEBUG] CPU State after " << inst.opcode <<  '\n'; 

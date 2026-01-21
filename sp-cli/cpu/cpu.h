@@ -55,7 +55,7 @@ namespace sp_cli
         int addressOperandToInt(Instruction instruction, Operands op);
         Instruction stringToInstruction(std::string_view memContent);
         Instruction fetch();
-        bool execute(Instruction instruction);
+        void execute(Instruction instruction);
 
 
         public:
