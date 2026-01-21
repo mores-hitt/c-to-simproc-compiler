@@ -128,19 +128,17 @@ namespace sp_cli
             if (this->terminate) {
                 return;
             }
-            if (static_cast<int>(this->AR.getUnsignedReg(ARKey::MAR)) == 10) {
-                noInstCounter++;
-            } else {
-                noInstCounter = 0;
-            }
-
-            if (noInstCounter > 700) {
-                return;
-            }
         }
     }
 
-
-
-
+    CPUState CPU::getState() {
+        return CPUState {
+            this->GPR,
+            this->AR,
+            this->CF,
+            this->terminate,
+            this->error,
+            this->exitMessage,
+        };
+    }
 } // namespace sp_cli

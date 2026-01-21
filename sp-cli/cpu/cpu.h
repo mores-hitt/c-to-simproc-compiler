@@ -14,6 +14,15 @@
 
 namespace sp_cli
 {
+    struct CPUState {
+        const GeneralPurposeRegisters& GPR;
+        const AddressRegisters& AR;
+        const ControlFlags& CF;
+        const bool terminate;
+        const bool error;
+        const std::string& exitMessage;
+    };
+
     class CPU {
         private:
         Memory memory;
@@ -34,5 +43,6 @@ namespace sp_cli
         void run();
         void runStep();
         void printState();
+        CPUState getState();
     };
 } // namespace sp_cli
