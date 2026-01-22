@@ -54,7 +54,7 @@ namespace sp_cli
 
         void completeInstruction(bool terminate = false, bool error = false, std::string exitMessage = "Everything good");
         uint16_t memoryContentToI16(int address);
-        std::variant<GPRKey, ARKey, uint16_t> operandToAddressOrReg(Instruction instruction, Operands op);
+        std::variant<GPRKey, ARKey, uint16_t> operandToAddressOrReg(Instruction instruction, Operands op, int base = 16);
         uint16_t read(const std::variant<GPRKey, ARKey, uint16_t>& operand);
         void write(const std::variant<GPRKey, ARKey, uint16_t>& operand, uint16_t value);
 

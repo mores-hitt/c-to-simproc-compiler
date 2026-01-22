@@ -36,7 +36,7 @@ namespace sp_cli
         return bitContent;
     }
 
-    std::variant<GPRKey, ARKey, uint16_t> CPU::operandToAddressOrReg(Instruction instruction, Operands op) {
+    std::variant<GPRKey, ARKey, uint16_t> CPU::operandToAddressOrReg(Instruction instruction, Operands op, int base) {
         std::string stringOperand;
         switch (op)
         {
@@ -68,7 +68,7 @@ namespace sp_cli
             return ARKey::MAR;
         } else {
             uint16_t intOperand;
-            std::from_chars(stringOperand.data(), stringOperand.data() + stringOperand.size(), intOperand, 16);
+            std::from_chars(stringOperand.data(), stringOperand.data() + stringOperand.size(), intOperand, base);
             return intOperand;
         }
 
