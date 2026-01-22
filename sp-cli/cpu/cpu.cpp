@@ -491,6 +491,51 @@ namespace sp_cli
 
 
         }
+        case SP_INSTRUCTIONS::CLN : {
+            // Limpia el Negative Flag.  N = 0
+            CF.clearFlag(Flags::N);
+            completeInstruction();
+            return;
+        }
+        case SP_INSTRUCTIONS::CLC : {
+            CF.clearFlag(Flags::C);
+            completeInstruction();
+            return;
+        }
+        case SP_INSTRUCTIONS::STC : {
+            CF.setFlag(Flags::C);
+            completeInstruction();
+            return;
+        }
+        case SP_INSTRUCTIONS::CMC : {
+            CF.toggleFlag(Flags::C);
+            completeInstruction();
+            return;
+        }
+        case SP_INSTRUCTIONS::LOOP : {
+            // Decrementa CX y salta a la Pos de memoria si CX no es cero.
+
+            auto address {operandToAddressOrReg(instruction, Operands::LEFT)};
+            uint16_t cxContent {read(GPRKey::CX)};
+            if (cxContent == 0 || --cxContent == 0) {
+                write(GPRKey::CX, 0);
+                completeInstruction();
+                return;
+            }
+            write(GPRKey::CX, cxContent);
+            write(ARKey::PC, std::get<uint16_t>(address));
+            completeInstruction();
+            return;
+
+        }
+        case SP_INSTRUCTIONS::JMP : {
+            // Salto incondicional.  PC = dirección de memoria donde esta la siguiente instrucción a ejecutar"
+
+            auto address {operandToAddressOrReg(instruction, Operands::LEFT)};
+            write(ARKey::PC, std::get<uint16_t>(address));
+            completeInstruction();
+            return;
+        }
         case SP_INSTRUCTIONS::NOP : {
             completeInstruction();
             return;
