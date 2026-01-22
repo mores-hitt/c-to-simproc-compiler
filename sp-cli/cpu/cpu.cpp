@@ -11,6 +11,7 @@
 #include <charconv>
 #include <bitset>
 #include <sstream>
+#include <variant>
 
 namespace sp_cli
 {
@@ -81,6 +82,36 @@ namespace sp_cli
             bitContent = static_cast<uint16_t>(std::stoi(content, nullptr, 2));
         }
         return bitContent;
+    }
+
+    std::variant<GPRKey, uint16_t> CPU::operandToAddressOrReg(Instruction instruction, Operands op) {
+        std::string stringOperand;
+        switch (op)
+        {
+        case Operands::LEFT : {
+            stringOperand = instruction.left_operand;
+            break;
+        }
+        case Operands::RIGHT : {
+            stringOperand = instruction.right_operand;
+            break;
+        }
+        }
+
+        if (stringOperand.find("X") == std::string::npos) { // if there is no X, then this is an hexadecimal address
+            uint16_t intOperand;
+            std::from_chars(stringOperand.data(), stringOperand.data() + stringOperand.size(), intOperand, 16);
+            return intOperand;
+
+        } else { // if there is an X, then this is a register
+            if (stringOperand == "AX"){
+                return GPRKey::AX;
+            } else if (stringOperand == "BX") {
+                return GPRKey::BX;
+            } else {
+                return GPRKey::CX;
+            }
+        }
     }
 
     void CPU::execute(Instruction instruction) {

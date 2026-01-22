@@ -10,6 +10,7 @@
 
 #include <string_view>
 #include <string>
+#include <variant>
 
 
 namespace sp_cli
@@ -56,7 +57,7 @@ namespace sp_cli
         GPRKey registerOperandToKey(Instruction instruction, Operands op);
         std::string registerContentToString(GPRKey reg);
         uint16_t memoryContentToI16(int address);
-
+        std::variant<GPRKey, uint16_t> operandToAddressOrReg(Instruction instruction, Operands op);
         Instruction stringToInstruction(std::string_view memContent);
         Instruction fetch();
         void execute(Instruction instruction);
