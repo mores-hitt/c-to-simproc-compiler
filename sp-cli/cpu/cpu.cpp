@@ -25,6 +25,7 @@ namespace sp_cli
         this->error = error;
         this->terminate = terminate;
         this->exitMessage = exitMessage;
+        this->CF.clear();
     }
 
     uint16_t CPU::memoryContentToI16(int address) {
