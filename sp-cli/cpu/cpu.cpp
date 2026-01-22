@@ -10,6 +10,7 @@
 #include <string_view>
 #include <charconv>
 #include <bitset>
+#include <sstream>
 
 namespace sp_cli
 {
@@ -30,11 +31,15 @@ namespace sp_cli
         {
         case Operands::LEFT : {
             std::string left_op(instruction.left_operand);
-            return std::stoi(left_op);
+            int buff;
+            std::from_chars(left_op.data(), left_op.data() + left_op.size(), buff, 16);
+            return buff;
         }
         case Operands::RIGHT : {
-            std::string right_op(instruction.left_operand);
-            return std::stoi(right_op);
+            std::string right_op(instruction.right_operand);
+            int buff;
+            std::from_chars(right_op.data(), right_op.data() + right_op.size(), buff, 16);
+            return buff;
         }
         default:
             return -1;

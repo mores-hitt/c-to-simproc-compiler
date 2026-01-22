@@ -30,11 +30,11 @@ namespace sp_cli
             if (*it == '#') { // is a #lineNum 
                 it++;
                 auto start = it;
-                while (it != end && std::isdigit(*it)) {
+                while (it != end) {
                     it++;
                 }
                 buffer.append(start, it);
-                std::from_chars(buffer.data(), buffer.data() + buffer.size(), address);
+                std::from_chars(buffer.data(), buffer.data() + buffer.size(), address, 16);
                 continue;
                 //check if the number is between 0 and 0xFFF
             } else {
