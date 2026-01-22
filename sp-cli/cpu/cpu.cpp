@@ -183,7 +183,8 @@ namespace sp_cli
         }
         case SP_INSTRUCTIONS::INC : {
             // Incrementa en 1 el destino especificado, el parámetro puede ser una dirección de memoria o un registro.
-            // Instruction does not seem affected by control flags
+            // Bugged behaviour: Instruction does not seem affected by control flags, and creates numbers over 16
+            // bit of lenght
 
             auto operand {operandToAddressOrReg(instruction, Operands::LEFT)};
             uint16_t content {read(operand)};
@@ -193,7 +194,7 @@ namespace sp_cli
         }
         case SP_INSTRUCTIONS::DEC : {
             // Decremento en 1 el destino especificado,  Si el destino queda = 0, se vuelve Z = 1
-            // Instruction does not seem affected by control flags
+            // bugged behaviour: Instruction does not seem affected by control flags
 
             auto operand {operandToAddressOrReg(instruction, Operands::LEFT)};
             uint16_t content {read(operand)};
@@ -228,6 +229,7 @@ namespace sp_cli
             dos operándos escribiendo el resultado en el destino.
             Los parámetros pueden ser direcciones de memoria o Registros.
             */
+
             auto leftOp {operandToAddressOrReg(instruction, Operands::LEFT)};
             auto rightOp {operandToAddressOrReg(instruction, Operands::RIGHT)};
 
@@ -254,6 +256,7 @@ namespace sp_cli
         }
         case SP_INSTRUCTIONS::OR : {
             // O inclusive lógico, todo bit activo en cualquiera de los operándoos será activado en el destino.
+
             auto leftOp {operandToAddressOrReg(instruction, Operands::LEFT)};
             auto rightOp {operandToAddressOrReg(instruction, Operands::RIGHT)};
 
@@ -267,6 +270,7 @@ namespace sp_cli
         }
         case SP_INSTRUCTIONS::XOR : {
             // O exclusivo, realiza un O exclusivo entre los operándoos y almacena el resultado en destino
+
             auto leftOp {operandToAddressOrReg(instruction, Operands::LEFT)};
             auto rightOp {operandToAddressOrReg(instruction, Operands::RIGHT)};
 
@@ -417,6 +421,76 @@ namespace sp_cli
             }
 
             return;
+        }
+        case SP_INSTRUCTIONS::SUB : {
+            // AX = AX - el contenido de la dirección de memoria.
+
+            auto operand {operandToAddressOrReg(instruction, Operands::LEFT)};
+            uint16_t memContent {read(operand)};
+            uint16_t axContent {read(GPRKey::AX)};
+            uint16_t sub;
+
+            if (memContent > axContent) {
+                sub = static_cast<uint16_t>(memContent - axContent);
+            } else {
+                sub = static_cast<uint16_t>(axContent - memContent);
+            }
+
+            write(GPRKey::AX, sub);
+            completeInstruction();
+
+            if (memContent > axContent) {
+                CF.setFlag(Flags::N);
+            }
+
+            return;
+        }
+        case SP_INSTRUCTIONS::MUL : {
+            /*
+            AX = AX * el contenido de la dirección de memoria.
+            Si el numero resultante supera su longitud en binario de 16 bits,
+            este resultado se parte almacenando los bits mas significativos en el Registro BX.
+            */
+            // This instruction is bugged. it stores every result bit (even over 16 bits) on AX. no flags
+            // to be faithful to the real behaviour, it will imitate this bug as close as possible,
+            // but i discourage ever using this instruction in this emulator
+
+            auto operand {operandToAddressOrReg(instruction, Operands::LEFT)};
+            uint16_t memContent {read(operand)};
+            uint16_t axContent {read(GPRKey::AX)};
+
+            int result = memContent * axContent;
+            uint16_t leastSignificant = static_cast<uint16_t>(result & 0xFFFF); // get least significant bits
+
+            write(GPRKey::AX, leastSignificant);
+            return;
+        }
+        case SP_INSTRUCTIONS::DIV : {
+            /*
+            AX = AX / el contenido de la dirección de memoria,
+            BX=AX % el contenido de la dir de memoria (BX = modulo o residuo).
+            */
+           
+            auto operand {operandToAddressOrReg(instruction, Operands::LEFT)};
+            uint16_t memContent {read(operand)};
+            uint16_t axContent {read(GPRKey::AX)};
+
+            if (memContent == 0) {
+                std::string msg {"Su programa intentó hacer una división por cero. Simulación detenida"};
+                completeInstruction(true, true, msg);
+                return;
+            }
+
+            uint16_t result = static_cast<uint16_t>(axContent / memContent);
+            uint16_t remainder = static_cast<uint16_t>(axContent % memContent);
+
+            write(GPRKey::AX, result);
+            write(GPRKey::BX, remainder);
+
+            completeInstruction();
+            return;
+
+
         }
         case SP_INSTRUCTIONS::NOP : {
             completeInstruction();
