@@ -255,6 +255,20 @@ namespace sp_cli
             completeInstruction();
             return;
         }
+        case SP_INSTRUCTIONS::MOV : {
+            /*
+            Copia el valor almacenado en el origen al destino.  El destino y/o origen pueden ser
+            registros o direcciones de memoria o combinación de estos.
+            */
+
+            auto origin {operandToAddressOrReg(instruction, Operands::RIGHT)};
+            auto destination {operandToAddressOrReg(instruction, Operands::LEFT)};
+            uint16_t content {read(origin)};
+            write(destination, content);
+
+            completeInstruction();
+            return;
+        }
         case SP_INSTRUCTIONS::NOP : {
             completeInstruction();
             return;
