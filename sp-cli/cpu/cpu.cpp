@@ -299,6 +299,32 @@ namespace sp_cli
             return;
 
         }
+        case SP_INSTRUCTIONS::OR : {
+            // O inclusive lógico, todo bit activo en cualquiera de los operándoos será activado en el destino.
+            auto leftOp {operandToAddressOrReg(instruction, Operands::LEFT)};
+            auto rightOp {operandToAddressOrReg(instruction, Operands::RIGHT)};
+
+            uint16_t leftContent {read(leftOp)};
+            uint16_t rightContent {read(rightOp)};
+            uint16_t result = leftContent | rightContent;
+            write(leftOp, result);
+
+            completeInstruction();
+            return;
+        }
+        case SP_INSTRUCTIONS::XOR : {
+            // O exclusivo, realiza un O exclusivo entre los operándoos y almacena el resultado en destino
+            auto leftOp {operandToAddressOrReg(instruction, Operands::LEFT)};
+            auto rightOp {operandToAddressOrReg(instruction, Operands::RIGHT)};
+
+            uint16_t leftContent {read(leftOp)};
+            uint16_t rightContent {read(rightOp)};
+            uint16_t result = leftContent ^ rightContent;
+            write(leftOp, result);
+
+            completeInstruction();
+            return;
+        }
         case SP_INSTRUCTIONS::NOP : {
             completeInstruction();
             return;
