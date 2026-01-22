@@ -393,10 +393,29 @@ namespace sp_cli
                 CF.clearFlag(Flags::C);
             }
 
-            content = static_cast<uint16_t>(content >> int16Shift);
+            return;
+        }
+        case SP_INSTRUCTIONS::ADD : {
+            /*
+            AX = AX + el contenido de la dirección de memoria.
+            Si el resultado de la suma supera los 16 bits, el
+            resultado queda asi: en BX los bits mas significativos -> documentation has a typo lol
+            y en BX los menos, tambien se activa el Overflow flag.
+            */
 
-            write(destination, content);
+            auto operand {operandToAddressOrReg(instruction, Operands::LEFT)};
+            uint16_t memContent {read(operand)};
+            uint16_t axContent {read(GPRKey::AX)};
+            uint16_t sum {static_cast<uint16_t>(memContent + axContent)};
+
+            write(GPRKey::AX, sum);
             completeInstruction();
+
+            if (sum < axContent || sum < memContent) { // if sum is smaller than one of its operands, then an overflow happened
+                write(GPRKey::BX, 0x001); // simuproc stores overflow bit in BX
+                CF.setFlag(Flags::O); // simuproc signals overflow
+            }
+
             return;
         }
         case SP_INSTRUCTIONS::NOP : {
