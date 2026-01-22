@@ -196,6 +196,27 @@ namespace sp_cli
             return;
 
         }
+        case SP_INSTRUCTIONS::INC : {
+            auto operand {operandToAddressOrReg(instruction, Operands::LEFT)};
+
+            if(std::holds_alternative<GPRKey>(operand)) {
+                uint16_t registerContent {GPR.getUnsignedReg(std::get<GPRKey>(operand))};
+                GPR.setReg(std::get<GPRKey>(operand), ++registerContent);
+                completeInstruction();
+                return;
+
+            } else if (std::holds_alternative<uint16_t>(operand)){
+                uint16_t address {std::get<uint16_t>(operand)};
+                uint16_t memoryContent {memoryContentToI16(address)};
+                memoryContent++;
+                std::string stringMemoryContent {std::bitset<16>(memoryContent).to_string()};
+                memory.set(address, stringMemoryContent);
+                completeInstruction();
+                return;
+
+            }
+            return;
+        }
         case SP_INSTRUCTIONS::NOP : {
             completeInstruction();
             return;
