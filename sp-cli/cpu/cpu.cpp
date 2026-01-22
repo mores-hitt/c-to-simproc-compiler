@@ -287,6 +287,18 @@ namespace sp_cli
             return;
 
         }
+        case SP_INSTRUCTIONS::NOT : {
+            // NO lógico, invierte los bits del operando formando el complemento del primero.
+            
+            auto operand {operandToAddressOrReg(instruction, Operands::LEFT)};
+            uint16_t content {read(operand)};
+            content = ~content;
+            write(operand, content);
+
+            completeInstruction();
+            return;
+
+        }
         case SP_INSTRUCTIONS::NOP : {
             completeInstruction();
             return;
