@@ -293,6 +293,12 @@ namespace sp_cli
             uint16_t reverseShift {static_cast<uint16_t>(16 - int16Shift)};
             uint16_t aux {static_cast<uint16_t>(content >> (reverseShift))};
 
+            content = static_cast<uint16_t>(content << int16Shift);
+            content |= aux;
+
+            write(destination, content);
+            completeInstruction();
+
             bool carry {(aux & 1) != 0};
             if (carry) {
                 CF.setFlag(Flags::C);
@@ -300,11 +306,6 @@ namespace sp_cli
                 CF.clearFlag(Flags::C);
             }
 
-            content = static_cast<uint16_t>(content << int16Shift);
-            content |= aux;
-
-            write(destination, content);
-            completeInstruction();
             return;
 
         }
@@ -323,6 +324,12 @@ namespace sp_cli
             uint16_t reverseShift {static_cast<uint16_t>(16 - int16Shift)};
             uint16_t aux {static_cast<uint16_t>(content << (reverseShift))};
 
+            content = static_cast<uint16_t>(content >> int16Shift);
+            content |= aux;
+
+            write(destination, content);
+            completeInstruction();
+
             bool carry {(aux & (1 << 15)) != 0}; // check last rotated bit
             if (carry) {
                 CF.setFlag(Flags::C);
@@ -330,11 +337,6 @@ namespace sp_cli
                 CF.clearFlag(Flags::C);
             }
 
-            content = static_cast<uint16_t>(content >> int16Shift);
-            content |= aux;
-
-            write(destination, content);
-            completeInstruction();
             return;
         }
         case SP_INSTRUCTIONS::SHL : {
@@ -351,22 +353,24 @@ namespace sp_cli
             uint16_t shiftMinusOne {static_cast<uint16_t>(int16Shift - 1)};
             bool carry { ((static_cast<uint16_t>(content << shiftMinusOne)) & (1 << 15)) != 0}; // to not lose last shifted bit, we shift one less, then detect if las bit is 0 or 1
 
+            content = static_cast<uint16_t>(content << int16Shift);
+            
+            write(destination, content);
+            completeInstruction();
+
             if(carry) {
                 CF.setFlag(Flags::C);
             } else {
                 CF.clearFlag(Flags::C);
             }
 
-            content = static_cast<uint16_t>(content << int16Shift);
-
-            write(destination, content);
-            completeInstruction();
             return;
 
         }
         case SP_INSTRUCTIONS::SHR : {
             /*
-            
+            Desplaza los bits a la Derecha el numero de veces especificado(en decimal),
+            agregando ceros a la izquierda, el Carry Flag guarda ultimo bit desplazado.
             */
 
             auto destination {operandToAddressOrReg(instruction, Operands::LEFT)};
@@ -377,6 +381,11 @@ namespace sp_cli
 
             uint16_t shiftMinusOne {static_cast<uint16_t>(int16Shift - 1)};
             bool carry { ((static_cast<uint16_t>(content >> shiftMinusOne)) & 1) != 0}; // to not lose last shifted bit, we shift one less, then detect if first bit is 0 or 1
+
+            content = static_cast<uint16_t>(content >> int16Shift);
+            
+            write(destination, content);
+            completeInstruction();
 
             if(carry) {
                 CF.setFlag(Flags::C);
