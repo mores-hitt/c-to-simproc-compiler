@@ -27,54 +27,6 @@ namespace sp_cli
         this->exitMessage = exitMessage;
     }
 
-    int CPU::addressOperandToInt(Instruction instruction, Operands op) {
-        switch (op)
-        {
-        case Operands::LEFT : {
-            std::string left_op(instruction.left_operand);
-            int buff;
-            std::from_chars(left_op.data(), left_op.data() + left_op.size(), buff, 16);
-            return buff;
-        }
-        case Operands::RIGHT : {
-            std::string right_op(instruction.right_operand);
-            int buff;
-            std::from_chars(right_op.data(), right_op.data() + right_op.size(), buff, 16);
-            return buff;
-        }
-        default:
-            return -1;
-        }
-        return -1;
-    }
-
-    GPRKey CPU::registerOperandToKey(Instruction instruction, Operands op) {
-        std::string operand;
-        switch (op)
-        {
-        case Operands::LEFT : {
-            operand = instruction.left_operand;
-            break;
-        }
-        case Operands::RIGHT : {
-            operand = instruction.right_operand;
-            break;
-        }
-        }
-        if (operand == "AX"){
-            return GPRKey::AX;
-        } else if (operand == "BX") {
-            return GPRKey::BX;
-        } else {
-            return GPRKey::CX;
-        }
-    }
-
-    std::string CPU::registerContentToString(GPRKey reg) {
-        uint16_t content {GPR.getUnsignedReg(reg)};
-        return std::bitset<16>(content).to_string();
-    }
-
     uint16_t CPU::memoryContentToI16(int address) {
         std::string content(this->memory.get(address));
         uint16_t bitContent {0};
