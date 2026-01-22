@@ -151,7 +151,7 @@ namespace sp_cli
         case SP_INSTRUCTIONS::PUSH : {
             // Envía el valor del registro especificado a la pila
 
-            GPRKey operand {registerOperandToKey(instruction, Operands::LEFT)};
+            auto operand {operandToAddressOrReg(instruction, Operands::LEFT)};
             uint16_t content {read(operand)};
             uint16_t spAddress {read(ARKey::SP)};
             write(spAddress, content);
@@ -335,12 +335,13 @@ namespace sp_cli
         // get instruction
         // PC + 1
 
-        auto PC {AR.getUnsignedReg(ARKey::PC)};
-        auto addressContent {this->memory.get(static_cast<int>(PC))};
+        auto pc {read(ARKey::PC)};
+        auto addressContent {this->memory.get(static_cast<int>(pc))};
 
         Instruction instruction {stringToInstruction(addressContent)};
 
-        AR.setReg(ARKey::PC, ++PC);
+        write(ARKey::PC, ++pc);
+        
         if (instruction.opcode == SP_INSTRUCTIONS::NO_INST) {
             AR.setReg(ARKey::MAR, static_cast<uint16_t>(10));
         } else {
