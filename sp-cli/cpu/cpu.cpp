@@ -241,7 +241,7 @@ namespace sp_cli
         case SP_INSTRUCTIONS::DEC : {
             // Decremento en 1 el destino especificado,  Si el destino queda = 0, se vuelve Z = 1
             // Instruction does not seem affected by control flags
-            
+
             auto operand {operandToAddressOrReg(instruction, Operands::LEFT)};
             uint16_t content {read(operand)};
             content--;
@@ -268,6 +268,24 @@ namespace sp_cli
 
             completeInstruction();
             return;
+        }
+        case SP_INSTRUCTIONS::AND : {
+            /*
+            Y lógico, hace un Y lógico entre todos los bits de los
+            dos operándos escribiendo el resultado en el destino.
+            Los parámetros pueden ser direcciones de memoria o Registros.
+            */
+            auto leftOp {operandToAddressOrReg(instruction, Operands::LEFT)};
+            auto rightOp {operandToAddressOrReg(instruction, Operands::RIGHT)};
+
+            uint16_t leftContent {read(leftOp)};
+            uint16_t rightContent {read(rightOp)};
+            uint16_t result = leftContent & rightContent;
+            write(leftOp, result);
+
+            completeInstruction();
+            return;
+
         }
         case SP_INSTRUCTIONS::NOP : {
             completeInstruction();
