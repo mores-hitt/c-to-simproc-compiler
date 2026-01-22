@@ -157,11 +157,9 @@ namespace sp_cli
             Si es que es una instrucción, tirar error
             */
 
-            int address {addressOperandToInt(instruction, Operands::LEFT)};
-
-            uint16_t bitContent {memoryContentToI16(address)};
-
-            this->GPR.setReg(GPRKey::AX, bitContent);
+            auto address {operandToAddressOrReg(instruction, Operands::LEFT)};
+            uint16_t content {read(address)};
+            write(GPRKey::AX, content);
 
             completeInstruction();
 
@@ -170,39 +168,43 @@ namespace sp_cli
         }
         case SP_INSTRUCTIONS::STA : {
             // Guarde el contenido de AX en la dirección de Memoria especificada.
-            int address {addressOperandToInt(instruction, Operands::LEFT)};
 
-            std::string stringContent { registerContentToString(GPRKey::AX)};
-
-            this->memory.set(address, stringContent);
+            uint16_t content { read(GPRKey::AX) };
+            auto address { operandToAddressOrReg(instruction, Operands::LEFT) };
+            write(address, content);
 
             completeInstruction();
+
             return;
 
         }
         case SP_INSTRUCTIONS::XAB : {
             // Intercambia los valores de los registros AX y BX
-            uint16_t ax {GPR.getUnsignedReg(GPRKey::AX)};
-            uint16_t bx {GPR.getUnsignedReg(GPRKey::BX)};
-            GPR.setReg(GPRKey::AX, bx);
-            GPR.setReg(GPRKey::BX, ax);
+
+            uint16_t ax {read(GPRKey::AX)};
+            uint16_t bx {read(GPRKey::BX)};
+            write(GPRKey::AX, bx);
+            write(GPRKey::BX, ax);
             completeInstruction();
             return;
         }
         case SP_INSTRUCTIONS::CLA : {
             // Hace AX = 0
+
             uint16_t zero {};
-            GPR.setReg(GPRKey::AX, zero);
+            write(GPRKey::AX, zero);
             completeInstruction();
             return;
         }
         case SP_INSTRUCTIONS::PUSH : {
             // Envía el valor del registro especificado a la pila
+
             GPRKey operand {registerOperandToKey(instruction, Operands::LEFT)};
-            std::string registerContent {registerContentToString(operand)};
-            uint16_t sp {AR.getUnsignedReg(ARKey::SP)};
-            memory.set(sp, registerContent);
-            AR.setReg(ARKey::SP, ++sp);
+            uint16_t content {read(operand)};
+            uint16_t spAddress {read(ARKey::SP)};
+            write(spAddress, content);
+            write(ARKey::SP, ++spAddress);
+
             completeInstruction();
             return;
 
@@ -212,59 +214,45 @@ namespace sp_cli
             Trae de la Pila el ultimo Valor llevado por PUSH (indicado por el registro SP)
             y lo almacena en el registro especificado.
             */
-            uint16_t sp {AR.getUnsignedReg(ARKey::SP)};
-            uint16_t content {memoryContentToI16(--sp)};
 
-            std::string clear("");
-            memory.set(sp, clear);
+            uint16_t sp {read(ARKey::SP)};
+            uint16_t content {read(--sp)};
 
-            GPRKey reg {registerOperandToKey(instruction, Operands::LEFT)};
-            GPR.setReg(reg, content);
-            AR.setReg(ARKey::SP, sp);
+            write(sp, 0);
+
+            auto reg {operandToAddressOrReg(instruction, Operands::LEFT)};
+            write(reg, content);
+            write(ARKey::SP, sp);
+
             completeInstruction();
             return;
 
         }
         case SP_INSTRUCTIONS::INC : {
+            // Incrementa en 1 el destino especificado, el parámetro puede ser una dirección de memoria o un registro.
+            // Instruction does not seem affected by control flags
+
             auto operand {operandToAddressOrReg(instruction, Operands::LEFT)};
-
-            if(std::holds_alternative<GPRKey>(operand)) {
-                uint16_t registerContent {GPR.getUnsignedReg(std::get<GPRKey>(operand))};
-                GPR.setReg(std::get<GPRKey>(operand), ++registerContent);
-                completeInstruction();
-                return;
-
-            } else if (std::holds_alternative<uint16_t>(operand)){
-                uint16_t address {std::get<uint16_t>(operand)};
-                uint16_t memoryContent {memoryContentToI16(address)};
-                memoryContent++;
-                std::string stringMemoryContent {std::bitset<16>(memoryContent).to_string()};
-                memory.set(address, stringMemoryContent);
-                completeInstruction();
-                return;
-
-            }
+            uint16_t content {read(operand)};
+            write(operand, ++content);
+            completeInstruction();
             return;
         }
         case SP_INSTRUCTIONS::DEC : {
+            // Decremento en 1 el destino especificado,  Si el destino queda = 0, se vuelve Z = 1
+            // Instruction does not seem affected by control flags
+            
             auto operand {operandToAddressOrReg(instruction, Operands::LEFT)};
-
-            if(std::holds_alternative<GPRKey>(operand)) {
-                uint16_t registerContent {GPR.getUnsignedReg(std::get<GPRKey>(operand))};
-                GPR.setReg(std::get<GPRKey>(operand), --registerContent);
-                completeInstruction();
-                return;
-
-            } else if (std::holds_alternative<uint16_t>(operand)){
-                uint16_t address {std::get<uint16_t>(operand)};
-                uint16_t memoryContent {memoryContentToI16(address)};
-                memoryContent--;
-                std::string stringMemoryContent {std::bitset<16>(memoryContent).to_string()};
-                memory.set(address, stringMemoryContent);
-                completeInstruction();
-                return;
-
+            uint16_t content {read(operand)};
+            content--;
+            if (content == 0) {
+                CF.setFlag(Flags::Z);
+            } else if (content == MAX_16BIT) { // if it decrements below 0 (-1 or 0xFFFF), simuproc sets it to 1. sets N flag
+                content = 1;
+                CF.setFlag(Flags::N);
             }
+            write(operand, content);
+            completeInstruction();
             return;
         }
         case SP_INSTRUCTIONS::NOP : {
