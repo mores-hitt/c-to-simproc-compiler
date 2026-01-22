@@ -20,6 +20,10 @@ namespace sp_cli
         return (this->flags & (1 << static_cast<int>(flag))) != 0;
     }
 
+    void ControlFlags::toggleFlag(Flags flag) {
+        this->flags ^= (1 << static_cast<int>(flag));
+    }
+
     void ControlFlags::print(std::ostream& out) {
         out << Flags::Z << ": " << getFlag(Flags::Z) << '\n'
                   << Flags::N << ": " << getFlag(Flags::N) << '\n'

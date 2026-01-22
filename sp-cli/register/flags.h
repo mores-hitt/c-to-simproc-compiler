@@ -13,6 +13,7 @@ namespace sp_cli
         public:
         void setFlag(Flags flag);
         bool getFlag(Flags flag);
+        void toggleFlag(Flags flag);
         void clearFlag(Flags flag);
         void clear();
         void print(std::ostream& out = std::cout);
