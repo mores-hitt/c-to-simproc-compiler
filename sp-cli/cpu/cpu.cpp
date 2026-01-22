@@ -84,7 +84,7 @@ namespace sp_cli
         return bitContent;
     }
 
-    std::variant<GPRKey, uint16_t> CPU::operandToAddressOrReg(Instruction instruction, Operands op) {
+    std::variant<GPRKey, ARKey, uint16_t> CPU::operandToAddressOrReg(Instruction instruction, Operands op) {
         std::string stringOperand;
         switch (op)
         {
@@ -98,19 +98,48 @@ namespace sp_cli
         }
         }
 
-        if (stringOperand.find("X") == std::string::npos) { // if there is no X, then this is an hexadecimal address
+        // lets be super explicit
+
+        if (stringOperand == "AX") {
+            return GPRKey::AX;
+        } else if (stringOperand == "BX") {
+            return GPRKey::BX;
+        } else if (stringOperand == "CX") {
+            return GPRKey::CX;
+        } else if (stringOperand == "PC") {
+            return ARKey::PC;
+        } else if (stringOperand == "SP") {
+            return ARKey::SP;
+        } else if (stringOperand == "BP") {
+            return ARKey::BP;
+        } else if (stringOperand == "MAR") {
+            return ARKey::MAR;
+        } else {
             uint16_t intOperand;
             std::from_chars(stringOperand.data(), stringOperand.data() + stringOperand.size(), intOperand, 16);
             return intOperand;
+        }
 
-        } else { // if there is an X, then this is a register
-            if (stringOperand == "AX"){
-                return GPRKey::AX;
-            } else if (stringOperand == "BX") {
-                return GPRKey::BX;
-            } else {
-                return GPRKey::CX;
-            }
+    }
+
+    uint16_t CPU::read(const std::variant<GPRKey, ARKey, uint16_t>& operand) {
+        if (std::holds_alternative<GPRKey>(operand)) {
+            return GPR.getUnsignedReg(std::get<GPRKey>(operand));
+        } else if (std::holds_alternative<ARKey>(operand)){
+            return AR.getUnsignedReg(std::get<ARKey>(operand));
+        } else {
+            return memoryContentToI16(std::get<uint16_t>(operand));
+        }
+    }
+
+    void CPU::write(const std::variant<GPRKey, ARKey, uint16_t>& operand, uint16_t value) {
+        if (std::holds_alternative<GPRKey>(operand)) {
+            GPR.setReg(std::get<GPRKey>(operand), value);
+        } else if (std::holds_alternative<ARKey>(operand)) {
+            AR.setReg(std::get<ARKey>(operand), value);
+        } else {
+            std::string content {std::bitset<16>(value).to_string()};
+            memory.set(std::get<uint16_t>(operand), content);
         }
     }
 

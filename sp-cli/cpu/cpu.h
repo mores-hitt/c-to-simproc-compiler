@@ -57,7 +57,10 @@ namespace sp_cli
         GPRKey registerOperandToKey(Instruction instruction, Operands op);
         std::string registerContentToString(GPRKey reg);
         uint16_t memoryContentToI16(int address);
-        std::variant<GPRKey, uint16_t> operandToAddressOrReg(Instruction instruction, Operands op);
+        std::variant<GPRKey, ARKey, uint16_t> operandToAddressOrReg(Instruction instruction, Operands op);
+        uint16_t read(const std::variant<GPRKey, ARKey, uint16_t>& operand);
+        void write(const std::variant<GPRKey, ARKey, uint16_t>& operand, uint16_t value);
+
         Instruction stringToInstruction(std::string_view memContent);
         Instruction fetch();
         void execute(Instruction instruction);
