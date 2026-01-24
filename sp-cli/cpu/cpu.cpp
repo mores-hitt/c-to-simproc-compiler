@@ -659,8 +659,9 @@ namespace sp_cli
         }
         case SP_INSTRUCTIONS::LDT : {
             // Lee un valor del Teclado y lo lleva al registro AX
+
             if (instruction.left_operand != "") {
-                std::cout << instruction.left_operand;
+                std::cout << instruction.left_operand << '\n';
             }
             std::cout << "ingresaras un decimal o un binario?\n1) decimal\n2) binario\n";
             int option;
@@ -684,6 +685,27 @@ namespace sp_cli
             completeInstruction();
             return;
 
+        }
+        case SP_INSTRUCTIONS::EAP : {
+            // Escribe en Pantalla el contenido del registro AX
+            // show in decimal
+
+            if (instruction.left_operand != "") {
+                std::cout << instruction.left_operand << '\n';
+            }
+            auto axContent {read(GPRKey::AX)};
+            std::cout << axContent << '\n';
+
+            completeInstruction();
+            return;
+        }
+        case SP_INSTRUCTIONS::MSG : {
+            // Muestra un mensaje en pantalla
+            if (instruction.left_operand != "") {
+                std::cout << instruction.left_operand << '\n';
+            }
+            completeInstruction();
+            return;
         }
         case SP_INSTRUCTIONS::NOP : {
             completeInstruction();
