@@ -493,21 +493,28 @@ namespace sp_cli
         }
         case SP_INSTRUCTIONS::CLN : {
             // Limpia el Negative Flag.  N = 0
+
             CF.clearFlag(Flags::N);
             completeInstruction();
             return;
         }
         case SP_INSTRUCTIONS::CLC : {
+            // Limpia el Carry Flag.  C = 0
+
             CF.clearFlag(Flags::C);
             completeInstruction();
             return;
         }
         case SP_INSTRUCTIONS::STC : {
+            // Pone el Carry Flag.  C = 1
+
             CF.setFlag(Flags::C);
             completeInstruction();
             return;
         }
         case SP_INSTRUCTIONS::CMC : {
+            // Complementa (invierte) el Carry Flag.  Si C = 1 vuelve C = 0 y viceversa.
+
             CF.toggleFlag(Flags::C);
             completeInstruction();
             return;
@@ -535,6 +542,148 @@ namespace sp_cli
             write(ARKey::PC, std::get<uint16_t>(address));
             completeInstruction();
             return;
+        }
+        case SP_INSTRUCTIONS::JEQ : {
+            // Saltar si son iguales.
+            // Si Z = 1, PC = contenido de la memoria.
+
+            if (CF.getFlag(Flags::Z)) {
+                auto operand {operandToAddressOrReg(instruction, Operands::LEFT)};
+                uint16_t memory {std::get<uint16_t>(operand)};
+                write(ARKey::PC, memory);
+            }
+
+            completeInstruction();
+            return;
+        }
+        case SP_INSTRUCTIONS::CMP : {
+            /*
+            Compara AX con [mem], si AX es mayor,Z=0 N=0,
+            si es igual Z=1 N=0, si es menor Z=0 N=1 
+            */
+            
+            uint16_t axContent {read(GPRKey::AX)};
+            auto mem {operandToAddressOrReg(instruction, Operands::LEFT)};
+            uint16_t memContent {read(mem)};
+            if (axContent == memContent) {
+                CF.setFlag(Flags::Z);
+            } else if (axContent < memContent) {
+                CF.setFlag(Flags::N);
+            }
+            completeInstruction();
+            return;
+        }
+        case SP_INSTRUCTIONS::JME : {
+            // Saltar si es Menor. Si N = 1, PC = contenido de la memoria. 
+
+            if (CF.getFlag(Flags::N)) {
+                auto operand {operandToAddressOrReg(instruction, Operands::LEFT)};
+                uint16_t memory {std::get<uint16_t>(operand)};
+                write(ARKey::PC, memory);
+            }
+
+            completeInstruction();
+            return;
+        }
+        case SP_INSTRUCTIONS::JMA : {
+            // Saltar si es Mayor. Si Z = 0 y N = 0, PC = contenido de memoria.
+
+            if (!CF.getFlag(Flags::N) && !CF.getFlag(Flags::Z)) {
+                auto operand {operandToAddressOrReg(instruction, Operands::LEFT)};
+                uint16_t memory {std::get<uint16_t>(operand)};
+                write(ARKey::PC, memory);
+            }
+
+            completeInstruction();
+            return;
+        }
+        case SP_INSTRUCTIONS::JC : {
+            // Saltar si el Carry Flag esta activado. Si C = 1, PC = contenido de memoria.
+
+            if (CF.getFlag(Flags::C)) {
+                auto operand {operandToAddressOrReg(instruction, Operands::LEFT)};
+                uint16_t memory {std::get<uint16_t>(operand)};
+                write(ARKey::PC, memory);
+            }
+
+            completeInstruction();
+            return;            
+        }
+        case SP_INSTRUCTIONS::JNC : {
+            // Saltar si el Carry Flag no esta activado. Si C = 0, PC = contenido de memoria
+            
+            if (!CF.getFlag(Flags::C)) {
+                auto operand {operandToAddressOrReg(instruction, Operands::LEFT)};
+                uint16_t memory {std::get<uint16_t>(operand)};
+                write(ARKey::PC, memory);
+            }
+
+            completeInstruction();
+            return; 
+        }
+        case SP_INSTRUCTIONS::JO : {
+            // Saltar si el Overflow Flag esta Activado. Si O = 1, PC = contenido de memoria
+
+            if (CF.getFlag(Flags::O)) {
+                auto operand {operandToAddressOrReg(instruction, Operands::LEFT)};
+                uint16_t memory {std::get<uint16_t>(operand)};
+                write(ARKey::PC, memory);
+            }
+
+            completeInstruction();
+            return; 
+        }
+        case SP_INSTRUCTIONS::JNO : {
+            // Saltar si el Overflow Flag no esta activado. Si O = 0, PC = contenido de memoria
+
+            if (CF.getFlag(Flags::O)) {
+                auto operand {operandToAddressOrReg(instruction, Operands::LEFT)};
+                uint16_t memory {std::get<uint16_t>(operand)};
+                write(ARKey::PC, memory);
+            }
+
+            completeInstruction();
+            return; 
+        }
+        case SP_INSTRUCTIONS::JNE : {
+            // Saltar si no son iguales. Si Z = 0, PC = contenido de memoria.
+
+            if (!CF.getFlag(Flags::Z)) {
+                auto operand {operandToAddressOrReg(instruction, Operands::LEFT)};
+                uint16_t memory {std::get<uint16_t>(operand)};
+                write(ARKey::PC, memory);
+            }
+
+            completeInstruction();
+            return; 
+        }
+        case SP_INSTRUCTIONS::LDT : {
+            // Lee un valor del Teclado y lo lleva al registro AX
+            if (instruction.left_operand != "") {
+                std::cout << instruction.left_operand;
+            }
+            std::cout << "ingresaras un decimal o un binario?\n1) decimal\n2) binario\n";
+            int option;
+            std::cin >> option;
+
+            uint16_t bitContent {0};
+
+            //do {
+                std::cout << "ingresa tu numero";
+                std::string buffer;
+                std::cin >> buffer;
+            //} while (bitContent > 65535 || bitContent < 0);
+
+            if (option == 2) {
+                bitContent = static_cast<uint16_t>(std::stoi(buffer, nullptr, 2));
+            } else {
+                bitContent = static_cast<uint16_t>(std::stoi(buffer));
+            }
+
+            write(GPRKey::AX, bitContent);
+            completeInstruction();
+            return;
+
         }
         case SP_INSTRUCTIONS::NOP : {
             completeInstruction();
