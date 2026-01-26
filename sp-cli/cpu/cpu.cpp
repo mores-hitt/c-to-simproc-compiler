@@ -808,6 +808,31 @@ namespace sp_cli
             return;
 
         }
+        case SP_INSTRUCTIONS::ADDF : {
+            /*
+            Suma números de 32 bits: En BX y AX queda el resultado
+            de la suma de estos mas el contenido de [mem] y mem+1
+            */
+            
+            uint16_t regMsb {read(GPRKey::BX)};
+            uint16_t regLsb {read(GPRKey::AX)};
+            auto operand {operandToAddressOrReg(instruction, Operands::LEFT)};
+            uint16_t address {std::get<uint16_t>(operand)};
+            uint16_t memMsb {read(address)};
+            address++;
+            uint16_t memLsb {read(address)};
+            float registerFloat {makeFloat(regLsb, regMsb)};
+            float memoryFloat {makeFloat(memLsb, memMsb)};
+            float result = registerFloat + memoryFloat;
+            FloatParts floatParts {splitFloat(result)};
+            write(GPRKey::BX, floatParts.msb);
+            write(GPRKey::AX, floatParts.lsb);
+
+            completeInstruction();
+            return;
+
+
+        }
         case SP_INSTRUCTIONS::NOP : {
             completeInstruction();
             return;
