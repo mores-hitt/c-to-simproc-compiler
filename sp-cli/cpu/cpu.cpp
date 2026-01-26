@@ -707,6 +707,70 @@ namespace sp_cli
             completeInstruction();
             return;
         }
+        case SP_INSTRUCTIONS::LDB : {
+            // La instrucción carga en AX el contenido de memoria almacenado en [mem] + BX
+            // simuproc checks at runtime if sum is bigger than 0xFFF
+            // giving the user the choice of continuing execution
+
+            uint16_t bxContent {read(GPRKey::BX)};
+            auto operand {operandToAddressOrReg(instruction, Operands::LEFT)};
+            uint16_t address {std::get<uint16_t>(operand)};
+            if ((bxContent + address) > MAX_ADDRESS) {
+                std::cout << "El valor de bx usado para sumarle a la Dir de mem de LDB\n";
+                std::cout << "Ha superado el fin de memoria.\n Desea pausar la simulación?\n";
+                std::cout << "1) si\n2) no\n";
+                int option;
+                std::cin >> option;
+                if (option == 1) {
+                    completeInstruction(true, true, "Simulación terminada");
+                    return;
+                } else {// if user chooses to continue, simuproc loads 0 into AX
+                    write(GPRKey::AX, 0);
+                    completeInstruction();
+                    return;
+                }
+            } else {
+                uint16_t effectiveAddress {static_cast<uint16_t>(address + bxContent)};
+                uint16_t effectiveAddressContent {read(effectiveAddress)};
+                write(GPRKey::AX, effectiveAddressContent);
+                completeInstruction();
+                return;
+            }
+
+
+        }
+        case SP_INSTRUCTIONS::STB : {
+            // guarda el contenido de AX en la dirección [mem] + BX
+            // if effective address is bigger than 0xFFF, it writes in 0xFFF
+
+            uint16_t bxContent {read(GPRKey::BX)};
+            auto operand {operandToAddressOrReg(instruction, Operands::LEFT)};
+            uint16_t address {std::get<uint16_t>(operand)};
+            auto axContent {read(GPRKey::AX)};
+
+            if ((bxContent + address) > MAX_ADDRESS) {
+                std::cout << "El valor de bx usado para sumarle a la Dir de mem de LDB\n"; // simuproc says here "LDB" despite being the STB instruction
+                std::cout << "Ha superado el fin de memoria.\n Desea pausar la simulación?\n";
+                std::cout << "1) si\n2) no\n";
+                int option;
+                std::cin >> option;
+                if (option == 1) {
+                    completeInstruction(true, true, "Simulación terminada");
+                    return;
+                } else {// if user chooses to continue, simuproc writes AX into 0xFFF
+                    write(MAX_ADDRESS, axContent);
+                    completeInstruction();
+                    return;
+                }
+            } else {
+                uint16_t effectiveAddress {static_cast<uint16_t>(address + bxContent)};
+                write(effectiveAddress, axContent);
+                completeInstruction();
+                return;
+            }
+
+
+        }
         case SP_INSTRUCTIONS::NOP : {
             completeInstruction();
             return;
