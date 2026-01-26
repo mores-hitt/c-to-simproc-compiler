@@ -13,7 +13,7 @@ namespace sp_cli
 {
     class Memory {
         private:
-        std::array<std::string, MAX_ADDRESS> memoryArray {};
+        std::array<std::string, MAX_ADDRESS + 1> memoryArray {};
         void readCode(std::string& file);
 
         public:
