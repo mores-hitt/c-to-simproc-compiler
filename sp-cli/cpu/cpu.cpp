@@ -771,6 +771,43 @@ namespace sp_cli
 
 
         }
+        case SP_INSTRUCTIONS::LDF : {
+            /*
+            Carga en BX y AX un numero de 32 bits (IEEE) que esta almacenado
+            en la dir [mem] y mem+1. En BX quedan los digitos mas Significativos
+            */
+           // for this instruction, Simuproc explicitly prevents FFF as a operand,
+           // so we assume that it is clean when its being executed
+
+            auto operand {operandToAddressOrReg(instruction, Operands::LEFT)};
+            uint16_t address {(std::get<uint16_t>(operand))}; // static_cast<uint16_t>
+            uint16_t msb {read(address)};
+            address++;
+            uint16_t lsb {read(address)};
+            write(GPRKey::BX, msb);
+            write(GPRKey::AX, lsb);
+
+            completeInstruction();
+            return;
+
+        }
+        case SP_INSTRUCTIONS::STF : {
+            // Guarda en [mem] y mem+1 el contenido de BX y AX
+            // for this instruction, Simuproc explicitly prevents FFF as a operand,
+            // so we assume that it is clean when its being executed
+            
+            auto operand {operandToAddressOrReg(instruction, Operands::LEFT)};
+            uint16_t address {(std::get<uint16_t>(operand))};
+            uint16_t msb {read(GPRKey::BX)};
+            uint16_t lsb {read(GPRKey::AX)};
+            write(address, msb);
+            address++;
+            write(address, lsb);
+
+            completeInstruction();
+            return;
+
+        }
         case SP_INSTRUCTIONS::NOP : {
             completeInstruction();
             return;
