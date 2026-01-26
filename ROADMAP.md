@@ -12,13 +12,13 @@ This project aims to implement a C compiler following Nora Sandler's *"Writing a
   - [x] Implement Addressing Registers (PC, SP, BP, MAR).
   - [x] Implement remaining registers (IR, control flags).
 - [ ] **Instruction Set Decoder**
-  - [ ] Implement Data Movement: `MOV`, `LDA`, `STA`, `LDB`, `STB`.
+  - [x] Implement Data Movement: `MOV`, `LDA`, `STA`, `LDB`, `STB`.
   - [ ] Implement Arithmetic: `ADD`, `SUB`, `MUL`, `DIV` (and their Float variants).
-  - [ ] Implement Logic/Control: `AND`, `OR`, `NOT`, `CMP`, `JMP`, `JEQ`, `JNE`, etc.
+  - [x] Implement Logic/Control: `AND`, `OR`, `NOT`, `CMP`, `JMP`, `JEQ`, `JNE`, etc.
 - [x] **Instruction Cycle**
   - [x] Implement Instruction Cycle (Fetch Cycle)
 - [ ] **Test Runner Interface**
-  - [ ] CLI Argument Parsing.
+  - [x] CLI Argument Parsing.
   - [ ] txt. reading and parsing into memory.
   - [ ] Output State: Dump the final complete state of the emulator.
 
