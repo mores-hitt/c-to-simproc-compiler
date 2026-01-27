@@ -815,15 +815,11 @@ namespace sp_cli
 
             auto operand {operandToAddressOrReg(instruction, Operands::LEFT)};
             uint16_t address {(std::get<uint16_t>(operand))}; // static_cast<uint16_t>
-            uint16_t msb {read(address)};
-            address++;
-            uint16_t lsb {read(address)};
-            write(GPRKey::BX, msb);
-            write(GPRKey::AX, lsb);
+            float floatContent {readFloat(address)};
+            writeFloat(GPRKey::AX, floatContent);
 
             completeInstruction();
             return;
-
         }
         case SP_INSTRUCTIONS::STF : {
             // Guarda en [mem] y mem+1 el contenido de BX y AX
@@ -832,11 +828,8 @@ namespace sp_cli
             
             auto operand {operandToAddressOrReg(instruction, Operands::LEFT)};
             uint16_t address {(std::get<uint16_t>(operand))};
-            uint16_t msb {read(GPRKey::BX)};
-            uint16_t lsb {read(GPRKey::AX)};
-            write(address, msb);
-            address++;
-            write(address, lsb);
+            float floatContent {readFloat(GPRKey::AX)};
+            writeFloat(address, floatContent);
 
             completeInstruction();
             return;
@@ -847,25 +840,17 @@ namespace sp_cli
             Suma números de 32 bits: En BX y AX queda el resultado
             de la suma de estos mas el contenido de [mem] y mem+1
             */
-            
-            uint16_t regMsb {read(GPRKey::BX)};
-            uint16_t regLsb {read(GPRKey::AX)};
+
             auto operand {operandToAddressOrReg(instruction, Operands::LEFT)};
-            uint16_t address {std::get<uint16_t>(operand)};
-            uint16_t memMsb {read(address)};
-            address++;
-            uint16_t memLsb {read(address)};
-            float registerFloat {makeFloat(regLsb, regMsb)};
-            float memoryFloat {makeFloat(memLsb, memMsb)};
-            float result = registerFloat + memoryFloat;
-            FloatParts floatParts {splitFloat(result)};
-            write(GPRKey::BX, floatParts.msb);
-            write(GPRKey::AX, floatParts.lsb);
+
+            float memFloat {readFloat(operand)};
+            float regFloat {readFloat(GPRKey::AX)};
+
+            float result = regFloat + memFloat;
+            writeFloat(GPRKey::AX, result);
 
             completeInstruction();
             return;
-
-
         }
         case SP_INSTRUCTIONS::NOP : {
             completeInstruction();
