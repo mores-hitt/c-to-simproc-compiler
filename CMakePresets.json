@@ -27,6 +27,19 @@
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Release"
       }
+    },
+    {
+      "name": "linux-test",
+      "displayName": "Linux Test",
+      "description": "Enables testing, alongside GDB symbols and Strict Warnings",
+      "inherits": "base-linux",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "BUILD_TESTS": "ON"
+      },
+      "environment": {       
+        "GTEST_COLOR": "1"   
+      }
     }
   ]
 }

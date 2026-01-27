@@ -17,8 +17,8 @@ add_subdirectory(scc)
 add_subdirectory(sp-cli)
 
 # Testing
-option(SCC_BUILD_TESTS "Build tests" OFF)
-if(SCC_BUILD_TESTS)
+option(BUILD_TESTS "Build tests" OFF)
+if(BUILD_TESTS)
     enable_testing()
     add_subdirectory(tests)
 endif()
