@@ -95,6 +95,40 @@ namespace sp_cli
         }
     }
 
+    float CPU::readFloat(const std::variant<GPRKey, ARKey, uint16_t>& operand) {
+        if (std::holds_alternative<GPRKey>(operand)) { 
+            uint16_t regMsb {read(GPRKey::BX)};
+            uint16_t regLsb {read(GPRKey::AX)};
+            return makeFloat(regLsb, regMsb);
+        } else if (std::holds_alternative<uint16_t>(operand)) {
+            uint16_t address {std::get<uint16_t>(operand)};
+            uint16_t memMsb {read(address)};
+            address++;
+            uint16_t memLsb {read(address)};
+            return makeFloat(memLsb, memMsb);
+        } else {
+            return -0.0f;
+        }
+    }
+
+    void CPU::writeFloat(const std::variant<GPRKey, ARKey, uint16_t>& operand, float value) {
+        if (std::holds_alternative<GPRKey>(operand)) { 
+            FloatParts floatParts {splitFloat(value)};
+            write(GPRKey::BX, floatParts.msb);
+            write(GPRKey::AX, floatParts.lsb);
+            return;
+        } else if (std::holds_alternative<uint16_t>(operand)) {
+            FloatParts floatParts {splitFloat(value)};
+            uint16_t address {(std::get<uint16_t>(operand))};
+            write(address, floatParts.msb);
+            address++;
+            write(address, floatParts.lsb);
+            return;
+        } else {
+            return;
+        }
+    }
+
     void CPU::execute(Instruction instruction) {
         switch (instruction.opcode)
         {

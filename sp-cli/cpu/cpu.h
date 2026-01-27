@@ -57,6 +57,8 @@ namespace sp_cli
         std::variant<GPRKey, ARKey, uint16_t> operandToAddressOrReg(Instruction instruction, Operands op, int base = 16);
         uint16_t read(const std::variant<GPRKey, ARKey, uint16_t>& operand);
         void write(const std::variant<GPRKey, ARKey, uint16_t>& operand, uint16_t value);
+        float readFloat(const std::variant<GPRKey, ARKey, uint16_t>& operand);
+        void writeFloat(const std::variant<GPRKey, ARKey, uint16_t>& operand, float value);
 
         Instruction stringToInstruction(std::string_view memContent);
         Instruction fetch();
