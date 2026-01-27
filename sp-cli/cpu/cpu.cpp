@@ -898,6 +898,52 @@ namespace sp_cli
             completeInstruction();
             return;
         }
+        case SP_INSTRUCTIONS::ITOF : {
+            /*
+            Convierte un número entero (16bits) almacenado en AX
+            al mismo numero pero representado en Real IEEE754(32bits)
+            el Resultado de la conversión queda en BX (bits mas significativos) y AX
+            */
+
+            uint16_t axContent {read(GPRKey::AX)};
+            float floatNumber = axContent;
+            if (CF.getFlag(Flags::N)){
+                floatNumber *= -1;
+            } else if (axContent == 0) {
+                CF.setFlag(Flags::Z);
+            }
+            writeFloat(GPRKey::AX, floatNumber);
+
+            completeInstruction();
+            return;
+        }
+        case SP_INSTRUCTIONS::FTOI : {
+            /*
+            Convierte un número Real(32bits) a su equivalente en entero
+            BX y AX en un entero (16bits), el Resultado queda en AX.
+            */
+
+            float regFloat {readFloat(GPRKey::AX)};
+            if (regFloat < 0) {
+                CF.setFlag(Flags::N);
+                regFloat *= -1;
+            } else if (regFloat == 0) {
+                CF.setFlag(Flags::Z);
+            }
+
+            uint16_t regInt;
+
+            if (regFloat > MAX_16BIT || MAX_16BIT*(-1) > regFloat) {
+                CF.setFlag(Flags::O);
+                regInt = MAX_16BIT;
+            } else {
+                regInt = static_cast<uint16_t>(regFloat);
+            }
+            write(GPRKey::AX, regInt);
+
+            completeInstruction();
+            return;
+        }
         case SP_INSTRUCTIONS::HLT : {
             std::string exiMessage {"Ha terminado su ejecución con éxito"};
             completeInstruction(true, false, exitMessage);
