@@ -465,16 +465,13 @@ namespace sp_cli
 
             if (memContent > axContent) {
                 sub = static_cast<uint16_t>(memContent - axContent);
+                CF.setFlag(Flags::N);
             } else {
                 sub = static_cast<uint16_t>(axContent - memContent);
             }
 
             write(GPRKey::AX, sub);
             completeInstruction();
-
-            if (memContent > axContent) {
-                CF.setFlag(Flags::N);
-            }
 
             return;
         }
