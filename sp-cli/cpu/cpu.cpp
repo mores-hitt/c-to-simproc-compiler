@@ -852,6 +852,51 @@ namespace sp_cli
             completeInstruction();
             return;
         }
+        case SP_INSTRUCTIONS::SUBF : {
+            // Resta el numero de 32 bits: BX y AX = BX y AX - [mem]y mem+1
+
+            auto operand {operandToAddressOrReg(instruction, Operands::LEFT)};
+
+            float memFloat {readFloat(operand)};
+            float regFloat {readFloat(GPRKey::AX)};
+
+            float result = regFloat - memFloat;
+            writeFloat(GPRKey::AX, result);
+
+            completeInstruction();
+            return;
+        }
+        case SP_INSTRUCTIONS::MULF : {
+            // Multiplicación: BX y AX = BX y AX * [mem]y mem+1
+
+            auto operand {operandToAddressOrReg(instruction, Operands::LEFT)};
+
+            float memFloat {readFloat(operand)};
+            float regFloat {readFloat(GPRKey::AX)};
+
+            float result = regFloat * memFloat;
+            writeFloat(GPRKey::AX, result);
+
+            completeInstruction();
+            return;
+        }
+        case SP_INSTRUCTIONS::DIVF : {
+            // BX y AX = BX y AX / [mem]y mem+1
+            // en CX queda el residuo de la division en entero de 16 bits
+            // currently, i do not understand how could there be a remainder in this arithmetic
+
+            auto operand {operandToAddressOrReg(instruction, Operands::LEFT)};
+
+            float memFloat {readFloat(operand)};
+            float regFloat {readFloat(GPRKey::AX)};
+
+            float result = regFloat * memFloat;
+            writeFloat(GPRKey::AX, result);
+
+            completeInstruction();
+            return;
+
+        }
         case SP_INSTRUCTIONS::NOP : {
             completeInstruction();
             return;
