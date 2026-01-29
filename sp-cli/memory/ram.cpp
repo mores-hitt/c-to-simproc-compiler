@@ -5,6 +5,7 @@
 #include <iostream>
 #include <bitset>
 #include <iomanip>
+#include <stdexcept>
 
 namespace sp_cli
 {
@@ -78,6 +79,12 @@ namespace sp_cli
     }
 
     void Memory::set(int address, std::string& content) {
+        if (content.size() > 1024) {
+            throw std::invalid_argument("memory set content is bigger than 1024");
+        }
+        if (address < 0 || address > MAX_ADDRESS) {
+            throw std::out_of_range("Invalid index for ram");
+        }
         this->memoryArray[static_cast<size_t>(address)] = content;
     }
 } // namespace sp_cli
