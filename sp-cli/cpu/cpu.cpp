@@ -894,10 +894,6 @@ namespace sp_cli
             return;
 
         }
-        case SP_INSTRUCTIONS::NOP : {
-            completeInstruction();
-            return;
-        }
         case SP_INSTRUCTIONS::ITOF : {
             /*
             Convierte un número entero (16bits) almacenado en AX
@@ -941,6 +937,10 @@ namespace sp_cli
             }
             write(GPRKey::AX, regInt);
 
+            completeInstruction();
+            return;
+        }
+        case SP_INSTRUCTIONS::NOP : {
             completeInstruction();
             return;
         }
