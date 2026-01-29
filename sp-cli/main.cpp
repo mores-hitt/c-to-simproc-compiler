@@ -78,5 +78,13 @@ int main (int argc, char* argv[]) {
     //mem.print(200, 400);
 
     sp_cli::CPU cpu(sourceCode);
-    cpu.run();
+    try
+    {
+        cpu.run();
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+    }
+    return 0;
 }
