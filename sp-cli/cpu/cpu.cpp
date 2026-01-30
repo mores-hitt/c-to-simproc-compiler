@@ -1046,7 +1046,7 @@ namespace sp_cli
                     this->AR.getUnsignedReg(ARKey::PC) - MEMORY_PRINT_WINDOW:
                     0;
         
-        int size = MEMORY_PRINT_WINDOW + this->AR.getUnsignedReg(ARKey::PC);
+        int size = MEMORY_PRINT_WINDOW * 2;
 
         this->memory.print(start, size);
 
