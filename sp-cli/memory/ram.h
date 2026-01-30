@@ -19,7 +19,7 @@ namespace sp_cli
         public:
         Memory(std::string& code);
         void print(int begin = 0, int size = static_cast<int>(MAX_ADDRESS));
-        std::string_view get(int address);
+        std::string_view get(int address) const;
         void set(int address, std::string& content);
 
     };
