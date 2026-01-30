@@ -40,6 +40,7 @@ namespace sp_cli
         const bool terminate;
         const bool error;
         const std::string& exitMessage;
+        const Memory& memory;
     };
 
     class CPU {

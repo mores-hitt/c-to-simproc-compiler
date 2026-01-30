@@ -1072,6 +1072,7 @@ namespace sp_cli
             this->terminate,
             this->error,
             this->exitMessage,
+            this->memory,
         };
     }
 } // namespace sp_cli
