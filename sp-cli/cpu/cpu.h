@@ -61,6 +61,9 @@ namespace sp_cli
         float readFloat(const std::variant<GPRKey, ARKey, uint16_t>& operand);
         void writeFloat(const std::variant<GPRKey, ARKey, uint16_t>& operand, float value);
 
+        template<typename T>
+        void setFlags(T value);
+
         Instruction stringToInstruction(std::string_view memContent);
         Instruction fetch();
         void execute(Instruction instruction);

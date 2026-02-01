@@ -129,6 +129,15 @@ namespace sp_cli
         }
     }
 
+    template<typename T>
+    void CPU::setFlags(T value) {
+        if (value == 0){
+            this->CF.setFlag(Flags::Z);
+        } else if (value < 0) {
+            this->CF.setFlag(Flags::N);
+        }
+    }
+
     void CPU::execute(Instruction instruction) {
         switch (instruction.opcode)
         {
