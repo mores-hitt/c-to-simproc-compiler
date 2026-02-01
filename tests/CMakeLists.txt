@@ -13,8 +13,14 @@ FetchContent_MakeAvailable(googletest)
 
 add_executable(unit_tests
     main_test.cpp
-    sp_cpu_test.cpp
-    sp_memory_test.cpp
+    sp-cli/cpu_test.cpp
+    sp-cli/memory_test.cpp
+    sp-cli/cmp/equal_test.cpp
+    sp-cli/cmp/bigger_test.cpp
+    sp-cli/cmp/smaller_test.cpp
+    sp-cli/float/add/medium_normal_test.cpp
+    sp-cli/float/add/medium_zero_test.cpp
+    sp-cli/float/add/medium_almost_zero_test.cpp
 )
 
 target_link_libraries(unit_tests PRIVATE
