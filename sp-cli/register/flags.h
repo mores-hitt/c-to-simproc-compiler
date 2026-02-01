@@ -12,7 +12,7 @@ namespace sp_cli
 
         public:
         void setFlag(Flags flag);
-        bool getFlag(Flags flag);
+        bool getFlag(Flags flag) const;
         void toggleFlag(Flags flag);
         void clearFlag(Flags flag);
         void clear();

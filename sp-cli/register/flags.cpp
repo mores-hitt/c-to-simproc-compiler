@@ -16,7 +16,7 @@ namespace sp_cli
         this->flags |= (1 << static_cast<int>(flag));
     }
 
-    bool ControlFlags::getFlag(Flags flag) {
+    bool ControlFlags::getFlag(Flags flag) const {
         return (this->flags & (1 << static_cast<int>(flag))) != 0;
     }
 
