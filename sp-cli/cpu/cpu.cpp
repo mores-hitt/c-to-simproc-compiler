@@ -948,6 +948,8 @@ namespace sp_cli
                 floatNumber *= -1;
             } else if (axContent == 0) {
                 CF.setFlag(Flags::Z);
+            } else if (axContent != 0) {
+                CF.clearFlag(Flags::Z);
             }
             writeFloat(GPRKey::AX, floatNumber);
 
