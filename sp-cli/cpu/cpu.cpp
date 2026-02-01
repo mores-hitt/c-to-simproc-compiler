@@ -68,7 +68,7 @@ namespace sp_cli
         } else if (stringOperand == "MAR") {
             return ARKey::MAR;
         } else {
-            uint16_t intOperand;
+            uint16_t intOperand {};
             std::from_chars(stringOperand.data(), stringOperand.data() + stringOperand.size(), intOperand, base);
             return intOperand;
         }
