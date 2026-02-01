@@ -12,6 +12,7 @@
 #include <bitset>
 #include <sstream>
 #include <variant>
+#include <iomanip>
 
 namespace sp_cli
 {
@@ -457,6 +458,8 @@ namespace sp_cli
             write(GPRKey::AX, sum);
             completeInstruction();
 
+            CF.clear();
+
             if (sum < axContent || sum < memContent) { // if sum is smaller than one of its operands, then an overflow happened
                 write(GPRKey::BX, 0x001); // simuproc stores overflow bit in BX
                 CF.setFlag(Flags::O); // simuproc signals overflow
@@ -472,6 +475,8 @@ namespace sp_cli
             uint16_t axContent {read(GPRKey::AX)};
             uint16_t sub;
 
+            CF.clear();
+
             if (memContent > axContent) {
                 sub = static_cast<uint16_t>(memContent - axContent);
                 CF.setFlag(Flags::N);
@@ -480,6 +485,7 @@ namespace sp_cli
             }
 
             write(GPRKey::AX, sub);
+            setFlags(sub);
             completeInstruction();
 
             return;
@@ -493,6 +499,9 @@ namespace sp_cli
             // This instruction is bugged. it stores every result bit (even over 16 bits) on AX. no flags
             // to be faithful to the real behaviour, it will imitate this bug as close as possible,
             // but i discourage ever using this instruction in this emulator
+            // it also resets n flag before execution
+
+            CF.clearFlag(Flags::N);
 
             auto operand {operandToAddressOrReg(instruction, Operands::LEFT)};
             uint16_t memContent {read(operand)};
@@ -500,6 +509,8 @@ namespace sp_cli
 
             int result = memContent * axContent;
             uint16_t leastSignificant = static_cast<uint16_t>(result & 0xFFFF); // get least significant bits
+            CF.clear();
+            setFlags(result);
 
             write(GPRKey::AX, leastSignificant);
             return;
@@ -522,6 +533,9 @@ namespace sp_cli
 
             uint16_t result = static_cast<uint16_t>(axContent / memContent);
             uint16_t remainder = static_cast<uint16_t>(axContent % memContent);
+
+            CF.clear();
+            setFlags(result);
 
             write(GPRKey::AX, result);
             write(GPRKey::BX, remainder);
@@ -602,6 +616,7 @@ namespace sp_cli
             si es igual Z=1 N=0, si es menor Z=0 N=1 
             */
             
+            CF.clear();
             uint16_t axContent {read(GPRKey::AX)};
             auto mem {operandToAddressOrReg(instruction, Operands::LEFT)};
             uint16_t memContent {read(mem)};
@@ -855,6 +870,10 @@ namespace sp_cli
             float result = regFloat + memFloat;
             writeFloat(GPRKey::AX, result);
 
+            CF.clear();
+
+            setFlags(result);
+
             completeInstruction();
             return;
         }
@@ -869,6 +888,10 @@ namespace sp_cli
             float result = regFloat - memFloat;
             writeFloat(GPRKey::AX, result);
 
+            CF.clear();
+
+            setFlags(result);
+
             completeInstruction();
             return;
         }
@@ -882,6 +905,10 @@ namespace sp_cli
 
             float result = regFloat * memFloat;
             writeFloat(GPRKey::AX, result);
+
+            CF.clear();
+
+            setFlags(result);
 
             completeInstruction();
             return;
@@ -898,6 +925,10 @@ namespace sp_cli
 
             float result = regFloat * memFloat;
             writeFloat(GPRKey::AX, result);
+            
+            CF.clear();
+
+            setFlags(result);
 
             completeInstruction();
             return;
@@ -912,6 +943,7 @@ namespace sp_cli
 
             uint16_t axContent {read(GPRKey::AX)};
             float floatNumber = axContent;
+            CF.clear();
             if (CF.getFlag(Flags::N)){
                 floatNumber *= -1;
             } else if (axContent == 0) {
@@ -929,6 +961,7 @@ namespace sp_cli
             */
 
             float regFloat {readFloat(GPRKey::AX)};
+            CF.clear();
             if (regFloat < 0) {
                 CF.setFlag(Flags::N);
                 regFloat *= -1;
@@ -938,7 +971,7 @@ namespace sp_cli
 
             uint16_t regInt;
 
-            if (regFloat > MAX_16BIT || MAX_16BIT*(-1) > regFloat) {
+            if (regFloat > MAX_16BIT || MAX_16BIT* (-1) > regFloat) {
                 CF.setFlag(Flags::O);
                 regInt = MAX_16BIT;
             } else {
