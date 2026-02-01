@@ -991,6 +991,37 @@ namespace sp_cli
             completeInstruction(true, false, exitMessage);
             return;
         }
+        case SP_INSTRUCTIONS::IN : {
+            // Lleva al Registro el valor retornado por el puerto especificado.
+            // currently only port 1 is implemented (read/write floats from user)
+            // simuproc ignores the left operand when the port is 1
+            // which means, the only valid IN instruction currently is "IN AX,1"
+
+            std::cout << "Decimal Flotante positivo o negativo\n";
+            float option;
+            std::cin >> option;
+            FloatParts floatParts {splitFloat(option)};
+            write(GPRKey::BX, floatParts.msb);
+            write(GPRKey::AX, floatParts.lsb);
+
+            completeInstruction();
+            return;
+
+        }
+        case SP_INSTRUCTIONS::OUT : {
+            // Escribe en el puerto especificado, el valor del registro.
+            // currently only port 1 is implemented (read/write floats from user)
+            // simuproc ignores the left operand when the port is 1
+            // which means, the only valid OUT instruction currently is "OUT 1,AX"
+
+            uint16_t lsb {read(GPRKey::AX)};
+            uint16_t msb {read(GPRKey::BX)};
+            float num {makeFloat(lsb, msb)};
+            std::cout << std::setprecision(16) << num << '\n';
+
+            completeInstruction();
+            return;
+        }
         default:
             return;
         }
