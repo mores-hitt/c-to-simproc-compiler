@@ -691,7 +691,7 @@ namespace sp_cli
         case SP_INSTRUCTIONS::JNO : {
             // Saltar si el Overflow Flag no esta activado. Si O = 0, PC = contenido de memoria
 
-            if (CF.getFlag(Flags::O)) {
+            if (!CF.getFlag(Flags::O)) {
                 auto operand {operandToAddressOrReg(instruction, Operands::LEFT)};
                 uint16_t memory {std::get<uint16_t>(operand)};
                 write(ARKey::PC, memory);
@@ -923,7 +923,7 @@ namespace sp_cli
             float memFloat {readFloat(operand)};
             float regFloat {readFloat(GPRKey::AX)};
 
-            float result = regFloat * memFloat;
+            float result = regFloat / memFloat;
             writeFloat(GPRKey::AX, result);
             
             CF.clear();
