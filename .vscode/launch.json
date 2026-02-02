@@ -15,7 +15,7 @@
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "MIMode": "gdb",
-            "preLaunchTask": "build-debug"
+            "preLaunchTask": "build-scc"
         },
                 {
             "name": "Debug sp-cli",
@@ -28,7 +28,7 @@
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "MIMode": "gdb",
-            "preLaunchTask": "build-debug"
+            "preLaunchTask": "build-sp-cli"
         },
     ],
     "inputs": [

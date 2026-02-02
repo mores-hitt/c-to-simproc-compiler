@@ -22,6 +22,69 @@
                 "panel": "shared"
             },
             "problemMatcher": ["$gcc"]
+        },
+        {
+            "label": "build-sp-cli",
+            "type": "shell",
+            "command": "cmake",
+            "args": [
+                "--build",
+                "${workspaceFolder}/build/linux-debug",
+                "--target",
+                "sp-cli",
+                "--config",
+                "Debug",
+                "-j",
+                "4"
+            ],
+            "group": "build",
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "problemMatcher": ["$gcc"]
+        },
+        {
+            "label": "build-scc",
+            "type": "shell",
+            "command": "cmake",
+            "args": [
+                "--build",
+                "${workspaceFolder}/build/linux-debug",
+                "--target",
+                "scc",
+                "--config",
+                "Debug",
+                "-j",
+                "4"
+            ],
+            "group": "build",
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "problemMatcher": ["$gcc"]
+        },
+        {
+            "label": "build-sp-cli-lib",
+            "type": "shell",
+            "command": "cmake",
+            "args": [
+                "--build",
+                "${workspaceFolder}/build/linux-debug",
+                "--target",
+                "sp-cli_lib",
+                "--config",
+                "Debug",
+                "-j",
+                "4"
+            ],
+            "group": "build",
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "problemMatcher": ["$gcc"]
         }
     ]
 }
