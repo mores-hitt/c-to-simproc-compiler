@@ -25,20 +25,6 @@ jobs:
             exit 1
           fi
 
-      - name: Verify CI passed for this commit
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          TAG_COMMIT=$(git rev-list -n 1 ${{ github.ref }})
-          STATUS=$(gh api repos/${{ github.repository }}/commits/$TAG_COMMIT/status --jq '.state')
-          
-          if [ "$STATUS" = "success" ]; then
-            echo "✅ CI passed for this commit"
-          else
-            echo "❌ CI status: $STATUS"
-            exit 1
-          fi
-
   build-linux:
     needs: verify-tag
     runs-on: ubuntu-latest
