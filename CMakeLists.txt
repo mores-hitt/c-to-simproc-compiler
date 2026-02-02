@@ -5,16 +5,10 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-# Common compiler warnings for all targets
-set(SCC_WARNINGS
-    -Wall -Wextra -Wpedantic
-    -Wconversion -Wsign-conversion
-    -Weffc++
-)
-
 # Add subdirectories for each project
 add_subdirectory(scc)
 add_subdirectory(sp-cli)
+
 
 # Testing
 option(BUILD_TESTS "Build tests" OFF)
