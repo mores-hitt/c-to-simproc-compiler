@@ -11,6 +11,15 @@
       }
     },
     {
+      "name": "base-windows",
+      "hidden": true,
+      "generator": "Visual Studio 17 2022",
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "cacheVariables": {
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+      }
+    },
+    {
       "name": "linux-debug",
       "displayName": "Linux Debug",
       "description": "Enables GDB symbols and Strict Warnings",
@@ -39,6 +48,73 @@
       },
       "environment": {       
         "GTEST_COLOR": "1"   
+      }
+    },
+    {
+      "name": "windows-debug",
+      "displayName": "Windows Debug",
+      "inherits": "base-windows",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
+    },
+    {
+      "name": "windows-release",
+      "displayName": "Windows Release",
+      "inherits": "base-windows",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      }
+    },
+    {
+      "name": "windows-test",
+      "displayName": "Windows Test",
+      "inherits": "base-windows",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "BUILD_TESTS": "ON"
+      },
+      "environment": {
+        "GTEST_COLOR": "1"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "linux-test",
+      "configurePreset": "linux-test"
+    },
+    {
+      "name": "linux-release",
+      "configurePreset": "linux-release"
+    },
+    {
+      "name": "windows-test",
+      "configurePreset": "windows-test",
+      "configuration": "Debug"
+    },
+    {
+      "name": "windows-release",
+      "configurePreset": "windows-release",
+      "configuration": "Release"
+    }
+  ],
+    "testPresets": [
+    {
+      "name": "linux-test",
+      "configurePreset": "linux-test",
+      "output": {
+        "outputOnFailure": true,
+        "verbosity": "verbose"
+      }
+    },
+    {
+      "name": "windows-test",
+      "configurePreset": "windows-test",
+      "configuration": "Debug",
+      "output": {
+        "outputOnFailure": true,
+        "verbosity": "verbose"
       }
     }
   ]
