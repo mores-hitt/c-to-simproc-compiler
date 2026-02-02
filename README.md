@@ -4,7 +4,7 @@
 ![Target](https://img.shields.io/badge/target-Simuproc-orange.svg)
 ![Status](https://img.shields.io/badge/status-In%20Development-yellow.svg)
 
-A monorepo containing tools for Simuproc development: a C compiler and CPU emulator.
+A monorepo containing tools for Simuproc 1.4.2.0 development: a C compiler and CPU emulator.
 
 ## 📦 Projects
 
@@ -12,13 +12,13 @@ This repository contains two independent projects:
 
 ### [SCC - Simuproc C Compiler](scc/README.md)
 
-A custom C compiler that targets the Simuproc architecture. Compiles a subset of C into Simuproc assembly.
+A custom C compiler that targets the Simuproc 1.4.2.0 architecture. Compiles a subset of C into Simuproc assembly.
 
 [→ Read more](scc/README.md)
 
 ### [Simuproc Emulator](sp-cli/README.md)
 
-A CLI CPU emulator for the Simuproc architecture. Executes Simuproc assembly code headless, enabling test automation for the compiler.
+A CLI CPU emulator for the Simuproc 1.4.2.0 architecture. Executes Simuproc assembly code headless, enabling test automation for the compiler.
 
 **Key Features:**
 

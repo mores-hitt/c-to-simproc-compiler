@@ -4,11 +4,11 @@
 ![Target](https://img.shields.io/badge/target-Simuproc-orange.svg)
 ![Status](https://img.shields.io/badge/status-In%20Development-yellow.svg)
 
-**SCC** is a custom compiler built from scratch in C++17. It compiles a specific subset of the C language into assembly code for **Simuproc**.
+**SCC** is a custom compiler built from scratch in C++17. It compiles a specific subset of the C language into assembly code for **Simuproc 1.4.2.0**.
 
 ## 🎯 Project Scope
 
-**SCC** aims to implement a robust subset of the C language. This project intends to support essential systems programming features targeting the **Simuproc** architecture.
+**SCC** aims to implement a robust subset of the C language. This project intends to support essential systems programming features targeting the **Simuproc 1.4.2.0** architecture.
 
 ### Core Features
 

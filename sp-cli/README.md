@@ -1,6 +1,6 @@
 # Simuproc Emulator
 
-A CPU emulator for the Simuproc architecture with debugging support.
+A CPU emulator for the Simuproc 1.4.2.0 architecture with debugging support.
 
 ## 🎯 Features
 
