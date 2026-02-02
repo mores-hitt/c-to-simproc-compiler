@@ -1150,4 +1150,10 @@ namespace sp_cli
             this->memory,
         };
     }
+
+    void CPU::printStatus() const {
+        std::cout << "Error: " << error << '\n'
+                  << "Message: " << exitMessage << '\n';
+        return;
+    }
 } // namespace sp_cli

@@ -81,6 +81,7 @@ int main (int argc, char* argv[]) {
     try
     {
         cpu.run();
+        cpu.printStatus();
     }
     catch(const std::exception& e)
     {

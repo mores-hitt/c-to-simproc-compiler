@@ -73,7 +73,8 @@ namespace sp_cli
         CPU(std::string& code);
         void run();
         void runStep();
-        void printState();
-        CPUState getState();
+        void printState() const;
+        void printStatus() const;
+        [[nodiscard]] CPUState getState() const;
     };
 } // namespace sp_cli
