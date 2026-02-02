@@ -1,0 +1,45 @@
+name: Test
+
+on:
+  push:
+    branches: [main, master, develop]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  test-linux:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake build-essential
+
+      - name: Configure CMake
+        run: cmake --preset linux-test
+
+      - name: Build
+        run: cmake --build --preset linux-test -j$(nproc)
+
+      - name: Run Tests
+        run: ctest --preset linux-test
+
+  test-windows:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure CMake
+        run: cmake --preset windows-test
+
+      - name: Build
+        run: cmake --build --preset windows-test
+
+      - name: Run Tests
+        run: ctest --preset windows-test

@@ -10,11 +10,22 @@ target_include_directories(sp-cli_lib PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-target_compile_options(sp-cli_lib PRIVATE ${SCC_WARNINGS})
-target_compile_options(sp-cli_lib PRIVATE
-    "$<$<CONFIG:Debug>:-ggdb;-pedantic-errors;-Werror>"
-    "$<$<CONFIG:Release>:-O3>"
-)
+if(MSVC)
+    target_compile_options(scc_lib PRIVATE
+        /W4
+        /permissive-
+        "$<$<CONFIG:Debug>:/Zi>"
+        "$<$<CONFIG:Release>:/O2>"
+    )
+else()
+    target_compile_options(scc_lib PRIVATE
+        -Wall -Wextra -Wpedantic
+        -Wconversion -Wsign-conversion
+        -Weffc++
+        "$<$<CONFIG:Debug>:-ggdb;-pedantic-errors;-Werror>"
+        "$<$<CONFIG:Release>:-O3>"
+    )
+endif()
 
 target_compile_definitions(sp-cli_lib PUBLIC
     "$<$<CONFIG:Debug>:DEBUG_MODE>"
@@ -23,11 +34,22 @@ target_compile_definitions(sp-cli_lib PUBLIC
 add_executable(sp-cli main.cpp)
 target_link_libraries(sp-cli PRIVATE sp-cli_lib)
 
-target_compile_options(sp-cli PRIVATE ${SCC_WARNINGS})
-target_compile_options(sp-cli PRIVATE
-    "$<$<CONFIG:Debug>:-ggdb;-pedantic-errors;-Werror>"
-    "$<$<CONFIG:Release>:-O3>"
-)
+if(MSVC)
+    target_compile_options(scc_lib PRIVATE
+        /W4
+        /permissive-
+        "$<$<CONFIG:Debug>:/Zi>"
+        "$<$<CONFIG:Release>:/O2>"
+    )
+else()
+    target_compile_options(scc_lib PRIVATE
+        -Wall -Wextra -Wpedantic
+        -Wconversion -Wsign-conversion
+        -Weffc++
+        "$<$<CONFIG:Debug>:-ggdb;-pedantic-errors;-Werror>"
+        "$<$<CONFIG:Release>:-O3>"
+    )
+endif()
 
 target_compile_definitions(sp-cli PRIVATE
     "$<$<CONFIG:Debug>:DEBUG_MODE>"
