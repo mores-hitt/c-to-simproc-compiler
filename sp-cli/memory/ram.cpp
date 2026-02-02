@@ -9,7 +9,7 @@
 
 namespace sp_cli
 {
-    void Memory::readCode(std::string& file){
+    void Memory::readCode(const std::string& file){
         // read a line
         // add it sequentially
         // spaces between instruction does not map into in between space in memory
@@ -24,65 +24,50 @@ namespace sp_cli
                 continue;
             }
 
-            auto it = line.cbegin();
-            auto end = line.cend();
-            std::string buffer {};
-
-            if (*it == '#') { // is a #lineNum 
-                it++;
-                auto start = it;
-                while (it != end) {
-                    it++;
-                }
-                buffer.append(start, it);
-                std::from_chars(buffer.data(), buffer.data() + buffer.size(), address, 16);
+            if (line[0] == '#') { // is a #lineNum 
+                std::string_view numView {line.data() + 1, line.size() - 1};
+                std::from_chars(numView.data(), numView.data() + numView.size(), address, 16);
                 continue;
-                //check if the number is between 0 and 0xFFF
+            }
+
+            size_t semicoloPos {line.find_first_of(';')};
+
+            if (semicoloPos == std::string::npos) {
+                this->memoryArray[address] = line;
             } else {
-
-                size_t semicoloPos {line.find_first_of(';')};
-
-                if (semicoloPos == std::string::npos) {
-                    this->memoryArray[address] = line;
-                } else {
-                    this->memoryArray[address] = line.substr(0, semicoloPos);
-                }
+                this->memoryArray[address] = line.substr(0, semicoloPos);
             }
             address++;
         }
     }
 
-    Memory::Memory(std::string& code) {
+    Memory::Memory(const std::string& code) {
         readCode(code);
     }
 
-    void Memory::print(int begin, int size) {
-        auto startIt {this->memoryArray.begin() + begin };
-
-        if ( begin + size > static_cast<int>(MAX_ADDRESS)){
-            std::cout << "Couldn print mem. Out of bound address. " << begin + size
-            << " is bigger than " << MAX_ADDRESS << '\n';
+    void Memory::print(size_t begin, size_t size) const {
+        if (begin + size > static_cast<int>(MAX_ADDRESS)){
+            std::cout << "Couldnt print mem. Out of bound address. " << begin + size
+                      << " is bigger than " << MAX_ADDRESS << '\n';
+            return;
         }
 
-        auto endIt {this->memoryArray.begin() + begin + size };
-        size_t lineNumber {static_cast<size_t>(begin)};
-
-        for (auto it = startIt; it <= endIt; it++, lineNumber++) {
-            std::cout << "Address: " << std::dec << lineNumber;
-            std::cout << "(0x" << std::hex << std::setw(3) << std::setfill('0') << lineNumber;
-            std::cout << std::dec << ") Content: " << *it << '\n';
+        for (size_t addr = begin; addr < begin + size; ++addr) {
+            std::cout << "Address: " << std::dec << addr
+                      << " (0x" << std::hex << std::setw(3) << std::setfill('0') << addr
+                      << std::dec << ") Content: " << memoryArray[addr] << '\n';
         }
     }
 
-    std::string_view Memory::get(int address) const {
-        return this->memoryArray.at(static_cast<size_t>(address));
+    std::string_view Memory::get(size_t address) const {
+        return this->memoryArray.at(address);
     }
 
-    void Memory::set(int address, std::string& content) {
+    void Memory::set(size_t address, std::string_view content) {
         if (content.size() > 1024) {
             throw std::invalid_argument("memory set content is bigger than 1024");
         }
-        if (address < 0 || address > MAX_ADDRESS) {
+        if (address > MAX_ADDRESS) {
             throw std::out_of_range("Invalid index for ram");
         }
         this->memoryArray[static_cast<size_t>(address)] = content;
