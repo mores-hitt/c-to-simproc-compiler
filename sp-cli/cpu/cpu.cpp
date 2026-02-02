@@ -1097,7 +1097,7 @@ namespace sp_cli
             it++;
         }
 
-        instruction.opcode = getInstruction(std::string_view(memContent.cbegin(), static_cast<size_t>(it - memContent.cbegin())));
+        instruction.opcode = getInstruction(std::string_view(&*memContent.cbegin(), static_cast<size_t>(it - memContent.cbegin())));
 
         // at this point, it is pointing either to white space or the end
         if (it == end) {
@@ -1111,7 +1111,7 @@ namespace sp_cli
             it++;
         }
 
-        instruction.left_operand = std::string_view(lStart,static_cast<size_t>(it - lStart));
+        instruction.left_operand = std::string_view(lStart,static_cast<size_t>(&*it - &*lStart));
 
         // now, it is pointing to comma or to the end
         if (it == end) {
@@ -1119,7 +1119,7 @@ namespace sp_cli
         }
 
         it++; // now pointing to the start of the right operand
-        instruction.right_operand = std::string_view(it, static_cast<size_t>( end - it));
+        instruction.right_operand = std::string_view(it, static_cast<size_t>(&*end - &*it));
         return instruction;
 
     }
