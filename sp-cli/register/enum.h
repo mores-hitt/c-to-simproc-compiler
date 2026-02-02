@@ -17,7 +17,7 @@ namespace sp_cli
         MAR,
     };
 
-    constexpr std::string_view getARKeyName(ARKey key) {
+    [[nodiscard]] constexpr std::string_view getARKeyName(ARKey key) noexcept {
         switch (key)
         {
         case ARKey::PC: return "PC";
@@ -32,7 +32,7 @@ namespace sp_cli
         return out << getARKeyName(key);
     }
 
-    constexpr size_t toIdx(ARKey key) noexcept {
+    [[nodiscard]] constexpr size_t toIdx(ARKey key) noexcept {
         return static_cast<size_t>(key);
     }
 
@@ -42,7 +42,7 @@ namespace sp_cli
         CX,
     };
 
-    constexpr std::string_view getGPRKeyName(GPRKey key) {
+    [[nodiscard]] constexpr std::string_view getGPRKeyName(GPRKey key) noexcept {
         switch (key)
         {
         case GPRKey::AX: return "AX";
@@ -56,7 +56,7 @@ namespace sp_cli
         return out << getGPRKeyName(key);
     }
 
-    constexpr size_t toIdx(GPRKey key) noexcept {
+    [[nodiscard]] constexpr size_t toIdx(GPRKey key) noexcept {
         return static_cast<size_t>(key);
     }
 
@@ -67,7 +67,7 @@ namespace sp_cli
         O
     };
 
-    constexpr std::string_view getFlagName(Flags flag){
+    [[nodiscard]] constexpr std::string_view getFlagName(Flags flag) noexcept {
         switch (flag)
         {
         case Flags::Z : return "Zero flag";
