@@ -11,7 +11,9 @@ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 
 FetchContent_MakeAvailable(googletest)
 
-add_executable(unit_tests
+include(GoogleTest)
+
+add_executable(sp-cli_tests
     main_test.cpp
     sp-cli/cpu_test.cpp
     sp-cli/memory_test.cpp
@@ -23,14 +25,27 @@ add_executable(unit_tests
     sp-cli/float/add/medium_almost_zero_test.cpp
 )
 
-target_link_libraries(unit_tests PRIVATE
+target_link_libraries(sp-cli_tests PRIVATE
     GTest::gtest_main
-    scc_lib
     sp-cli_lib
 )
 
-target_compile_options(unit_tests PRIVATE ${SCC_WARNINGS})
-target_compile_features(unit_tests PRIVATE cxx_std_17)
+target_compile_options(sp-cli_tests PRIVATE ${SCC_WARNINGS})
+target_compile_features(sp-cli_tests PRIVATE cxx_std_17)
 
-include(GoogleTest)
-gtest_discover_tests(unit_tests)
+gtest_discover_tests(sp-cli_tests)
+
+add_executable(scc_tests
+    main_test.cpp
+    scc/ex_test.cpp
+)
+
+target_link_libraries(scc_tests PRIVATE
+    GTest::gtest_main
+    scc_lib
+)
+
+target_compile_options(sp-cli_tests PRIVATE ${SCC_WARNINGS})
+target_compile_features(sp-cli_tests PRIVATE cxx_std_17)
+
+gtest_discover_tests(scc_tests)
