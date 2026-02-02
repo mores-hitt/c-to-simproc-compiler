@@ -196,6 +196,4 @@ namespace sp_cli
         }
     };
 
-
-
 } // namespace sp_cli

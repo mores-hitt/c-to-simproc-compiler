@@ -11,6 +11,7 @@
 #include <string_view>
 #include <string>
 #include <variant>
+#include <optional>
 
 
 namespace sp_cli
@@ -20,7 +21,7 @@ namespace sp_cli
         RIGHT
     };
 
-    constexpr std::string_view getOperandsName(Operands op) {
+    [[nodiscard]] constexpr std::string_view getOperandsName(Operands op) noexcept {
         switch (op)
         {
         case Operands::LEFT : return "LEFT";
@@ -53,24 +54,23 @@ namespace sp_cli
         bool error {};
         std::string exitMessage;
 
-        void completeInstruction(bool terminate = false, bool error = false, std::string exitMessage = "Everything good");
-        uint16_t memoryContentToI16(int address);
-        std::variant<GPRKey, ARKey, uint16_t> operandToAddressOrReg(Instruction instruction, Operands op, int base = 16);
-        uint16_t read(const std::variant<GPRKey, ARKey, uint16_t>& operand);
+        void completeInstruction(bool terminate = false, bool error = false, std::string_view exitMessage = "Everything good");
+        [[nodiscard]] uint16_t memoryContentToI16(size_t address) const;
+        [[nodiscard]] std::variant<GPRKey, ARKey, uint16_t> operandToAddressOrReg(Instruction instruction, Operands op, int base = 16) const;
+        [[nodiscard]] uint16_t read(const std::variant<GPRKey, ARKey, uint16_t>& operand) const;
         void write(const std::variant<GPRKey, ARKey, uint16_t>& operand, uint16_t value);
-        float readFloat(const std::variant<GPRKey, ARKey, uint16_t>& operand);
+        [[nodiscard]] std::optional<float> readFloat(const std::variant<GPRKey, ARKey, uint16_t>& operand) const;
         void writeFloat(const std::variant<GPRKey, ARKey, uint16_t>& operand, float value);
 
         template<typename T>
         void setFlags(T value);
 
-        Instruction stringToInstruction(std::string_view memContent);
-        Instruction fetch();
-        void execute(Instruction instruction);
-
+        [[nodiscard]] static Instruction stringToInstruction(std::string_view memContent);
+        [[nodiscard]] Instruction fetch();
+        void execute(const Instruction& instruction);
 
         public:
-        CPU(std::string& code);
+        explicit CPU(const std::string& code);
         void run();
         void runStep();
         void printState() const;

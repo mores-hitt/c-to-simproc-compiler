@@ -16,19 +16,19 @@
 
 namespace sp_cli
 {
-    CPU::CPU(std::string& code): memory(code), exitMessage(" "){
+    CPU::CPU(const std::string& code): memory(code), exitMessage(" "){
         uint16_t bp {STACK_ADDRESS};
         AR.setReg(ARKey::BP, bp);
         AR.setReg(ARKey::SP, bp);
     }
 
-    void CPU::completeInstruction(bool terminate, bool error, std::string exitMessage){
+    void CPU::completeInstruction(bool terminate, bool error, std::string_view exitMessage){
         this->error = error;
         this->terminate = terminate;
         this->exitMessage = exitMessage;
     }
 
-    uint16_t CPU::memoryContentToI16(int address) {
+    uint16_t CPU::memoryContentToI16(size_t address) const {
         std::string content(this->memory.get(address));
         uint16_t bitContent {0};
         if (content != "") {
@@ -37,7 +37,7 @@ namespace sp_cli
         return bitContent;
     }
 
-    std::variant<GPRKey, ARKey, uint16_t> CPU::operandToAddressOrReg(Instruction instruction, Operands op, int base) {
+    std::variant<GPRKey, ARKey, uint16_t> CPU::operandToAddressOrReg(const Instruction instruction, Operands op, int base) const {
         std::string stringOperand;
         switch (op)
         {
@@ -53,29 +53,22 @@ namespace sp_cli
 
         // lets be super explicit
 
-        if (stringOperand == "AX") {
-            return GPRKey::AX;
-        } else if (stringOperand == "BX") {
-            return GPRKey::BX;
-        } else if (stringOperand == "CX") {
-            return GPRKey::CX;
-        } else if (stringOperand == "PC") {
-            return ARKey::PC;
-        } else if (stringOperand == "SP") {
-            return ARKey::SP;
-        } else if (stringOperand == "BP") {
-            return ARKey::BP;
-        } else if (stringOperand == "MAR") {
-            return ARKey::MAR;
-        } else {
-            uint16_t intOperand {};
-            std::from_chars(stringOperand.data(), stringOperand.data() + stringOperand.size(), intOperand, base);
-            return intOperand;
-        }
+        if (stringOperand == "AX") return GPRKey::AX;
+        if (stringOperand == "BX") return GPRKey::BX;
+        if (stringOperand == "CX") return GPRKey::CX;
+        if (stringOperand == "PC") return ARKey::PC;
+        if (stringOperand == "SP") return ARKey::SP;
+        if (stringOperand == "BP") return ARKey::BP;
+        if (stringOperand == "MAR") return ARKey::MAR;
+
+        // Otherwise, it's a memory address or immediate value
+        std::uint16_t value {};
+        std::from_chars(stringOperand.data(), stringOperand.data() + stringOperand.size(), value, base);
+        return value;
 
     }
 
-    uint16_t CPU::read(const std::variant<GPRKey, ARKey, uint16_t>& operand) {
+    uint16_t CPU::read(const std::variant<GPRKey, ARKey, uint16_t>& operand) const {
         if (std::holds_alternative<GPRKey>(operand)) {
             return GPR.getUnsignedReg(std::get<GPRKey>(operand));
         } else if (std::holds_alternative<ARKey>(operand)){
@@ -96,7 +89,7 @@ namespace sp_cli
         }
     }
 
-    float CPU::readFloat(const std::variant<GPRKey, ARKey, uint16_t>& operand) {
+    std::optional<float> CPU::readFloat(const std::variant<GPRKey, ARKey, uint16_t>& operand) const {
         if (std::holds_alternative<GPRKey>(operand)) { 
             uint16_t regMsb {read(GPRKey::BX)};
             uint16_t regLsb {read(GPRKey::AX)};
@@ -108,7 +101,7 @@ namespace sp_cli
             uint16_t memLsb {read(address)};
             return makeFloat(memLsb, memMsb);
         } else {
-            return -0.0f;
+            return std::nullopt;
         }
     }
 
@@ -139,7 +132,7 @@ namespace sp_cli
         }
     }
 
-    void CPU::execute(Instruction instruction) {
+    void CPU::execute(const Instruction& instruction)  {
         switch (instruction.opcode)
         {
         case SP_INSTRUCTIONS::NO_INST : {
@@ -836,11 +829,16 @@ namespace sp_cli
 
             auto operand {operandToAddressOrReg(instruction, Operands::LEFT)};
             uint16_t address {(std::get<uint16_t>(operand))}; // static_cast<uint16_t>
-            float floatContent {readFloat(address)};
-            writeFloat(GPRKey::AX, floatContent);
+            auto floatContent {readFloat(address)};
+            if (floatContent) {
+                writeFloat(GPRKey::AX, *floatContent);
+                completeInstruction();
+                return;
+            }
 
-            completeInstruction();
+            completeInstruction(true, true, "Invalid operand in LDF instruction");
             return;
+
         }
         case SP_INSTRUCTIONS::STF : {
             // Guarda en [mem] y mem+1 el contenido de BX y AX
@@ -849,11 +847,17 @@ namespace sp_cli
             
             auto operand {operandToAddressOrReg(instruction, Operands::LEFT)};
             uint16_t address {(std::get<uint16_t>(operand))};
-            float floatContent {readFloat(GPRKey::AX)};
-            writeFloat(address, floatContent);
+            auto floatContent {readFloat(GPRKey::AX)};
 
-            completeInstruction();
+            if (floatContent) {
+                writeFloat(address, *floatContent);
+                completeInstruction();
+                return;
+            }
+
+            completeInstruction(true, true, "Invalid operand in STF instruction");
             return;
+
 
         }
         case SP_INSTRUCTIONS::ADDF : {
@@ -864,10 +868,22 @@ namespace sp_cli
 
             auto operand {operandToAddressOrReg(instruction, Operands::LEFT)};
 
-            float memFloat {readFloat(operand)};
-            float regFloat {readFloat(GPRKey::AX)};
+            auto memFloat {readFloat(operand)};
 
-            float result = regFloat + memFloat;
+            if (!memFloat) {
+                completeInstruction("Invalid operand in ADDF instruction");
+                return;
+            }
+
+            auto regFloat {readFloat(GPRKey::AX)};
+
+            if (!regFloat) {
+                completeInstruction("Invalid operand in ADDF instruction");
+                return;
+            }
+
+
+            float result = *regFloat + *memFloat;
             writeFloat(GPRKey::AX, result);
 
             CF.clear();
@@ -882,10 +898,21 @@ namespace sp_cli
 
             auto operand {operandToAddressOrReg(instruction, Operands::LEFT)};
 
-            float memFloat {readFloat(operand)};
-            float regFloat {readFloat(GPRKey::AX)};
+            auto memFloat {readFloat(operand)};
 
-            float result = regFloat - memFloat;
+            if (!memFloat) {
+                completeInstruction("Invalid operand in SUBF instruction");
+                return;
+            }
+
+            auto regFloat {readFloat(GPRKey::AX)};
+
+            if (!regFloat) {
+                completeInstruction("Invalid operand in SUBF instruction");
+                return;
+            }
+
+            float result = *regFloat - *memFloat;
             writeFloat(GPRKey::AX, result);
 
             CF.clear();
@@ -900,10 +927,21 @@ namespace sp_cli
 
             auto operand {operandToAddressOrReg(instruction, Operands::LEFT)};
 
-            float memFloat {readFloat(operand)};
-            float regFloat {readFloat(GPRKey::AX)};
+            auto memFloat {readFloat(operand)};
 
-            float result = regFloat * memFloat;
+            if (!memFloat) {
+                completeInstruction("Invalid operand in MULF instruction");
+                return;
+            }
+
+            auto regFloat {readFloat(GPRKey::AX)};
+
+            if (!regFloat) {
+                completeInstruction("Invalid operand in MULF instruction");
+                return;
+            }
+
+            float result = *regFloat * *memFloat;
             writeFloat(GPRKey::AX, result);
 
             CF.clear();
@@ -920,10 +958,21 @@ namespace sp_cli
 
             auto operand {operandToAddressOrReg(instruction, Operands::LEFT)};
 
-            float memFloat {readFloat(operand)};
-            float regFloat {readFloat(GPRKey::AX)};
+            auto memFloat {readFloat(operand)};
 
-            float result = regFloat / memFloat;
+            if (!memFloat) {
+                completeInstruction("Invalid operand in DIVF instruction");
+                return;
+            }
+
+            auto regFloat {readFloat(GPRKey::AX)};
+
+            if (!regFloat) {
+                completeInstruction("Invalid operand in DIVF instruction");
+                return;
+            }
+
+            float result = *regFloat / *memFloat;
             writeFloat(GPRKey::AX, result);
             
             CF.clear();
@@ -962,22 +1011,30 @@ namespace sp_cli
             BX y AX en un entero (16bits), el Resultado queda en AX.
             */
 
-            float regFloat {readFloat(GPRKey::AX)};
+            auto regFloat {readFloat(GPRKey::AX)};
+
+            if (!regFloat) {
+                completeInstruction("Invalid operand in FTOI instruction");
+                return;
+            }
+
+            float floatNum {*regFloat};
+
             CF.clear();
-            if (regFloat < 0) {
+            if (floatNum < 0) {
                 CF.setFlag(Flags::N);
-                regFloat *= -1;
-            } else if (regFloat == 0) {
+                floatNum *= -1;
+            } else if (floatNum == 0) {
                 CF.setFlag(Flags::Z);
             }
 
             uint16_t regInt;
 
-            if (regFloat > MAX_16BIT || MAX_16BIT* (-1) > regFloat) {
+            if (floatNum > MAX_16BIT || MAX_16BIT* (-1) > floatNum) {
                 CF.setFlag(Flags::O);
                 regInt = MAX_16BIT;
             } else {
-                regInt = static_cast<uint16_t>(regFloat);
+                regInt = static_cast<uint16_t>(floatNum);
             }
             write(GPRKey::AX, regInt);
 
@@ -1079,12 +1136,6 @@ namespace sp_cli
         Instruction instruction {stringToInstruction(addressContent)};
 
         write(ARKey::PC, ++pc);
-        
-        if (instruction.opcode == SP_INSTRUCTIONS::NO_INST) {
-            AR.setReg(ARKey::MAR, static_cast<uint16_t>(10));
-        } else {
-            AR.setReg(ARKey::MAR, static_cast<uint16_t> (0));
-        }
 
         return instruction;
     }
@@ -1113,15 +1164,15 @@ namespace sp_cli
         #endif
     }
 
-    void CPU::printState() {
+    void CPU::printState() const {
         this->AR.print();
         this->GPR.print();
         this->CF.print();
-        int start = this->AR.getUnsignedReg(ARKey::PC) > MEMORY_PRINT_WINDOW ?
+        size_t start = this->AR.getUnsignedReg(ARKey::PC) > MEMORY_PRINT_WINDOW ?
                     this->AR.getUnsignedReg(ARKey::PC) - MEMORY_PRINT_WINDOW:
                     0;
         
-        int size = MEMORY_PRINT_WINDOW * 2;
+        size_t size = MEMORY_PRINT_WINDOW * 2;
 
         this->memory.print(start, size);
 
@@ -1131,15 +1182,12 @@ namespace sp_cli
     }
 
     void CPU::run(){
-        for (size_t i {0}; i < MAX_ADDRESS; i++) {
+        while(!this->terminate) {
             runStep();
-            if (this->terminate) {
-                return;
-            }
         }
     }
 
-    CPUState CPU::getState() {
+    CPUState CPU::getState() const {
         return CPUState {
             this->GPR,
             this->AR,
