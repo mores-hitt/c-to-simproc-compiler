@@ -17,10 +17,10 @@ This project aims to implement a C compiler following Nora Sandler's *"Writing a
   - [x] Implement Logic/Control: `AND`, `OR`, `NOT`, `CMP`, `JMP`, `JEQ`, `JNE`, etc.
 - [x] **Instruction Cycle**
   - [x] Implement Instruction Cycle (Fetch Cycle)
-- [ ] **Test Runner Interface**
+- [x] **Test Runner Interface**
   - [x] CLI Argument Parsing.
   - [x] txt. reading and parsing into memory.
-  - [ ] Output State: Dump the final complete state of the emulator.
+  - [x] Output State: Dump the final complete state of the emulator.
 
 ---
 
