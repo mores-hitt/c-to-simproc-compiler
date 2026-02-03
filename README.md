@@ -4,7 +4,7 @@
 ![Target](https://img.shields.io/badge/target-Simuproc-orange.svg)
 ![Status](https://img.shields.io/badge/status-In%20Development-yellow.svg)
 
-A monorepo containing tools for Simuproc 1.4.2.0 development: a C compiler and CPU emulator.
+A monorepo containing tools for Simuproc 1.4.2.0 development: a C compiler and Simuproc emulator.
 
 ## 📦 Projects
 
@@ -30,11 +30,46 @@ A CLI CPU emulator for the Simuproc 1.4.2.0 architecture. Executes Simuproc asse
 
 ## 🛠️ Building the Projects
 
-*
+There are a total of 6 CMake presets defined, 3 for linux and 3 for windows. the presets are:
+
+- linux-debug
+- linux-test
+- linux-release
+- windows-debug
+- windows-test
+- windows-release
+
+To build the project, do the following
+
+1. Set a CMake preset. this will create the cmake files in the build/{preset} directory
+
+```bash
+cmake --preset {preset}
+```
+
+2. Build project
+
+```bash
+cmake --build build/{preset}
+```
+
 
 ## 🧪 Testing
 
-*
+Ensure that you have built the project using the `{platform}-test` preset.
+
+1. Run all tests
+
+```bash
+ctest --preset {platform}-test
+```
+
+2. Run scc tests or sp-cli tests independently
+
+```bash
+ctest --preset {platform}-test -L scc       # scc tests
+ctest --preset {platform}-test -L sp-cli    # sp-cli tests
+```
 
 ## 📖 Documentation
 
