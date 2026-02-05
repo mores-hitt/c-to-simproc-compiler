@@ -11,8 +11,11 @@ namespace scc {
     namespace {
 
         template<typename MapType, typename KeyType> scc::Token Map(
-            const KeyType& lookupKey, std::string_view tokenValue,
-            int lineNumber, const MapType& map, const char* categoryName,
+            const KeyType& lookupKey,
+            std::string_view tokenValue,
+            int lineNumber,
+            const MapType& map,
+            const char* categoryName,
             TokenType tokenFallback) {
             
             auto it = map.find(lookupKey);
