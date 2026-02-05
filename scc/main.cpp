@@ -59,7 +59,9 @@ int main (int argc, char* argv[]) {
         return 1;
     }
 
-    auto vec = scc::lexical_analysis(sourceCode);
+    auto lexer = scc::Lexer(sourceCode);
+
+    auto vec = lexer.analize();
 
     std::cout << "\n\n###################################################################\n\n";
 

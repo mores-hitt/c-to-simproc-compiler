@@ -6,106 +6,105 @@
 #include <iostream>
 #include <cctype>
 #include <algorithm>
-// I need to keep track of many things
-// line number
-// previous white space, to recoginze keywords and stuff
-// literal flag (could this be a literal?)
-// so, it screams that, maybe, i need a bunch of variables before the loop
-// or, i can make a struct or a class
 
 namespace scc {
 
-    std::vector<Token> lexical_analysis(std::string_view sourceCode) {
+    std::string_view Lexer::getTokenView(const char* tokenStart, const char* tokenEnd){
+        return std::string_view(tokenStart, static_cast<size_t>(tokenEnd - tokenStart)); // get size of token by pointer substraction
+    }
 
-        const char* begin {sourceCode.data()};
-        const char* end {sourceCode.data() + sourceCode.size()};
-        int lineNumber {1};
-        int columnNumber {1};
-        const char* tokenStart {nullptr};
-        const char* tokenEnd {nullptr};
+    void Lexer::handleLine(){
+        std::cout << "here, a new line: \\n " << "\n";
+        lineNumber++;
+        columnNumber = 1;
+    }
 
-        std::vector<Token> tokenVector {};
-
-        tokenVector.reserve(sourceCode.size() / 4); // 1 token per 4 characters estimate
+    void Lexer::handleKeyWord(){
         
-        for (auto p {begin}; p != end; p++){
+        std::cout << "start of token \n";
+        tokenStart = charPointer;
+        while (charPointer != sourceCodeEnd && !std::isspace(*charPointer) && !scc::isDelimiter(*charPointer)) { // keep looping until break
+            charPointer++;
+            columnNumber++;
+        }
+        std::cout << "end of token: ";
+        tokenEnd = charPointer;
 
-            std::cout << "line number: " << lineNumber << ". ";
-            std::cout << "column/character number: " << columnNumber << ". ";
+        auto tokenValue {getTokenView(tokenStart, tokenEnd)};
 
-            if (*p == '\n') {
+        std::cout << tokenValue << "\n";
 
-                std::cout << "here, a new line: \\n " << "\n";
-                lineNumber++;
-                columnNumber = 1;
-                continue;
+        tokenVector.push_back(scc::isKeyword(tokenValue, lineNumber));
 
-            } else if (std::isalpha(*p)){
+    }
 
-                std::cout << "start of token \n";
-                tokenStart = p;
-                while (p != end && !std::isspace(*p) && !scc::isDelimiter(*p)) { // keep looping until break
-                    p++;
-                    columnNumber++;
-                }
-                std::cout << "end of token: ";
-                tokenEnd = p;
-
-                std::string_view tokenValue(tokenStart, static_cast<size_t>(tokenEnd - tokenStart)); // get size of token by pointer substraction
-
-                std::cout << tokenValue << "\n";
-
-                tokenVector.push_back(scc::isKeyword(tokenValue, lineNumber));
-
-                p--; // while loops leaves p one character forward
-
-                continue;
-
-            } else if (std::isdigit(*p)) {
-
-                std::cout << "start of integer constant?\n";
-                tokenStart = p;
-                while ( p != end && std::isdigit(*p)) { // keep looping until no more digits
-                    p++;
-                    columnNumber++;
-                }
-                if (p != end && !scc::isDelimiter(*p) && !std::isspace(*p)) {
-                    std::cerr << "Warning. broken integer constant at " << lineNumber << ". Crazy behaviour incoming\n";
-                }
-
-                std::cout << "end of integer literal: ";
-                tokenEnd = p;
-                std::string_view tokenValue(tokenStart, static_cast<size_t>(tokenEnd- tokenStart)); // get size of token by pointer substraction
-
-                std::cout << tokenValue << "\n";
-
-                Token token {TokenType::integer_constant, tokenValue, lineNumber};
-
-                tokenVector.push_back(token);
-
-                p--; // while loops leaves p one character forward
-
-                continue;
-
-            } else if (std::isspace(*p)) {
-
-                std::cout << "here, a whitespace " << *p << "\n";
-                columnNumber++;
-                
-                continue;
-
-            } else {
-
-                std::cout << "here, a delimiter?: " << *p << "\n";
-                tokenVector.push_back(scc::isDelimiter(p, lineNumber));
-                columnNumber++;
-
-            }
-
+    void Lexer::handleIntegerConstant() {
+        std::cout << "start of integer constant?\n";
+        tokenStart = charPointer;
+        while ( charPointer != sourceCodeEnd && std::isdigit(*charPointer)) { // keep looping until no more digits
+            charPointer++;
+            columnNumber++;
+        }
+        
+        if (charPointer != sourceCodeEnd && !scc::isDelimiter(*charPointer) && !std::isspace(*charPointer)) {
+            std::cerr << "Warning. broken integer constant at " << lineNumber << ". Crazy behaviour incoming\n";
         }
 
+        std::cout << "end of integer literal: ";
+        tokenEnd = charPointer;
+
+        auto tokenValue {getTokenView(tokenStart, tokenEnd)};
+
+        std::cout << tokenValue << "\n";
+
+        Token token {TokenType::integer_constant, tokenValue, lineNumber};
+
+        tokenVector.push_back(token);
+    }
+
+    void Lexer::handleWhiteSpace() {
+        std::cout << "here, a whitespace " << *charPointer << "\n";
+        columnNumber++;
+    }
+
+    void Lexer::handleDelimiter() {
+        std::cout << "here, a delimiter?: " << *charPointer << "\n";
+        tokenVector.push_back(scc::isDelimiter(charPointer, lineNumber));
+        columnNumber++;
+    }
+
+    std::vector<Token> Lexer::analize() {
+        while (charPointer != sourceCodeEnd) {
+            std::cout << "line number: " << lineNumber << ". ";
+            std::cout << "character number: " << columnNumber << ". ";
+
+            if (*charPointer == '\n') {
+                handleLine();
+                charPointer++;
+                continue;
+            }
+            else if (std::isalpha(*charPointer)) {
+                handleKeyWord();
+                // handleKeyword leaves charPointer one character forward
+                continue;
+            }
+            else if (std::isdigit(*charPointer)) {
+                handleIntegerConstant();
+                // handleKeyword leaves charPointer one character forward
+                continue;
+            }
+            else if (std::isspace(*charPointer)) {
+                handleWhiteSpace();
+                charPointer++;
+                continue;
+            }
+            else {
+                handleDelimiter();
+                charPointer++;
+                continue;
+            }
+        }
 
         return tokenVector;
     }
-
 }
