@@ -20,6 +20,6 @@ namespace sp_cli
         explicit Memory(const std::string& code);
         void print(std::size_t begin = 0, std::size_t size = MAX_ADDRESS) const;
         [[nodiscard]] std::string_view get(std::size_t address) const;
-        void set(std::size_t address, std::string_view content);
+        void set(std::size_t address, const std::string_view& content);
     };
 } // namespace sp_cli

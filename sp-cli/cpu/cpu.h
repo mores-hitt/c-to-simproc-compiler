@@ -54,9 +54,9 @@ namespace sp_cli
         bool error {};
         std::string exitMessage;
 
-        void completeInstruction(bool terminate = false, bool error = false, std::string_view exitMessage = "Everything good");
+        void completeInstruction(bool terminate = false, bool error = false, const std::string_view& exitMessage = "Everything good");
         [[nodiscard]] uint16_t memoryContentToI16(size_t address) const;
-        [[nodiscard]] std::variant<GPRKey, ARKey, uint16_t> operandToAddressOrReg(Instruction instruction, Operands op, int base = 16) const;
+        [[nodiscard]] std::variant<GPRKey, ARKey, uint16_t> operandToAddressOrReg(const Instruction& instruction, Operands op, int base = 16) const;
         [[nodiscard]] uint16_t read(const std::variant<GPRKey, ARKey, uint16_t>& operand) const;
         void write(const std::variant<GPRKey, ARKey, uint16_t>& operand, uint16_t value);
         [[nodiscard]] std::optional<float> readFloat(const std::variant<GPRKey, ARKey, uint16_t>& operand) const;
@@ -65,7 +65,7 @@ namespace sp_cli
         template<typename T>
         void setFlags(T value);
 
-        [[nodiscard]] static Instruction stringToInstruction(std::string_view memContent);
+        [[nodiscard]] static Instruction stringToInstruction(const std::string_view& memContent);
         [[nodiscard]] Instruction fetch();
         void execute(const Instruction& instruction);
 

@@ -22,7 +22,7 @@ namespace sp_cli
         AR.setReg(ARKey::SP, bp);
     }
 
-    void CPU::completeInstruction(bool terminate, bool error, std::string_view exitMessage){
+    void CPU::completeInstruction(bool terminate, bool error, const std::string_view& exitMessage){
         this->error = error;
         this->terminate = terminate;
         this->exitMessage = exitMessage;
@@ -37,7 +37,7 @@ namespace sp_cli
         return bitContent;
     }
 
-    std::variant<GPRKey, ARKey, uint16_t> CPU::operandToAddressOrReg(const Instruction instruction, Operands op, int base) const {
+    std::variant<GPRKey, ARKey, uint16_t> CPU::operandToAddressOrReg(const Instruction& instruction, Operands op, int base) const {
         std::string stringOperand;
         switch (op)
         {
@@ -1087,7 +1087,7 @@ namespace sp_cli
         return;
     }
 
-    Instruction CPU::stringToInstruction(std::string_view memContent) {
+    Instruction CPU::stringToInstruction(const std::string_view& memContent) {
         //read until new line, space or at most 4 characters
         auto it {memContent.cbegin()};
         auto end {memContent.cend()};

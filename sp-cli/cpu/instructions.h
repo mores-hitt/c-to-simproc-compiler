@@ -189,7 +189,7 @@ namespace sp_cli
         std::string_view left_operand {};
         std::string_view right_operand {};
 
-        void print() {
+        void print() noexcept {
             std::cout << "opcode: " << opcode << '\n'
                       << "left operand: " << left_operand << '\n'
                       << "right operand: " << right_operand << '\n';

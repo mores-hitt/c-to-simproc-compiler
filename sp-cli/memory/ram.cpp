@@ -63,7 +63,7 @@ namespace sp_cli
         return this->memoryArray.at(address);
     }
 
-    void Memory::set(size_t address, std::string_view content) {
+    void Memory::set(size_t address, const std::string_view& content) {
         if (content.size() > 1024) {
             throw std::invalid_argument("memory set content is bigger than 1024");
         }
