@@ -120,6 +120,9 @@ namespace scc {
                 handleDelimiter();
                 charPointer++;
                 continue;
+            } else {
+                std::cerr << "\n\nCarácter no identificable en linea " << lineNumber << " columna " << columnNumber << ".\n"; 
+                throw std::runtime_error("\nUnindentifiable character\n");
             }
         }
 
