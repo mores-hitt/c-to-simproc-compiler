@@ -34,9 +34,6 @@ namespace scc {
         return Map(*c, std::string_view(c, 1), lineNumber, delimiterMap, "delimiter", TokenType::undefined);
     }
 
-    bool isDelimiter(char c){
-        return delimiterMap.count(c) > 0;
-    }
 
 
     scc::Token isKeyword(std::string_view word, int lineNumber) {

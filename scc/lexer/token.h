@@ -67,8 +67,7 @@ namespace scc {
         int lineNumber {};
     };
 
-    scc::Token isDelimiter(const char* c, int lineNumber);
-    bool isDelimiter(char c);
-    scc::Token isKeyword(std::string_view word, int lineNumber);
+    scc::Token makeDelimiterToken(const char* c, int lineNumber);
+    scc::Token makeKeywordToken(std::string_view word, int lineNumber);
 
 }
