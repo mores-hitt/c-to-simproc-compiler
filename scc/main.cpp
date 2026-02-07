@@ -15,10 +15,10 @@ std::string getSourceCode(std::string_view path) {
     
     const std::filesystem::path file_path {path};
     
-    std::cout << file_path << "\n";
+    // std::cerr << file_path.c_str() << "\n"; //non utf 8 for some reason
     
     if (!std::filesystem::exists(file_path)) {
-        std::cerr << "File does not exist at: " << file_path << "\n";
+        //std::cerr << "File does not exist at: " << file_path.c_str() << "\n"; //non utf 8 for some reason
         return {};
     }
     
@@ -26,7 +26,7 @@ std::string getSourceCode(std::string_view path) {
     
     if (!input_file)
     {
-        std::cerr << "Uh oh, not be opened for reading!\n";
+        //std::cerr << "Uh oh, not be opened for reading!\n"; //non utf 8 for some reason
         return {};
     }
     
