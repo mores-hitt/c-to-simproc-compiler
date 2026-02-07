@@ -16,7 +16,6 @@ std::string getSourceCode(std::string_view path) {
     
     if (!std::filesystem::exists(file_path)) {
         std::cerr << "File does not exist at: " << file_path << "\n";
-        std::cerr << "Usage: scc <source_file.c>\n";
         return {};
     }
     
@@ -36,7 +35,29 @@ std::string getSourceCode(std::string_view path) {
     return sourceCode;
 }
 
-int main (int argc, char* argv[]) {
+std::string_view preprocess(const std::string& filePath) {
+
+    std::filesystem::path p(filePath);
+
+    std::string fileName {p.filename().string()};
+
+    std::string outputFileName {p.stem().string() + ".i"};
+
+    std::string stringCommand {"gcc -E -P " + filePath + " -o " + outputFileName};
+
+    const char* command {stringCommand.c_str() };
+
+    int result = std::system(command);
+
+    if (result) {
+        std::cerr << "\nPreprocessing error\n";
+        throw std::runtime_error("Preprocessing error");
+    }
+
+    return outputFileName;
+}
+
+int main (int argc, char **argv) { 
 
     #ifdef DEBUG_MODE
     std::cout << "Running in DEBUG mode!\n";
