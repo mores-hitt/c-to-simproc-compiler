@@ -31,39 +31,39 @@ namespace scc {
     }
 
     void Lexer::handleLine(){
-        std::cout << "here, a new line: \\n " << "\n";
+        std::cerr << "here, a new line: ... " << "\n";
         lineNumber++;
         columnNumber = 1;
     }
 
     void Lexer::handleKeywordOrId(){
         
-        std::cout << "start of token \n";
+        std::cerr << "start of token \n";
         tokenStart = charPointer;
         while (charPointer != sourceCodeEnd && isWordChar(*charPointer)) { // keep looping until break
             charPointer++;
             columnNumber++;
         }
-        std::cout << "end of token: ";
+        std::cerr << "end of token: ";
         tokenEnd = charPointer;
 
         auto tokenValue {getTokenView(tokenStart, tokenEnd)};
 
-        std::cout << tokenValue << "\n";
+        std::cerr << tokenValue << "\n";
 
         tokenVector.push_back(scc::makeKeywordToken(tokenValue, lineNumber));
 
     }
 
     void Lexer::handleIntegerConstant() {
-        std::cout << "start of integer constant\n";
+        std::cerr << "start of integer constant\n";
         tokenStart = charPointer;
         while ( charPointer != sourceCodeEnd && isConstant(*charPointer)) { // keep looping until no more digits
             charPointer++;
             columnNumber++;
         }
         
-        if (charPointer != sourceCodeEnd && !isDelimiter(*charPointer)) {
+        if (charPointer != sourceCodeEnd && !isDelimiter(*charPointer) && *charPointer != ' ' && *charPointer != '\n') {
             std::cerr << "Broken integer constant at line:" << lineNumber
                       << "  column:"<< columnNumber << ".\n";
             throw std::runtime_error("\nInvalid integer constant\n");
@@ -71,12 +71,12 @@ namespace scc {
 
         // TODO: ver temas de arroba y caso especiales (123;bar y 123bar)
 
-        std::cout << "end of integer literal: ";
+        std::cerr << "end of integer literal: ";
         tokenEnd = charPointer;
 
         auto tokenValue {getTokenView(tokenStart, tokenEnd)};
 
-        std::cout << tokenValue << "\n";
+        std::cerr << tokenValue << "\n";
 
         Token token {TokenType::integer_constant, tokenValue, lineNumber};
 
@@ -84,20 +84,20 @@ namespace scc {
     }
 
     void Lexer::handleWhiteSpace() {
-        std::cout << "here, a whitespace " << *charPointer << "\n";
+        std::cerr << "here, a whitespace " << *charPointer << "\n";
         columnNumber++;
     }
 
     void Lexer::handleDelimiter() {
-        std::cout << "here, a delimiter: " << *charPointer << "\n";
+        std::cerr << "here, a delimiter: " << *charPointer << "\n";
         tokenVector.push_back(scc::makeDelimiterToken(charPointer, lineNumber));
         columnNumber++;
     }
 
     std::vector<Token> Lexer::analize() {
         while (charPointer != sourceCodeEnd) {
-            std::cout << "line number: " << lineNumber << ". ";
-            std::cout << "character number: " << columnNumber << ". ";
+            std::cerr << "line number: " << lineNumber << ". ";
+            std::cerr << "character number: " << columnNumber << ". ";
 
             if (*charPointer == '\n') {
                 handleLine();
@@ -124,7 +124,7 @@ namespace scc {
                 charPointer++;
                 continue;
             } else {
-                std::cerr << "\n\nCarácter no identificable en linea " << lineNumber << " columna " << columnNumber << ".\n"; 
+                std::cerr << "\n\nChár no identificable en linea " << lineNumber << " columna " << columnNumber << ".\n"; 
                 throw std::runtime_error("\nUnindentifiable character\n");
             }
         }

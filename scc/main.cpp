@@ -63,7 +63,7 @@ std::string preprocess(const std::string& filePath) {
 int main (int argc, char **argv) { 
 
     #ifdef DEBUG_MODE
-    std::cout << "Running in DEBUG mode!\n";
+    std::cerr << "Running in DEBUG mode!\n";
     #endif
 
     CLI::App app{"SCC - Simuproc C Compiler - Compiles a subset of C for the Simuproc 1.4.2.0 CPU Emulator"};
@@ -100,15 +100,16 @@ int main (int argc, char **argv) {
         scc::Lexer lexer(sourceCode);
 
         auto vec = lexer.analize();
-    
-        std::cout << "\n\n###################################################################\n\n";
-    
+
+        std::cerr << "\n\n###################################################################\n\n";
+ 
         for (size_t i = 0; i < vec.size(); i++)
         {
-            std::cout << "Token: " << vec.at(i).value << "\n";
-            std::cout << "Line: " << vec.at(i).lineNumber << "\n";
-            std::cout << "Type: " << vec.at(i).type << "\n\n\n";
+            std::cerr << "Token: " << vec.at(i).value << "\n";
+            std::cerr << "Line: " << vec.at(i).lineNumber << "\n";
+            std::cerr << "Type: " << vec.at(i).type << "\n\n\n";
         }
+    
     
         return 0;
     }
