@@ -35,11 +35,11 @@ namespace scc {
         columnNumber = 1;
     }
 
-    void Lexer::handleKeyWord(){
+    void Lexer::handleKeywordOrId(){
         
         std::cout << "start of token \n";
         tokenStart = charPointer;
-        while (charPointer != sourceCodeEnd && !std::isspace(*charPointer) && !scc::isDelimiter(*charPointer)) { // keep looping until break
+        while (charPointer != sourceCodeEnd && isWordChar(*charPointer)) { // keep looping until break
             charPointer++;
             columnNumber++;
         }

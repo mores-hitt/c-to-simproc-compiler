@@ -27,7 +27,7 @@ namespace scc{
         [[nodiscard]] bool isWordBoundary(const char* c) const;
 
         void handleLine();
-        void handleKeyWord();
+        void handleKeywordOrId();
         void handleIntegerConstant();
         void handleWhiteSpace();
         void handleDelimiter();
