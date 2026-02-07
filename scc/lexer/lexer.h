@@ -20,6 +20,12 @@ namespace scc{
 
         std::string_view getTokenView(const char* tokenStart, const char* tokenEnd);
 
+        [[nodiscard]] bool isWordStart(const char c) const;
+        [[nodiscard]] bool isWordChar(const char c) const;
+        [[nodiscard]] bool isConstant(const char c) const ;
+        [[nodiscard]] bool isDelimiter(const char c) const;
+        [[nodiscard]] bool isWordBoundary(const char* c) const;
+
         void handleLine();
         void handleKeyWord();
         void handleIntegerConstant();

@@ -13,6 +13,22 @@ namespace scc {
         return std::string_view(tokenStart, static_cast<size_t>(tokenEnd - tokenStart)); // get size of token by pointer substraction
     }
 
+    bool Lexer::isWordStart(const char c) const {
+        return (c >= 'A' && c <= 'Z' ) || (c >= 'a' && c <= 'z' ) || c == '_';
+    }
+
+    bool Lexer::isWordChar(const char c) const {
+        return (c >= 'A' && c <= 'Z' ) || (c >= 'a' && c <= 'z' ) || (c >= '0' && c <= '9') || c == '_';
+    }
+
+    bool Lexer::isConstant(const char c) const {
+        return c >= '0' && c <= '9';
+    }
+
+    bool Lexer::isDelimiter(const char c) const {
+        return delimiterMap.count(c) > 0;
+    }
+
     void Lexer::handleLine(){
         std::cout << "here, a new line: \\n " << "\n";
         lineNumber++;
