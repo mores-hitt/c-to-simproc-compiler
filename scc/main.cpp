@@ -1,5 +1,7 @@
 #include "lexer/lexer.h"
 
+#include <CLI11.hpp>
+
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -7,6 +9,7 @@
 #include <cstddef>
 #include <optional>
 #include <string_view>
+#include <cstdlib>
 
 std::string getSourceCode(std::string_view path) {
     
@@ -86,11 +89,16 @@ int main (int argc, char **argv) {
         std::cerr << "Usage: scc <source_file.c>\n";
         return 1;
     }
-
-    auto lexer = scc::Lexer(sourceCode);
-
+ 
     try
     {
+
+        std::string fileName {preprocess(filePath)};
+
+        std::string sourceCode {getSourceCode(fileName)};
+
+        scc::Lexer lexer(sourceCode);
+
         auto vec = lexer.analize();
     
         std::cout << "\n\n###################################################################\n\n";
