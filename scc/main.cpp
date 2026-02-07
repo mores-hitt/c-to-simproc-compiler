@@ -38,7 +38,7 @@ std::string getSourceCode(std::string_view path) {
     return sourceCode;
 }
 
-std::string_view preprocess(const std::string& filePath) {
+std::string preprocess(const std::string& filePath) {
 
     std::filesystem::path p(filePath);
 
