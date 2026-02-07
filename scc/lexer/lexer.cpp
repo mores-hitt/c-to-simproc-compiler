@@ -116,7 +116,7 @@ namespace scc {
                 charPointer++;
                 continue;
             }
-            else {
+            else if (isDelimiter(*charPointer)) {
                 handleDelimiter();
                 charPointer++;
                 continue;
