@@ -61,16 +61,26 @@ int main (int argc, char* argv[]) {
 
     auto lexer = scc::Lexer(sourceCode);
 
-    auto vec = lexer.analize();
-
-    std::cout << "\n\n###################################################################\n\n";
-
-    for (size_t i = 0; i < vec.size(); i++)
+    try
     {
-        std::cout << "Token: " << vec.at(i).value << "\n";
-        std::cout << "Line: " << vec.at(i).lineNumber << "\n";
-        std::cout << "Type: " << vec.at(i).type << "\n\n\n";
+        auto vec = lexer.analize();
+    
+        std::cout << "\n\n###################################################################\n\n";
+    
+        for (size_t i = 0; i < vec.size(); i++)
+        {
+            std::cout << "Token: " << vec.at(i).value << "\n";
+            std::cout << "Line: " << vec.at(i).lineNumber << "\n";
+            std::cout << "Type: " << vec.at(i).type << "\n\n\n";
+        }
+    
+        return 0;
     }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+        return 1;
+    }
+    
 
-    return 0;
 }
