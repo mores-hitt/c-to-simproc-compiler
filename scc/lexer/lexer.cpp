@@ -57,13 +57,15 @@ namespace scc {
     void Lexer::handleIntegerConstant() {
         std::cout << "start of integer constant?\n";
         tokenStart = charPointer;
-        while ( charPointer != sourceCodeEnd && std::isdigit(*charPointer)) { // keep looping until no more digits
+        while ( charPointer != sourceCodeEnd && isConstant(*charPointer)) { // keep looping until no more digits
             charPointer++;
             columnNumber++;
         }
         
-        if (charPointer != sourceCodeEnd && !scc::isDelimiter(*charPointer) && !std::isspace(*charPointer)) {
-            std::cerr << "Warning. broken integer constant at " << lineNumber << ". Crazy behaviour incoming\n";
+        if (charPointer != sourceCodeEnd && !isDelimiter(*charPointer)) {
+            std::cerr << "Broken integer constant at line:" << lineNumber
+                      << "  column:"<< columnNumber << ".\n";
+            throw std::runtime_error("\nInvalid integer constant\n");
         }
 
         std::cout << "end of integer literal: ";
