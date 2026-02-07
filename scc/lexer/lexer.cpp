@@ -6,6 +6,7 @@
 #include <iostream>
 #include <cctype>
 #include <algorithm>
+#include <stdexcept>
 
 namespace scc {
 
@@ -50,12 +51,12 @@ namespace scc {
 
         std::cout << tokenValue << "\n";
 
-        tokenVector.push_back(scc::isKeyword(tokenValue, lineNumber));
+        tokenVector.push_back(scc::makeKeywordToken(tokenValue, lineNumber));
 
     }
 
     void Lexer::handleIntegerConstant() {
-        std::cout << "start of integer constant?\n";
+        std::cout << "start of integer constant\n";
         tokenStart = charPointer;
         while ( charPointer != sourceCodeEnd && isConstant(*charPointer)) { // keep looping until no more digits
             charPointer++;
@@ -67,6 +68,8 @@ namespace scc {
                       << "  column:"<< columnNumber << ".\n";
             throw std::runtime_error("\nInvalid integer constant\n");
         }
+
+        // TODO: ver temas de arroba y caso especiales (123;bar y 123bar)
 
         std::cout << "end of integer literal: ";
         tokenEnd = charPointer;
@@ -86,8 +89,8 @@ namespace scc {
     }
 
     void Lexer::handleDelimiter() {
-        std::cout << "here, a delimiter?: " << *charPointer << "\n";
-        tokenVector.push_back(scc::isDelimiter(charPointer, lineNumber));
+        std::cout << "here, a delimiter: " << *charPointer << "\n";
+        tokenVector.push_back(scc::makeDelimiterToken(charPointer, lineNumber));
         columnNumber++;
     }
 
@@ -101,14 +104,14 @@ namespace scc {
                 charPointer++;
                 continue;
             }
-            else if (std::isalpha(*charPointer)) {
-                handleKeyWord();
-                // handleKeyword leaves charPointer one character forward
+            else if ( isWordStart(*charPointer) ) {
+                handleKeywordOrId();
+                // handleKeywordOrId leaves charPointer one character forward
                 continue;
             }
             else if (std::isdigit(*charPointer)) {
                 handleIntegerConstant();
-                // handleKeyword leaves charPointer one character forward
+                // handleIntegerConstant leaves charPointer one character forward
                 continue;
             }
             else if (std::isspace(*charPointer)) {
