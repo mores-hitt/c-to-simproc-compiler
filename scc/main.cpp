@@ -63,17 +63,24 @@ int main (int argc, char **argv) {
     std::cout << "Running in DEBUG mode!\n";
     #endif
 
-    if (argc < 2) {
-        std::cerr << "Usage: scc <source_file.c>\n";
-        return 1;
-    } else if (argc > 2) {
-        std::cerr << "Error. No more than one argument\n";
-        std::cerr << "Usage: scc <source_file.c>\n";
-        return 1;
-    }
+    CLI::App app{"SCC - Simuproc C Compiler - Compiles a subset of C for the Simuproc 1.4.2.0 CPU Emulator"};
 
-    auto sourceCode = getSourceCode(argv[1]);
+    std::string filePath;
 
+    bool lexerStage{false};
+    bool parserStage{false};
+    bool codegenStage{false};
+
+    app.add_option("filePath", filePath, "path of C file");
+ 
+    app.add_flag("--lex", lexerStage, "directs compiler to stop before parsing");
+    app.add_flag("--parse", parserStage, "directs compiler to stop before assembly generation");
+    app.add_flag("--codegen", codegenStage, "directs compiler to stop before code emission");
+
+    CLI11_PARSE(app, argc, argv);
+
+    auto sourceCode = getSourceCode(filePath);
+ 
     if (sourceCode == "") {
         std::cerr << "Error. No source code found\n";
         std::cerr << "Usage: scc <source_file.c>\n";
@@ -102,6 +109,5 @@ int main (int argc, char **argv) {
         std::cerr << e.what() << '\n';
         return 1;
     }
-    
 
 }
