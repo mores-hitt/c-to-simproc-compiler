@@ -30,13 +30,12 @@ namespace scc {
 
     }
 
-    scc::Token isDelimiter(const char* c, int lineNumber) {
+    scc::Token makeDelimiterToken(const char* c, int lineNumber) {
         return Map(*c, std::string_view(c, 1), lineNumber, delimiterMap, "delimiter", TokenType::undefined);
     }
 
 
-
-    scc::Token isKeyword(std::string_view word, int lineNumber) {
+    scc::Token makeKeywordToken(std::string_view word, int lineNumber) {
         return Map(word, word, lineNumber, keywordMap, "keyword", TokenType::identifier);
     }
 
