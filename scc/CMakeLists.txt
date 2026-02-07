@@ -1,3 +1,5 @@
+include_directories(${CMAKE_SOURCE_DIR}/include)
+
 # Compiler library with all components
 add_library(scc_lib STATIC
     lexer/lexer.cpp
