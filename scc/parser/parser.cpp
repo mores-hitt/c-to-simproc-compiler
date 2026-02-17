@@ -62,7 +62,7 @@ namespace scc
         expect(TokenType::integer_constant);
 
         int integerValue {0};
-        std::from_chars(token.value.cbegin(), token.value.cend(), integerValue);
+        std::from_chars(token.value.data(), token.value.data() + token.value.size(), integerValue);
 
         return std::make_unique<IntegerConstantNode>(token.lineNumber, token.columnNumber, integerValue);
     }
