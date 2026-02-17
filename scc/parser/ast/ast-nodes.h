@@ -51,20 +51,6 @@ namespace scc
 
         virtual void expr() const = 0;
     };
-
-    class IntegerConstantNode : public ExpressionNode {
-    protected:
-        int m_integer {0};
-
-    public:
-        explicit IntegerConstantNode(std::string_view codeRef, int lineNumber, int columnNumber, int integer)
-            : ExpressionNode(codeRef, lineNumber, columnNumber)
-            , m_integer(integer) {}
-        
-        void print(int depth = 0) const override;
-
-        void expr() const override;
-    };
     
     class StatementNode : public ASTNode {
     public:
@@ -72,21 +58,6 @@ namespace scc
             : ASTNode(codeRef, lineNumber, columnNumber) {}
         
         virtual void stmnt() const = 0;
-    };
-
-    class ReturnNode : public StatementNode {
-    protected:
-        std::unique_ptr<ExpressionNode> m_expression;
-
-    public:
-        
-        explicit ReturnNode(std::string_view codeRef, int lineNumber, int columnNumber, std::unique_ptr<ExpressionNode> expression)
-            : StatementNode(codeRef, lineNumber, columnNumber)
-            , m_expression(std::move(expression)) {}
-        
-        void print(int depth = 0) const override;
-
-        void stmnt() const override;
     };
 
     class FunctionDefinitionNode : public ASTNode {
