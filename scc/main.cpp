@@ -107,6 +107,7 @@ int main (int argc, char **argv) {
         {
             std::cerr << "Token: " << vec.at(i).value << "\n";
             std::cerr << "Line: " << vec.at(i).lineNumber << "\n";
+            std::cerr << "Column: " << vec.at(i).columnNumber << '\n';
             std::cerr << "Type: " << vec.at(i).type << "\n\n\n";
         }
     
