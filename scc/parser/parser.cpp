@@ -107,13 +107,13 @@ namespace scc
 
     void Parser::parse() {
         m_ast = std::make_unique<AST>(parseProgram(m_pos));
-    }
-    
-    void Parser::print() {
-        m_ast->print();
         if (m_pos < m_tokens.size()) {
             printUnexpectedTokenError(m_tokens.at(m_pos), TokenType::undefined);
             throw std::runtime_error("Parsing Error");
         }
+    }
+    
+    void Parser::print() {
+        m_ast->print();
     }
 } // namespace scc
