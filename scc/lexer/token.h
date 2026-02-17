@@ -65,9 +65,10 @@ namespace scc {
         TokenType type {};
         std::string_view value {};
         int lineNumber {};
+        int columnNumber {};
     };
 
-    scc::Token makeDelimiterToken(const char* c, int lineNumber);
-    scc::Token makeKeywordToken(std::string_view word, int lineNumber);
+    scc::Token makeDelimiterToken(const char* c, int lineNumber, int columnNumber);
+    scc::Token makeKeywordToken(std::string_view word, int lineNumber, int columnNumber);
 
 }

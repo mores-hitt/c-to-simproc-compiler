@@ -14,6 +14,7 @@ namespace scc {
             const KeyType& lookupKey,
             std::string_view tokenValue,
             int lineNumber,
+            int columnNumber,
             const MapType& map,
             const char* categoryName,
             TokenType tokenFallback) {
@@ -21,22 +22,22 @@ namespace scc {
             auto it = map.find(lookupKey);
             
             if (it != map.end()) {
-                return Token{it->second, tokenValue, lineNumber};
+                return Token{it->second, tokenValue, lineNumber, columnNumber};
             } else {
                 std::cerr << "Warning: unknown " << categoryName << " '" << tokenValue << "' on line " << lineNumber << "\n";
-                return Token{tokenFallback, tokenValue, lineNumber};
+                return Token{tokenFallback, tokenValue, lineNumber, columnNumber};
             }
         }
 
     }
 
-    scc::Token makeDelimiterToken(const char* c, int lineNumber) {
-        return Map(*c, std::string_view(c, 1), lineNumber, delimiterMap, "delimiter", TokenType::undefined);
+    scc::Token makeDelimiterToken(const char* c, int lineNumber, int columnNumber) {
+        return Map(*c, std::string_view(c, 1), lineNumber, columnNumber, delimiterMap, "delimiter", TokenType::undefined);
     }
 
 
-    scc::Token makeKeywordToken(std::string_view word, int lineNumber) {
-        return Map(word, word, lineNumber, keywordMap, "keyword", TokenType::identifier);
+    scc::Token makeKeywordToken(std::string_view word, int lineNumber, int columnNumber) {
+        return Map(word, word, lineNumber, columnNumber, keywordMap, "keyword", TokenType::identifier);
     }
 
 }
