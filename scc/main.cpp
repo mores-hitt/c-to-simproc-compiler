@@ -1,4 +1,5 @@
 #include "lexer/lexer.h"
+#include "parser/parser.h"
 
 #include <CLI11.hpp>
 
@@ -110,7 +111,17 @@ int main (int argc, char **argv) {
             std::cerr << "Column: " << vec.at(i).columnNumber << '\n';
             std::cerr << "Type: " << vec.at(i).type << "\n\n\n";
         }
-    
+
+        if (lexerStage) {
+            return 0;
+        }
+
+        auto parser {scc::Parser(vec)};
+        parser.print();
+
+        if (parserStage) {
+            return 0;
+        }
     
         return 0;
     }

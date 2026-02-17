@@ -7,27 +7,28 @@
 namespace scc
 {
 
-    void FunctionDefinitionNode::print(int depth) const {
-        std::string spaces {(depth * 2, ' ')};
+    void FunctionDefinitionNode::print(size_t depth) const {
+        std::string spaces(depth * 2, ' ');
 
-        std::cout << spaces << "Function(\n"
+        std::cerr << spaces << "Function(\n"
                   << spaces << "  name=\"" << m_name << "\",\n"
                   << spaces << "  body=";
         m_body->print(depth+1);
-        std::cout << spaces << ")";
+        std::cerr << spaces << ")\n";
     }
 
     void FunctionDefinitionNode::funcDef() const {
-        std::cout << "Funciona funcDef supongo lol";
+        std::cerr << "Funciona funcDef supongo lol";
     }
 
-    void ProgramNode::print(int depth) const {
-        std::cout << "Program(\n";
+    void ProgramNode::print(size_t depth) const {
+        std::cerr << "Program(\n";
         m_functionDefinition->print(depth + 1);
-        std::cout << ")\n";
+        std::cerr << ")\n";
     }
 
+    
     void ProgramNode::prgrm() const {
-        std::cout << "Functiona prgrm supongo lol";
+        std::cerr << "Functiona prgrm supongo lol";
     }
 } // namespace scc

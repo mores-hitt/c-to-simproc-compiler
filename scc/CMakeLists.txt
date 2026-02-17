@@ -4,6 +4,11 @@ include_directories(${CMAKE_SOURCE_DIR}/include)
 add_library(scc_lib STATIC
     lexer/lexer.cpp
     lexer/token.cpp
+    parser/ast/ast.cpp
+    parser/ast/ast-nodes.cpp
+    parser/ast/expression-nodes.cpp
+    parser/ast/statement-nodes.cpp
+    parser/parser.cpp
 )
 
 target_include_directories(scc_lib PUBLIC 

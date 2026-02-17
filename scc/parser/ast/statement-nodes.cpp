@@ -4,15 +4,15 @@
 
 namespace scc
 {
-    void ReturnNode::print(int depth) const {
-        std::string spaces {(depth * 2, ' ')};
+    void ReturnNode::print(size_t depth) const {
+        std::string spaces(depth * 2, ' ');
     
-        std::cout << spaces << "Return(\n";
+        std::cerr << "Return(\n";
         m_expression->print(depth+1);
-        std::cout << "\n" << spaces << ")";
+        std::cerr << spaces << ")\n";
     }
 
     void ReturnNode::stmnt() const {
-        std::cout << "override funciona en herencia de StatementNode a ReturnNode\n";
+        std::cerr << "override funciona en herencia de StatementNode a ReturnNode\n";
     }
 } // namespace scc

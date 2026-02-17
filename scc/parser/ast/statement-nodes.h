@@ -10,11 +10,11 @@ namespace scc
 
     public:
         
-        explicit ReturnNode(std::string_view codeRef, int lineNumber, int columnNumber, std::unique_ptr<ExpressionNode> expression)
-            : StatementNode(codeRef, lineNumber, columnNumber)
+        explicit ReturnNode(int lineNumber, int columnNumber, std::unique_ptr<ExpressionNode> expression)
+            : StatementNode(lineNumber, columnNumber)
             , m_expression(std::move(expression)) {}
         
-        void print(int depth = 0) const override;
+        void print(size_t depth = 0) const override;
 
         void stmnt() const override;
     };

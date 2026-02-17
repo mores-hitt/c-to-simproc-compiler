@@ -4,13 +4,13 @@
 
 namespace scc
 {
-    void IntegerConstantNode::print(int depth) const {
-        std::string spaces {(depth * 2, ' ')};
+    void IntegerConstantNode::print(size_t depth) const {
+        std::string spaces(depth * 2, ' ');
 
-        std::cout << spaces << "IntegerConstant(" << m_integer << ")";
+        std::cerr << spaces << "IntegerConstant(" << m_integer << ")\n";
     }
 
     void IntegerConstantNode::expr() const {
-        std::cout << "override funciona en herencia de ExpressionNode a IntegerConstantNode\n";
+        std::cerr << "override funciona en herencia de ExpressionNode a IntegerConstantNode\n";
     }
 }
