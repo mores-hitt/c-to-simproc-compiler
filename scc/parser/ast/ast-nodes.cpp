@@ -4,7 +4,7 @@
 #include <string>
 #include <iostream>
 
-#include "ast-node.h"
+#include "ast-nodes.h"
 
 namespace scc
 {
