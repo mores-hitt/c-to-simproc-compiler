@@ -15,7 +15,7 @@ namespace scc{
         const char* tokenStart {nullptr};
         const char* tokenEnd {nullptr};
         int lineNumber {1};
-        int columnNumber {1};
+        int columnNumber {0};
         std::vector<Token> tokenVector;
 
         std::string_view getTokenView(const char* tokenStart, const char* tokenEnd);

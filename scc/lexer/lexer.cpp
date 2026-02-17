@@ -33,7 +33,7 @@ namespace scc {
     void Lexer::handleLine(){
         std::cerr << "here, a new line: ... " << "\n";
         lineNumber++;
-        columnNumber = 1;
+        columnNumber = 0;
     }
 
     void Lexer::handleKeywordOrId(){
@@ -51,7 +51,7 @@ namespace scc {
 
         std::cerr << tokenValue << "\n";
 
-        tokenVector.push_back(scc::makeKeywordToken(tokenValue, lineNumber));
+        tokenVector.push_back(scc::makeKeywordToken(tokenValue, lineNumber, columnNumber));
 
     }
 
@@ -78,24 +78,23 @@ namespace scc {
 
         std::cerr << tokenValue << "\n";
 
-        Token token {TokenType::integer_constant, tokenValue, lineNumber};
+        Token token {TokenType::integer_constant, tokenValue, lineNumber, columnNumber};
 
         tokenVector.push_back(token);
     }
 
     void Lexer::handleWhiteSpace() {
         std::cerr << "here, a whitespace " << *charPointer << "\n";
-        columnNumber++;
     }
 
     void Lexer::handleDelimiter() {
         std::cerr << "here, a delimiter: " << *charPointer << "\n";
-        tokenVector.push_back(scc::makeDelimiterToken(charPointer, lineNumber));
-        columnNumber++;
+        tokenVector.push_back(scc::makeDelimiterToken(charPointer, lineNumber, columnNumber));
     }
 
     std::vector<Token> Lexer::analize() {
         while (charPointer != sourceCodeEnd) {
+            ++columnNumber;
             std::cerr << "line number: " << lineNumber << ". ";
             std::cerr << "character number: " << columnNumber << ". ";
 
