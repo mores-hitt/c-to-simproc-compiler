@@ -8,7 +8,7 @@
 #include <algorithm>
 #include <stdexcept>
 
-namespace scc {
+namespace scc::lexer {
 
     std::string_view Lexer::getTokenView(const char* tokenStart, const char* tokenEnd){
         return std::string_view(tokenStart, static_cast<size_t>(tokenEnd - tokenStart)); // get size of token by pointer substraction
@@ -51,7 +51,7 @@ namespace scc {
 
         std::cerr << tokenValue << "\n";
 
-        tokenVector.push_back(scc::makeKeywordToken(tokenValue, lineNumber, columnNumber));
+        tokenVector.push_back(scc::lexer::makeKeywordToken(tokenValue, lineNumber, columnNumber));
 
     }
 
@@ -89,7 +89,7 @@ namespace scc {
 
     void Lexer::handleDelimiter() {
         std::cerr << "here, a delimiter: " << *charPointer << "\n";
-        tokenVector.push_back(scc::makeDelimiterToken(charPointer, lineNumber, columnNumber));
+        tokenVector.push_back(scc::lexer::makeDelimiterToken(charPointer, lineNumber, columnNumber));
     }
 
     std::vector<Token> Lexer::analize() {

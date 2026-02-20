@@ -7,7 +7,7 @@
 #include <optional>
 #include <iostream>
 
-namespace scc {
+namespace scc::lexer {
 
     enum class TokenType {
         open_brace,
@@ -68,7 +68,7 @@ namespace scc {
         int columnNumber {};
     };
 
-    scc::Token makeDelimiterToken(const char* c, int lineNumber, int columnNumber);
-    scc::Token makeKeywordToken(std::string_view word, int lineNumber, int columnNumber);
+    scc::lexer::Token makeDelimiterToken(const char* c, int lineNumber, int columnNumber);
+    scc::lexer::Token makeKeywordToken(std::string_view word, int lineNumber, int columnNumber);
 
 }

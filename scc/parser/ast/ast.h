@@ -2,11 +2,11 @@
 
 #include <memory>
 
-#include "ast-nodes.h"
+#include "nodes.h"
 #include "expression-nodes.h"
 #include "statement-nodes.h"
 
-namespace scc
+namespace scc::parser
 {
     class AST {
     private:

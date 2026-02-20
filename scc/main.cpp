@@ -98,7 +98,7 @@ int main (int argc, char **argv) {
 
         std::string sourceCode {getSourceCode(fileName)};
 
-        scc::Lexer lexer(sourceCode);
+        scc::lexer::Lexer lexer(sourceCode);
 
         auto vec = lexer.analize();
 
@@ -116,7 +116,7 @@ int main (int argc, char **argv) {
             return 0;
         }
 
-        auto parser {scc::Parser(vec)};
+        auto parser {scc::parser::Parser(vec)};
         parser.print();
 
         if (parserStage) {

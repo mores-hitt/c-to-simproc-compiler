@@ -6,18 +6,18 @@
 #include "parser/parser.h"
 #include "lexer/token.h"
 
-namespace scc
+namespace scc::parser
 {
 
     namespace {
-        void printUnexpectedTokenError(Token token, TokenType expectedType) {
+        void printUnexpectedTokenError(scc::lexer::Token token, scc::lexer::TokenType expectedType) {
             std::cerr << "Syntax error (line " << token.lineNumber
                       << ", column " << token.columnNumber
                       << "): Expected " << expectedType
                       << ", but found " << token.type << ".\n";
         }
 
-        void printUnexpectedValueError(Token token, std::string_view expectedValue) {
+        void printUnexpectedValueError(scc::lexer::Token token, std::string_view expectedValue) {
             std::cerr << "Syntax error (line " << token.lineNumber
                       << ", column " << token.columnNumber
                       << "): Expected the following value: " << expectedValue
@@ -25,28 +25,28 @@ namespace scc
         }
     }
 
-    void Parser::expect(TokenType expectedType) {
-        Token token {m_tokens.at(m_pos++)};
+    void Parser::expect(scc::lexer::TokenType expectedType) {
+        scc::lexer::Token token {m_tokens.at(m_pos++)};
         if (expectedType != token.type) {
-            printUnexpectedTokenError(token, TokenType::integer_constant);
+            printUnexpectedTokenError(token, scc::lexer::TokenType::integer_constant);
             throw std::runtime_error("Syntax error");
         } else {
             return;
         }
     }
 
-    void Parser::expect(TokenType expectedType, const Token& token) {
+    void Parser::expect(scc::lexer::TokenType expectedType, const scc::lexer::Token& token) {
         if (expectedType != token.type) {
-            printUnexpectedTokenError(token, TokenType::integer_constant);
+            printUnexpectedTokenError(token, scc::lexer::TokenType::integer_constant);
             throw std::runtime_error("Syntax error");
         } else {
             return;
         }
     }
 
-    void Parser::expect(TokenType expectedType, std::string expectedValue, const Token& token) {
+    void Parser::expect(scc::lexer::TokenType expectedType, std::string expectedValue, const scc::lexer::Token& token) {
         if (expectedType != token.type)  {
-            printUnexpectedTokenError(token, TokenType::integer_constant);
+            printUnexpectedTokenError(token, scc::lexer::TokenType::integer_constant);
             throw std::runtime_error("Syntax error");
         } else if (expectedValue != token.value) {
             printUnexpectedValueError(token, expectedValue);
@@ -57,9 +57,9 @@ namespace scc
     }
 
     std::unique_ptr<ExpressionNode> Parser::parseExpression(size_t pos) {
-        Token token {m_tokens.at(pos)};
+        scc::lexer::Token token {m_tokens.at(pos)};
 
-        expect(TokenType::integer_constant);
+        expect(scc::lexer::TokenType::integer_constant);
 
         int integerValue {0};
         std::from_chars(token.value.data(), token.value.data() + token.value.size(), integerValue);
@@ -68,37 +68,37 @@ namespace scc
     }
 
     std::unique_ptr<StatementNode> Parser::parseStatement(size_t pos) {
-        Token token {m_tokens.at(pos)};
+        scc::lexer::Token token {m_tokens.at(pos)};
 
-        expect(TokenType::return_keyword);
+        expect(scc::lexer::TokenType::return_keyword);
 
         std::unique_ptr<ExpressionNode> expression {parseExpression(m_pos)};
 
-        expect(TokenType::semicolon);
+        expect(scc::lexer::TokenType::semicolon);
 
         return std::make_unique<ReturnNode>(token.lineNumber, token.columnNumber, std::move(expression));
     }
 
     std::unique_ptr<FunctionDefinitionNode> Parser::parseFunction(size_t pos) {
-        Token token = m_tokens.at(pos);
+        scc::lexer::Token token = m_tokens.at(pos);
 
-        expect(TokenType::int_keyword);
-        expect(TokenType::identifier);
+        expect(scc::lexer::TokenType::int_keyword);
+        expect(scc::lexer::TokenType::identifier);
         std::string_view name = m_tokens.at(m_pos-1).value;
-        expect(TokenType::open_parenthesis);
-        expect(TokenType::void_keyword);
-        expect(TokenType::close_parenthesis);
-        expect(TokenType::open_brace);
+        expect(scc::lexer::TokenType::open_parenthesis);
+        expect(scc::lexer::TokenType::void_keyword);
+        expect(scc::lexer::TokenType::close_parenthesis);
+        expect(scc::lexer::TokenType::open_brace);
 
         std::unique_ptr<StatementNode> statement {parseStatement(m_pos)};
 
-        expect(TokenType::close_brace);
+        expect(scc::lexer::TokenType::close_brace);
 
         return std::make_unique<FunctionDefinitionNode>(token.lineNumber, token.columnNumber, name, std::move(statement));
     }
 
     std::unique_ptr<ProgramNode> Parser::parseProgram(size_t pos) {
-        Token token = m_tokens.at(pos);
+        scc::lexer::Token token = m_tokens.at(pos);
         
         std::unique_ptr<FunctionDefinitionNode> functionDefinition {parseFunction(m_pos)};
 
@@ -108,7 +108,7 @@ namespace scc
     void Parser::parse() {
         m_ast = std::make_unique<AST>(parseProgram(m_pos));
         if (m_pos < m_tokens.size()) {
-            printUnexpectedTokenError(m_tokens.at(m_pos), TokenType::undefined);
+            printUnexpectedTokenError(m_tokens.at(m_pos), scc::lexer::TokenType::undefined);
             throw std::runtime_error("Parsing Error");
         }
     }

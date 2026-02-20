@@ -2,7 +2,7 @@
 
 #include "expression-nodes.h"
 
-namespace scc
+namespace scc::parser
 {
     void IntegerConstantNode::print(size_t depth) const {
         std::string spaces(depth * 2, ' ');

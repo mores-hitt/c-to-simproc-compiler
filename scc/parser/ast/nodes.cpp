@@ -2,9 +2,9 @@
 #include <string>
 #include <iostream>
 
-#include "ast-nodes.h"
+#include "parser/ast/nodes.h"
 
-namespace scc
+namespace scc::parser
 {
 
     void FunctionDefinitionNode::print(size_t depth) const {

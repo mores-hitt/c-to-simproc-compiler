@@ -1,8 +1,8 @@
 #pragma once
 
-#include "ast-nodes.h"
+#include "nodes.h"
 
-namespace scc
+namespace scc::parser
 {
     class ReturnNode : public StatementNode {
     protected:

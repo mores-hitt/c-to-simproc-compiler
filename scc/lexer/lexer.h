@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 
-namespace scc{
+namespace scc::lexer {
 
     class Lexer {
 

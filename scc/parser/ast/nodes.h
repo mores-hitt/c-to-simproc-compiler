@@ -5,7 +5,7 @@
 #include <memory>
 
 
-namespace scc
+namespace scc::parser
 {
     class ASTNode {
     protected:

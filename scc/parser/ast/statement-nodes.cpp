@@ -2,7 +2,7 @@
 
 #include "statement-nodes.h"
 
-namespace scc
+namespace scc::parser
 {
     void ReturnNode::print(size_t depth) const {
         std::string spaces(depth * 2, ' ');
