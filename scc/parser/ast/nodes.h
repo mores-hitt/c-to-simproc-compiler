@@ -4,6 +4,7 @@
 #include <string>
 #include <memory>
 
+#include "parser/ast/visitor.h"
 
 namespace scc::parser
 {
@@ -27,7 +28,7 @@ namespace scc::parser
         ASTNode(ASTNode&&) = default;
         ASTNode& operator=(ASTNode&&) = default;
 
-        virtual void print(size_t depth = 0) const = 0;
+        virtual void accept(Visitor& v) const = 0;
 
         /*
         parserVisit()?
@@ -38,6 +39,8 @@ namespace scc::parser
 
         [[nodiscard]] int getLineNumber() const noexcept { return m_lineNumber; }
         [[nodiscard]] int getColumnNumber() const noexcept { return m_columnNumber; }
+
+        
     };
 
     class ExpressionNode : public ASTNode {
@@ -68,7 +71,11 @@ namespace scc::parser
             , m_name(name)
             , m_body(std::move(body)) {}
 
-        void print(size_t depth = 0) const override;
+
+        void accept(Visitor& v) const override { v.visit(*this); }
+
+        [[nodiscard]] std::string_view getName() const noexcept { return m_name; }
+        [[nodiscard]] const StatementNode& getBody() const noexcept { return *m_body;}
 
         void funcDef() const;
     };
@@ -82,7 +89,10 @@ namespace scc::parser
             : ASTNode(lineNumber, columnNumber)
             , m_functionDefinition(std::move(functionDefinition)) {}
         
-        void print(size_t depth = 0) const override;
+
+        void accept(Visitor& v) const override { v.visit(*this); }
+
+        [[nodiscard]] const FunctionDefinitionNode& getFunction() const noexcept { return *m_functionDefinition; }
 
         void prgrm() const;
     };

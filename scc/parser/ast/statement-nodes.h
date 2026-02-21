@@ -13,9 +13,12 @@ namespace scc::parser
         explicit ReturnNode(int lineNumber, int columnNumber, std::unique_ptr<ExpressionNode> expression)
             : StatementNode(lineNumber, columnNumber)
             , m_expression(std::move(expression)) {}
-        
-        void print(size_t depth = 0) const override;
+
+        void accept(Visitor& v) const override { v.visit(*this); }
 
         void stmnt() const override;
+
+        [[nodiscard]] const ExpressionNode& getExpression() const noexcept { return *m_expression;}
+        
     };
 } // namespace scc

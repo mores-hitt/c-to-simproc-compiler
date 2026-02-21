@@ -25,7 +25,7 @@ namespace scc::parser
         AST(AST&&) = default;
         AST& operator=(AST&&) = default;
 
-        void print() const;
+        void accept(Visitor& visitor) const { m_root->accept(visitor); }
 
         /*
         traverse()?

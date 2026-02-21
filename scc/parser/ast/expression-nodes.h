@@ -1,6 +1,6 @@
 #pragma once
 
-#include "nodes.h"
+#include "parser/ast/nodes.h"
 
 namespace scc::parser
 {
@@ -12,10 +12,12 @@ namespace scc::parser
         explicit IntegerConstantNode(int lineNumber, int columnNumber, int integer)
             : ExpressionNode(lineNumber, columnNumber)
             , m_integer(integer) {}
-        
-        void print(size_t depth = 0) const override;
+
+        void accept(Visitor& v) const override { v.visit(*this); }
 
         void expr() const override;
+
+        [[nodiscard]] int getInteger() const noexcept { return m_integer; }
     };
 
 } // namespace scc

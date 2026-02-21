@@ -113,7 +113,4 @@ namespace scc::parser
         }
     }
     
-    void Parser::print() {
-        m_ast->print();
-    }
 } // namespace scc

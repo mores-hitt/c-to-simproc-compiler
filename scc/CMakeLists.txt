@@ -5,9 +5,10 @@ add_library(scc_lib STATIC
     lexer/lexer.cpp
     lexer/token.cpp
     parser/ast/ast.cpp
-    parser/ast/ast-nodes.cpp
+    parser/ast/nodes.cpp
     parser/ast/expression-nodes.cpp
     parser/ast/statement-nodes.cpp
+    parser/visitors/printer.cpp
     parser/parser.cpp
 )
 

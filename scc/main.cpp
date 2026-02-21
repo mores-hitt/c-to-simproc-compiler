@@ -1,5 +1,6 @@
 #include "lexer/lexer.h"
 #include "parser/parser.h"
+#include "parser/visitors/printer.h"
 
 #include <CLI11.hpp>
 
@@ -117,7 +118,8 @@ int main (int argc, char **argv) {
         }
 
         auto parser {scc::parser::Parser(vec)};
-        parser.print();
+        auto parserPrinter {scc::parser::Printer()};
+        parser.accept(parserPrinter);
 
         if (parserStage) {
             return 0;

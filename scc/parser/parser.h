@@ -51,7 +51,8 @@ namespace scc::parser
         Parser& operator=(Parser&&) = default;
 
         void parse();
-        void print();
+
+        void accept(Visitor& visitor) const { m_ast->accept(visitor); }
 
     };
 } // namespace scc
