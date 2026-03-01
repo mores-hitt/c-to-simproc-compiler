@@ -1,6 +1,7 @@
 #include "lexer/lexer.h"
 #include "parser/parser.h"
 #include "parser/visitors/printer.h"
+#include "assembly-gen/assembly-gen.h"
 
 #include <CLI11.hpp>
 
@@ -124,7 +125,12 @@ int main (int argc, char **argv) {
         if (parserStage) {
             return 0;
         }
-    
+
+        scc::asm_gen::AssemblyGen assemblyGen;
+        parser.accept(assemblyGen);
+
+        assemblyGen.getProgram().print();
+        
         return 0;
     }
     catch(const std::exception& e)
