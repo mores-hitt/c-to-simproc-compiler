@@ -27,6 +27,6 @@ namespace scc::asm_gen
         FunctionDefinition& operator=(FunctionDefinition&&) = default;
 
         [[nodiscard]] const std::vector<std::unique_ptr<Instruction>>& getInstructions() const noexcept { return m_instructions; }
-        [[nodiscard]] const std::string_view getName() const noexcept { return m_name; } 
+        [[nodiscard]] std::string_view getName() const noexcept { return m_name; } 
     };
 } // namespace scc::asm_gen
