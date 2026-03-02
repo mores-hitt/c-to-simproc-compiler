@@ -23,7 +23,7 @@ namespace scc::asm_gen
             , m_instructions(std::vector<std::unique_ptr<Instruction>>())
             , m_currentOperand(Imm{0}) {}
 
-        ~AssemblyGen() = default;
+        ~AssemblyGen() override = default;
 
         AssemblyGen(const AssemblyGen&) = delete;
         AssemblyGen& operator=(const AssemblyGen&) = delete;
