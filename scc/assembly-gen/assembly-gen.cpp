@@ -2,7 +2,7 @@
 #include <string>
 #include <string_view>
 
-#include "assembly-gen/assembly-gen2.h"
+#include "assembly-gen/assembly-gen.h"
 #include "assembly-gen/ast/nodes.h"
 #include "assembly-gen/ast/instruction-nodes.h"
 #include "assembly-gen/ast/operand-nodes.h"
