@@ -3,25 +3,29 @@
 #include <vector>
 #include <memory>
 
-#include "assembly-gen/ds/program.h"
-#include "assembly-gen/ds/terminal.h"
+#include "assembly-gen/ast/nodes.h"
+#include "assembly-gen/ast/operand-nodes.h"
+#include "assembly-gen/ast/ast.h"
+#include "assembly-gen/ast/visitor.h"
 #include "parser/ast/visitor.h"
 
 namespace scc::asm_gen
 {
     class AssemblyGen : public scc::parser::Visitor {
     private:
-        Program m_program;
-        std::vector<FunctionDefinition> m_functions;
+        std::unique_ptr<AST> m_ast;
+        std::unique_ptr<Program> m_program;
+        std::unique_ptr<FunctionDefinition> m_functionDef;
         std::vector<std::unique_ptr<Instruction>> m_instructions;
-        Operand m_currentOperand;
+        std::unique_ptr<Operand> m_currentOperand;
 
     public: 
         explicit AssemblyGen()
-            : m_program(std::vector<FunctionDefinition>())
-            , m_functions(std::vector<FunctionDefinition>())
+            : m_ast(nullptr)
+            , m_program(nullptr)
+            , m_functionDef(nullptr)
             , m_instructions(std::vector<std::unique_ptr<Instruction>>())
-            , m_currentOperand(Imm{0}) {}
+            , m_currentOperand(nullptr) {}
 
         ~AssemblyGen() override = default;
 
@@ -36,7 +40,6 @@ namespace scc::asm_gen
         void visit(const scc::parser::ReturnNode& node) override;
         void visit(const scc::parser::IntegerConstantNode& node) override;
 
-        [[nodiscard]] const Program& getProgram() const noexcept { return m_program; }
-        [[nodiscard]] Program takeProgram() { return std::move(m_program); }
+        void accept(scc::asm_gen::Visitor& visitor) const { m_ast->accept(visitor); }
     };
 } // namespace scc::asm_gen

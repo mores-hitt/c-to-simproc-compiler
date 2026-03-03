@@ -11,7 +11,7 @@
 namespace scc::lexer {
 
     std::string_view Lexer::getTokenView(const char* tokenStart, const char* tokenEnd){
-        return std::string_view(tokenStart, static_cast<size_t>(tokenEnd - tokenStart)); // get size of token by pointer substraction
+        return {tokenStart, static_cast<size_t>(tokenEnd - tokenStart)}; // get size of token by pointer substraction
     }
 
     bool Lexer::isWordStart(const char c) const {

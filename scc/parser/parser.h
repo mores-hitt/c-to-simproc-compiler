@@ -8,13 +8,6 @@
 
 namespace scc::parser
 {
-    /*
-    What I need:
-    Parser class:
-        std::vector<Tokens> tokens; (moved)
-        AST ast; (actual fucking tree though)
-
-    */
     class Parser {
     private:
         std::vector<scc::lexer::Token> m_tokens;

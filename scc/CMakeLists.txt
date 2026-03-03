@@ -11,8 +11,7 @@ add_library(scc_lib STATIC
     parser/visitors/printer.cpp
     parser/parser.cpp
     assembly-gen/assembly-gen.cpp
-    assembly-gen/visitors/instruction-printer.cpp
-    assembly-gen/ds/program.cpp
+    assembly-gen/visitors/ast-printer.cpp
 )
 
 target_include_directories(scc_lib PUBLIC 

@@ -2,6 +2,7 @@
 #include "parser/parser.h"
 #include "parser/visitors/printer.h"
 #include "assembly-gen/assembly-gen.h"
+#include "assembly-gen/visitors/ast-printer.h"
 
 #include <CLI11.hpp>
 
@@ -105,13 +106,12 @@ int main (int argc, char **argv) {
         auto vec = lexer.analize();
 
         std::cerr << "\n\n###################################################################\n\n";
- 
-        for (size_t i = 0; i < vec.size(); i++)
-        {
-            std::cerr << "Token: " << vec.at(i).value << "\n";
-            std::cerr << "Line: " << vec.at(i).lineNumber << "\n";
-            std::cerr << "Column: " << vec.at(i).columnNumber << '\n';
-            std::cerr << "Type: " << vec.at(i).type << "\n\n\n";
+
+        for (auto& token : vec) {
+            std::cerr << "Token: " << token.value << '\n'
+                      << "Line: " << token.lineNumber << '\n'
+                      << "Column: " << token.columnNumber << '\n'
+                      << "Type: " << token.type << "\n\n\n";
         }
 
         if (lexerStage) {
@@ -129,7 +129,8 @@ int main (int argc, char **argv) {
         scc::asm_gen::AssemblyGen assemblyGen;
         parser.accept(assemblyGen);
 
-        assemblyGen.getProgram().print();
+        auto assemblyGenPrinter {scc::asm_gen::ASTPrinter()};
+        assemblyGen.accept(assemblyGenPrinter);
         
         return 0;
     }
