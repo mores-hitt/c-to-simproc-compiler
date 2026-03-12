@@ -1,6 +1,7 @@
 build/
 bin/
 lib/
+.cache/
 
 *.o
 *.obj
@@ -18,6 +19,8 @@ cmake_install.cmake
 Makefile
 *.cmake
 !CMakeLists.txt
+compile_commands.json
+
 
 CMakeUserPresets.json
 
