@@ -1,8 +1,9 @@
 #include "lexer/lexer.h"
 #include "parser/parser.h"
-#include "parser/visitors/printer.h"
 #include "assembly-gen/assembly-gen.h"
 #include "assembly-gen/visitors/ast-printer.h"
+#include "code-emission/linux/emitter.h"
+#include "parser/visitors/printer.h"
 
 #include <CLI11.hpp>
 
@@ -11,7 +12,6 @@
 #include <string>
 #include <filesystem>
 #include <cstddef>
-#include <optional>
 #include <string_view>
 #include <cstdlib>
 
@@ -46,11 +46,9 @@ std::string preprocess(const std::string& filePath) {
 
     std::filesystem::path p(filePath);
 
-    std::string fileName {p.filename().string()};
+    std::string outputPath {p.replace_extension(".i")};
 
-    std::string outputFileName {p.stem().string() + ".i"};
-
-    std::string stringCommand {"gcc -E -P " + filePath + " -o " + outputFileName};
+    std::string stringCommand {"gcc -E -P " + filePath + " -o " + outputPath};
 
     const char* command {stringCommand.c_str() };
 
@@ -61,7 +59,39 @@ std::string preprocess(const std::string& filePath) {
         throw std::runtime_error("Preprocessing error");
     }
 
-    return outputFileName;
+    return outputPath;
+}
+
+void assembleAndLink(const std::filesystem::path& filePath) {
+    std::string path {filePath.string()};
+
+    std::filesystem::path outputPath = filePath;
+    outputPath.replace_extension("");
+    std::string outputFileName {outputPath.string()};
+
+    std::cerr << path << '\n';
+    std::cerr << outputFileName << '\n';
+
+    std::string stringCommand {"gcc " + path + " -o " + outputFileName};
+    const char* command {stringCommand.c_str()};
+
+    std::cerr << stringCommand << '\n';
+
+    int result = std::system(command);
+
+    if (result) {
+        std::cerr << "\nAssembling/Linking error\n";
+        throw std::runtime_error("Assembling/Linking error");
+    }
+}
+
+void removeFile(std::string_view filePath) {
+    std::filesystem::path p{filePath};
+    std::error_code ec;
+    if (!std::filesystem::remove(p, ec)) {
+        std::cerr << "\nFile removal error: " << ec.message() << "\n";
+        throw std::runtime_error("File removal error");
+    }
 }
 
 int main (int argc, char **argv) { 
@@ -85,42 +115,51 @@ int main (int argc, char **argv) {
     app.add_flag("--codegen", codegenStage, "directs compiler to stop before code emission");
 
     CLI11_PARSE(app, argc, argv);
-
-    auto sourceCode = getSourceCode(filePath);
- 
-    if (sourceCode == "") {
-        std::cerr << "Error. No source code found\n";
-        std::cerr << "Usage: scc <source_file.c>\n";
-        return 1;
-    }
- 
+     
     try
     {
-
+        
         std::string fileName {preprocess(filePath)};
-
+        
         std::string sourceCode {getSourceCode(fileName)};
+        
+        if (sourceCode == "") {
+            std::cerr << "Error. No source code found\n";
+            std::cerr << "Usage: scc <source_file.c>\n";
+            return 1;
+        }
+
+        removeFile(fileName);
 
         scc::lexer::Lexer lexer(sourceCode);
 
-        auto vec = lexer.analize();
+        auto vec = lexer.analyze();
 
-        std::cerr << "\n\n###################################################################\n\n";
+        #ifdef DEBUG_MODE
+
+        std::cerr << "\n\n#### Tokens #####\n\n";
 
         for (auto& token : vec) {
             std::cerr << "Token: " << token.value << '\n'
                       << "Line: " << token.lineNumber << '\n'
                       << "Column: " << token.columnNumber << '\n'
-                      << "Type: " << token.type << "\n\n\n";
+                      << "Type: " << token.type << "\n\n";
         }
+
+        #endif
 
         if (lexerStage) {
             return 0;
         }
 
         auto parser {scc::parser::Parser(vec)};
+
+        #ifdef DEBUG_MODE
+
         auto parserPrinter {scc::parser::Printer()};
         parser.accept(parserPrinter);
+
+        #endif
 
         if (parserStage) {
             return 0;
@@ -129,8 +168,35 @@ int main (int argc, char **argv) {
         scc::asm_gen::AssemblyGen assemblyGen;
         parser.accept(assemblyGen);
 
+        #ifdef DEBUG_MODE
+
         auto assemblyGenPrinter {scc::asm_gen::ASTPrinter()};
         assemblyGen.accept(assemblyGenPrinter);
+
+        #endif
+
+        if (codegenStage) {
+            return 0;
+        }
+
+        std::filesystem::path outputPath {filePath};
+        outputPath.replace_extension(".s");
+
+        {
+            std::ofstream outFile {outputPath};
+            if (!outFile) {
+                std::cerr << "Error: cannot open output file '" << outputPath << "'\n";
+                return 1;
+            }
+    
+            auto emitter {scc::code_em::Emitter(outFile)};
+    
+            assemblyGen.accept(emitter);
+        }
+
+        assembleAndLink(outputPath);
+
+        removeFile(outputPath.string());
         
         return 0;
     }
