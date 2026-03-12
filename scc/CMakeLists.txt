@@ -12,6 +12,7 @@ add_library(scc_lib STATIC
     parser/parser.cpp
     assembly-gen/assembly-gen.cpp
     assembly-gen/visitors/ast-printer.cpp
+    code-emission/linux/emitter.cpp
 )
 
 target_include_directories(scc_lib PUBLIC 
