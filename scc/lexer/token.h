@@ -9,7 +9,7 @@
 
 namespace scc::lexer {
 
-    enum class TokenType {
+    enum class TokenType : uint8_t {
         open_brace,
         close_brace,
         open_parenthesis,
