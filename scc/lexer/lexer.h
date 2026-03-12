@@ -33,17 +33,18 @@ namespace scc::lexer {
         void handleDelimiter();
 
         public:
-        Lexer(std::string_view sourceCode):
-        charPointer(sourceCode.data()),
-        sourceCodeEnd(sourceCode.data() + sourceCode.size()),
-        tokenVector() {
-            tokenVector.reserve(sourceCode.size() / 4);
-        }
+        Lexer(std::string_view sourceCode)
+            : charPointer(sourceCode.data())
+            , sourceCodeEnd(sourceCode.data() + sourceCode.size())
+            , tokenVector() { tokenVector.reserve(sourceCode.size() / 4); }
 
         Lexer(const Lexer&) = delete;
         Lexer& operator=(const Lexer&) = delete;
 
-        [[nodiscard]] std::vector<Token> analize();
+        Lexer(Lexer&&) = default;
+        Lexer& operator=(Lexer&&) = default;
+
+        [[nodiscard]] std::vector<Token> analyze();
         
     };
 

@@ -92,7 +92,7 @@ namespace scc::lexer {
         tokenVector.push_back(scc::lexer::makeDelimiterToken(charPointer, lineNumber, columnNumber));
     }
 
-    std::vector<Token> Lexer::analize() {
+    std::vector<Token> Lexer::analyze() {
         while (charPointer != sourceCodeEnd) {
             ++columnNumber;
             std::cerr << "line number: " << lineNumber << ". ";
