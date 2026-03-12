@@ -37,7 +37,7 @@ namespace scc::parser
 
     void Parser::expect(scc::lexer::TokenType expectedType, const scc::lexer::Token& token) {
         if (expectedType != token.type) {
-            printUnexpectedTokenError(token, scc::lexer::TokenType::integer_constant);
+            printUnexpectedTokenError(token, expectedType);
             throw std::runtime_error("Syntax error");
         } else {
             return;
@@ -46,7 +46,7 @@ namespace scc::parser
 
     void Parser::expect(scc::lexer::TokenType expectedType, std::string expectedValue, const scc::lexer::Token& token) {
         if (expectedType != token.type)  {
-            printUnexpectedTokenError(token, scc::lexer::TokenType::integer_constant);
+            printUnexpectedTokenError(token, expectedType);
             throw std::runtime_error("Syntax error");
         } else if (expectedValue != token.value) {
             printUnexpectedValueError(token, expectedValue);
