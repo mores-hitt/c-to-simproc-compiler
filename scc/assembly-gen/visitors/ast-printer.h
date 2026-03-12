@@ -19,13 +19,13 @@ namespace scc::asm_gen
         ASTPrinter& operator=(const ASTPrinter&) = delete;
 
 
-        virtual void visit(const Program& node) override;
-        virtual void visit(const FunctionDefinition& node) override;
+        void visit(const Program& node) override;
+        void visit(const FunctionDefinition& node) override;
 
-        virtual void visit(const Mov& node) override;
-        virtual void visit(const Ret& node) override;
+        void visit(const Mov& node) override;
+        void visit(const Ret& node) override;
         
-        virtual void visit(const Immediate& node) override;
-        virtual void visit(const Register& node) override;
+        void visit(const Immediate& node) override;
+        void visit(const Register& node) override;
     };
 } // namespace scc::asm_gen
