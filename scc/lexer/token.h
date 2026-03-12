@@ -1,11 +1,9 @@
 #pragma once
 
 #include <string_view>
-#include <array>
 #include <unordered_map>
-#include <vector>
-#include <optional>
 #include <iostream>
+#include <cstdint>
 
 namespace scc::lexer {
 
