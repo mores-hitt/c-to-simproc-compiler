@@ -41,7 +41,7 @@ namespace scc::asm_gen
 
     public:
         explicit FunctionDefinition(std::string name, std::vector<std::unique_ptr<Instruction>> instructions)
-            : m_name(name)
+            : m_name(std::move(name))
             , m_instructions(std::move(instructions)) {}
 
         void accept(Visitor& v) const override { v.visit(*this); }
