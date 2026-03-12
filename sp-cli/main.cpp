@@ -1,7 +1,4 @@
-#include "memory/ram.h"
 #include "cpu/cpu.h"
-#include "register/address.h"
-#include "register/general_purpose.h"
 
 #include <iostream>
 #include <fstream>
