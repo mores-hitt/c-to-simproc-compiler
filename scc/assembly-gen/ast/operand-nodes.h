@@ -21,7 +21,7 @@ namespace scc::asm_gen
 
     class Register : public Operand {
     public:
-        enum class Regs {
+        enum class Regs : uint8_t {
             EAX,
             EBX,
             ECX,

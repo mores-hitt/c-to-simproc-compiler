@@ -38,7 +38,7 @@ namespace scc::asm_gen
         node.getDestination().accept(*this);
     }
 
-    void ASTPrinter::visit([[maybe_unused]]const Ret& node){
+    void ASTPrinter::visit([[maybe_unused]] const Ret& node){
         std::string spaces(m_depth * 3, ' ');
         std::cerr << spaces << "Ret" << '\n';
     }
