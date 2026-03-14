@@ -1,6 +1,5 @@
 #include <vector>
 #include <string>
-#include <string_view>
 
 #include "assembly-gen/assembly-gen.h"
 #include "assembly-gen/ast/nodes.h"
@@ -26,7 +25,7 @@ namespace scc::asm_gen
 
     void AssemblyGen::visit(const scc::parser::ReturnNode& node) {
         node.getExpression().accept(*this);
-        m_instructions.push_back(std::make_unique<Mov>(std::move(m_currentOperand), std::make_unique<Register>(Register::Regs::EAX)));
+        m_instructions.push_back(std::make_unique<Mov>(std::move(m_currentOperand), std::make_unique<Register>(Register::Regs::AX)));
         m_instructions.push_back(std::make_unique<Ret>());
     }
 

@@ -23,9 +23,9 @@ namespace scc::asm_gen
     class Register : public Operand {
     public:
         enum class Regs : uint8_t {
-            EAX,
-            EBX,
-            ECX,
+            AX,
+            BX,
+            CX,
         };
 
         explicit Register(Regs reg)
@@ -41,9 +41,9 @@ namespace scc::asm_gen
 
     inline std::ostream& operator<<(std::ostream& os, Register::Regs reg) {
         switch (reg) {
-            case Register::Regs::EAX: return os << "EAX";
-            case Register::Regs::EBX: return os << "EBX";
-            case Register::Regs::ECX: return os << "ECX";
+            case Register::Regs::AX: return os << "AX";
+            case Register::Regs::BX: return os << "BX";
+            case Register::Regs::CX: return os << "CX";
         }
         return os;
     }
