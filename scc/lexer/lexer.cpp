@@ -56,7 +56,7 @@ namespace scc::lexer {
         }
         
         std::string_view tokenValue {getTokenView()};
-        tokenVector.emplace_back(scc::lexer::makeKeywordToken(tokenValue, lineNumber, columnNumber));
+        tokenVector.emplace_back(scc::lexer::makeKeywordToken(tokenValue, lineNumber, columnNumber - 1));
     }
 
     void Lexer::handleIntegerConstant() {
@@ -72,7 +72,7 @@ namespace scc::lexer {
         }
 
         std::string_view tokenValue {getTokenView()};
-        Token token {TokenType::integer_constant, tokenValue, lineNumber, columnNumber};
+        Token token {TokenType::integer_constant, tokenValue, lineNumber, columnNumber - 1};
         tokenVector.emplace_back(token);
     }
 
@@ -83,7 +83,6 @@ namespace scc::lexer {
 
     std::vector<Token> Lexer::analyze() {        
         while (!isAtEnd()) {
-            ++columnNumber;
             
             if (peek() == '\n') {
                 handleLine();

@@ -14,7 +14,7 @@ namespace scc::lexer {
         size_t m_tokenStart {};
 
         int lineNumber {1};
-        int columnNumber {0};
+        int columnNumber {1};
         std::vector<Token> tokenVector;
 
         std::string_view getTokenView();
