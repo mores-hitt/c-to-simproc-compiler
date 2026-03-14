@@ -27,7 +27,30 @@
             "cwd": "${workspaceFolder}",
             "MIMode": "gdb",
             "preLaunchTask": "build-scc"
-        },{
+        },
+        {
+          "name": "Debug scc with default file",
+          "type": "cppdbg",
+          "request": "launch",
+          "program": "${workspaceFolder}/build/linux-debug/scc/scc",
+          "args": ["tests/scc/valid/1.c"],
+          "stopAtEntry": false,
+          "cwd": "${workspaceFolder}",
+          "MIMode": "gdb",
+          "preLaunchTask": "build-scc",
+        },
+        {
+          "name": "Debug scc to simuproc with default file",
+          "type": "cppdbg",
+          "request": "launch",
+          "program": "${workspaceFolder}/build/linux-debug/scc/scc",
+          "args": ["tests/scc/valid/1.c", "--simuproc"],
+          "stopAtEntry": false,
+          "cwd": "${workspaceFolder}",
+          "MIMode": "gdb",
+          "preLaunchTask": "build-scc",
+        },
+        {
             "name": "Debug sp-cli",
             "type": "cppdbg",
             "request": "launch",
