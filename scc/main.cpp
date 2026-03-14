@@ -2,11 +2,13 @@
 #include "parser/parser.h"
 #include "assembly-gen/assembly-gen.h"
 #include "assembly-gen/visitors/ast-printer.h"
-#include "code-emission/linux/emitter.h"
+//#include "code-emission/linux/emitter.h"
+#include "code-emission/simuproc/emitter.h"
 #include "parser/visitors/printer.h"
 
 #include <CLI11.hpp>
 
+#include <cstdarg>
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -107,12 +109,14 @@ int main (int argc, char **argv) {
     bool lexerStage{false};
     bool parserStage{false};
     bool codegenStage{false};
+    bool simuproc{false};
 
     app.add_option("filePath", filePath, "path of C file");
  
     app.add_flag("--lex", lexerStage, "directs compiler to stop before parsing");
     app.add_flag("--parse", parserStage, "directs compiler to stop before assembly generation");
     app.add_flag("--codegen", codegenStage, "directs compiler to stop before code emission");
+    app.add_flag("--simuproc", simuproc, "makes simuproc the target");
 
     CLI11_PARSE(app, argc, argv);
      
@@ -180,8 +184,8 @@ int main (int argc, char **argv) {
         }
 
         std::filesystem::path outputPath {filePath};
-        outputPath.replace_extension(".s");
-
+        simuproc ? outputPath.replace_extension(".txt")
+                 : outputPath.replace_extension(".s");
         {
             std::ofstream outFile {outputPath};
             if (!outFile) {
@@ -194,9 +198,10 @@ int main (int argc, char **argv) {
             assemblyGen.accept(emitter);
         }
 
-        assembleAndLink(outputPath);
-
-        removeFile(outputPath.string());
+        if (!simuproc) {
+            assembleAndLink(outputPath);
+            removeFile(outputPath.string());
+        }
         
         return 0;
     }
