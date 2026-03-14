@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <cstdint>
 
 #include "assembly-gen/ast/nodes.h"
 
@@ -8,11 +9,11 @@ namespace scc::asm_gen
 {
     class Immediate : public Operand {
     protected:
-        int m_value;
+        uint16_t m_value;
     
     public:
         explicit Immediate(int value)
-            : m_value(value) {}
+            : m_value(static_cast<uint16_t>(value)) {}
         
         [[nodiscard]] int getValue() const noexcept { return m_value; }
 
