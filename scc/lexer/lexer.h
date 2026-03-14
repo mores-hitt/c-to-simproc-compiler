@@ -28,7 +28,6 @@ namespace scc::lexer {
         void handleLine();
         void handleKeywordOrId();
         void handleIntegerConstant();
-        void handleWhiteSpace();
         void handleDelimiter();
         
         [[nodiscard]] char peek() const;

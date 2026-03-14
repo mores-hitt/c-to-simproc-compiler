@@ -75,10 +75,6 @@ namespace scc::lexer {
         tokenVector.emplace_back(token);
     }
 
-    void Lexer::handleWhiteSpace() {
-        std::cerr << "here, a whitespace " << peek() << "\n";
-    }
-
     void Lexer::handleDelimiter() {
         std::cerr << "here, a delimiter: " << peek() << "\n";
         m_tokenStart = m_pos;
