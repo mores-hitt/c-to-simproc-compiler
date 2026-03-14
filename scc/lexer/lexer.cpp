@@ -5,7 +5,6 @@
 #include <string_view>
 #include <iostream>
 #include <cctype>
-#include <algorithm>
 #include <stdexcept>
 
 namespace scc::lexer {
