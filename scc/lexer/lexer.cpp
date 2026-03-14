@@ -1,16 +1,30 @@
-#include "lexer/lexer.h"
-#include "lexer/token.h"
-
 #include <vector>
 #include <string_view>
 #include <iostream>
 #include <cctype>
 #include <stdexcept>
 
-namespace scc::lexer {
+#include "lexer/lexer.h"
+#include "lexer/token.h"
 
-    std::string_view Lexer::getTokenView(const char* tokenStart, const char* tokenEnd){
-        return {tokenStart, static_cast<size_t>(tokenEnd - tokenStart)}; // get size of token by pointer substraction
+namespace scc::lexer {
+    
+    char Lexer::peek() const {
+        if (isAtEnd()) return '\0';
+        return m_sourceCode[m_pos];
+    }
+
+    char Lexer::advance() {
+        ++columnNumber;
+        return m_sourceCode[m_pos++];
+    }
+
+    bool Lexer::isAtEnd() const {
+        return m_pos >= m_sourceCode.size();
+    }
+    
+    std::string_view Lexer::getTokenView(){
+        return m_sourceCode.substr(m_tokenStart, m_pos - m_tokenStart);
     }
 
     bool Lexer::isWordStart(const char c) const {
@@ -36,97 +50,71 @@ namespace scc::lexer {
     }
 
     void Lexer::handleKeywordOrId(){
-        
-        std::cerr << "start of token \n";
-        tokenStart = charPointer;
-        while (charPointer != sourceCodeEnd && isWordChar(*charPointer)) { // keep looping until break
-            charPointer++;
-            columnNumber++;
+        m_tokenStart = m_pos;
+        while (!isAtEnd() && isWordChar(peek())) {
+            advance();
         }
-        std::cerr << "end of token: ";
-        tokenEnd = charPointer;
-
-        auto tokenValue {getTokenView(tokenStart, tokenEnd)};
-
-        std::cerr << tokenValue << "\n";
-
-        tokenVector.push_back(scc::lexer::makeKeywordToken(tokenValue, lineNumber, columnNumber));
-
+        std::string_view tokenValue {getTokenView()};
+        tokenVector.emplace_back(scc::lexer::makeKeywordToken(tokenValue, lineNumber, columnNumber));
     }
 
     void Lexer::handleIntegerConstant() {
-        std::cerr << "start of integer constant\n";
-        tokenStart = charPointer;
-        while ( charPointer != sourceCodeEnd && isConstant(*charPointer)) { // keep looping until no more digits
-            charPointer++;
-            columnNumber++;
+        m_tokenStart = m_pos;
+        while(!isAtEnd() && isConstant(peek())) {
+            advance();
         }
         
-        if (charPointer != sourceCodeEnd && !isDelimiter(*charPointer) && *charPointer != ' ' && *charPointer != '\n') {
+        if (!isAtEnd() && !isDelimiter(peek()) && peek() != ' ' && peek() != '\n') {
             std::cerr << "Broken integer constant at line:" << lineNumber
                       << "  column:"<< columnNumber << ".\n";
             throw std::runtime_error("\nInvalid integer constant\n");
         }
 
-        // TODO: ver temas de arroba y caso especiales (123;bar y 123bar)
-
-        std::cerr << "end of integer literal: ";
-        tokenEnd = charPointer;
-
-        auto tokenValue {getTokenView(tokenStart, tokenEnd)};
-
-        std::cerr << tokenValue << "\n";
-
+        std::string_view tokenValue {getTokenView()};
         Token token {TokenType::integer_constant, tokenValue, lineNumber, columnNumber};
-
-        tokenVector.push_back(token);
+        tokenVector.emplace_back(token);
     }
 
     void Lexer::handleWhiteSpace() {
-        std::cerr << "here, a whitespace " << *charPointer << "\n";
+        std::cerr << "here, a whitespace " << peek() << "\n";
     }
 
     void Lexer::handleDelimiter() {
-        std::cerr << "here, a delimiter: " << *charPointer << "\n";
-        tokenVector.push_back(scc::lexer::makeDelimiterToken(charPointer, lineNumber, columnNumber));
+        std::cerr << "here, a delimiter: " << peek() << "\n";
+        m_tokenStart = m_pos;
+        tokenVector.push_back(scc::lexer::makeDelimiterToken(getTokenView(), lineNumber, columnNumber));
     }
 
-    std::vector<Token> Lexer::analyze() {
-        while (charPointer != sourceCodeEnd) {
+    std::vector<Token> Lexer::analyze() {        
+        while (!isAtEnd()) {
             ++columnNumber;
-            std::cerr << "line number: " << lineNumber << ". ";
-            std::cerr << "character number: " << columnNumber << ". ";
-
-            if (*charPointer == '\n') {
+            
+            if (peek() == '\n') {
                 handleLine();
-                charPointer++;
+                advance();
                 continue;
-            }
-            else if ( isWordStart(*charPointer) ) {
+                
+            } else if (isWordStart(peek())) {
                 handleKeywordOrId();
-                // handleKeywordOrId leaves charPointer one character forward
+                // handleKeywordOrId leaves m_pos one character forward
                 continue;
-            }
-            else if (std::isdigit(*charPointer)) {
+                
+            } else if (std::isdigit(peek())) {
                 handleIntegerConstant();
-                // handleIntegerConstant leaves charPointer one character forward
+                // handleIntegerConstant leaves m_pos one character forward
                 continue;
-            }
-            else if (std::isspace(*charPointer)) {
-                handleWhiteSpace();
-                charPointer++;
+                
+            } else if (std::isspace(peek())) {
+                advance();
                 continue;
-            }
-            else if (isDelimiter(*charPointer)) {
+                
+            } else if (isDelimiter(peek())) {
                 handleDelimiter();
-                charPointer++;
+                advance();
                 continue;
-            } else {
-                std::cerr << "\n\nChár no identificable en linea " << lineNumber << " columna " << columnNumber << ".\n"; 
-                throw std::runtime_error("\nUnindentifiable character\n");
+                
             }
         }
-
         return tokenVector;
     }
 }

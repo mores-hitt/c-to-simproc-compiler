@@ -66,7 +66,7 @@ namespace scc::lexer {
         int columnNumber {};
     };
 
-    scc::lexer::Token makeDelimiterToken(const char* c, int lineNumber, int columnNumber);
+    scc::lexer::Token makeDelimiterToken(std::string_view tokenValue, int lineNumber, int columnNumber);
     scc::lexer::Token makeKeywordToken(std::string_view word, int lineNumber, int columnNumber);
 
 }

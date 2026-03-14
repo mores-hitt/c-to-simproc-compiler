@@ -2,7 +2,6 @@
 
 #include "lexer/token.h"
 #include <string_view>
-#include <string>
 #include <vector>
 
 namespace scc::lexer {
@@ -10,15 +9,15 @@ namespace scc::lexer {
     class Lexer {
 
         private:
-        const char* charPointer;
-        const char* sourceCodeEnd;
-        const char* tokenStart {nullptr};
-        const char* tokenEnd {nullptr};
+        std::string_view m_sourceCode;
+        size_t m_pos {};
+        size_t m_tokenStart {};
+
         int lineNumber {1};
         int columnNumber {0};
         std::vector<Token> tokenVector;
 
-        std::string_view getTokenView(const char* tokenStart, const char* tokenEnd);
+        std::string_view getTokenView();
 
         [[nodiscard]] bool isWordStart(const char c) const;
         [[nodiscard]] bool isWordChar(const char c) const;
@@ -31,11 +30,14 @@ namespace scc::lexer {
         void handleIntegerConstant();
         void handleWhiteSpace();
         void handleDelimiter();
+        
+        [[nodiscard]] char peek() const;
+        char advance();
+        [[nodiscard]] bool isAtEnd() const;
 
         public:
         Lexer(std::string_view sourceCode)
-            : charPointer(sourceCode.data())
-            , sourceCodeEnd(sourceCode.data() + sourceCode.size())
+            : m_sourceCode(sourceCode)
             , tokenVector() { tokenVector.reserve(sourceCode.size() / 4); }
 
         Lexer(const Lexer&) = delete;
@@ -47,5 +49,4 @@ namespace scc::lexer {
         [[nodiscard]] std::vector<Token> analyze();
         
     };
-
 }

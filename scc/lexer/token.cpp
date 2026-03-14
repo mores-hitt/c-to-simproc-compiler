@@ -2,8 +2,6 @@
 
 #include <string_view>
 #include <iostream>
-#include <optional>
-#include <algorithm>
 #include <cctype>
 
 namespace scc::lexer {
@@ -31,8 +29,8 @@ namespace scc::lexer {
 
     }
 
-    scc::lexer::Token makeDelimiterToken(const char* c, int lineNumber, int columnNumber) {
-        return Map(*c, std::string_view(c, 1), lineNumber, columnNumber, delimiterMap, "delimiter", TokenType::undefined);
+    scc::lexer::Token makeDelimiterToken(std::string_view tokenValue, int lineNumber, int columnNumber) {
+        return Map(tokenValue[0], tokenValue, lineNumber, columnNumber, delimiterMap, "delimiter", TokenType::undefined);
     }
 
 
