@@ -48,7 +48,7 @@ std::string preprocess(const std::string& filePath) {
 
     std::filesystem::path p(filePath);
 
-    std::string outputPath {p.replace_extension(".i")};
+    std::string outputPath {p.replace_extension(".i").string()};
 
     std::string stringCommand {"gcc -E -P " + filePath + " -o " + outputPath};
 
