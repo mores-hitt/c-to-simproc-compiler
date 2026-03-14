@@ -54,6 +54,7 @@ namespace scc::lexer {
         while (!isAtEnd() && isWordChar(peek())) {
             advance();
         }
+        
         std::string_view tokenValue {getTokenView()};
         tokenVector.emplace_back(scc::lexer::makeKeywordToken(tokenValue, lineNumber, columnNumber));
     }
@@ -76,7 +77,6 @@ namespace scc::lexer {
     }
 
     void Lexer::handleDelimiter() {
-        std::cerr << "here, a delimiter: " << peek() << "\n";
         m_tokenStart = m_pos;
         tokenVector.push_back(scc::lexer::makeDelimiterToken(getTokenView(), lineNumber, columnNumber));
     }
