@@ -8,11 +8,11 @@
 namespace scc::asm_gen
 {
     void ASTPrinter::visit(const Program& node) {
-        std::cerr << "Program(\n";
+        std::cerr << "### ASSEMBLY AST ###\n\nProgram(\n";
         ++m_depth;
         node.getFunctionDefinition().accept(*this);
         --m_depth;
-        std::cerr << ")\n";
+        std::cerr << ")\n\n";
     }
 
     void ASTPrinter::visit(const FunctionDefinition& node){

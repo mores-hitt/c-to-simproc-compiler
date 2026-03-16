@@ -8,11 +8,11 @@
 namespace scc::parser
 {
     void Printer::visit(const ProgramNode& node) {
-        std::cerr << "Program(\n";
+        std::cerr << "### PARSER AST ###\n\nProgram(\n";
         ++m_depth;
         node.getFunction().accept(*this);
         --m_depth;
-        std::cerr << ")\n";
+        std::cerr << ")\n\n";
     }
 
     void Printer::visit(const FunctionDefinitionNode& node) {
