@@ -2,13 +2,15 @@
 #include "parser/parser.h"
 #include "assembly-gen/assembly-gen.h"
 #include "assembly-gen/visitors/ast-printer.h"
-//#include "code-emission/linux/emitter.h"
 #include "code-emission/simuproc/emitter.h"
 #include "parser/visitors/printer.h"
+#include "errors/compiler-error.h"
+#include "errors/diagnostic.h"
 
 #include <CLI11.hpp>
 
 #include <cstdarg>
+#include <exception>
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -134,10 +136,18 @@ int main (int argc, char **argv) {
         }
 
         removeFile(fileName);
+        
+        scc::Diagnostics diagnostics {};
 
-        scc::lexer::Lexer lexer(sourceCode);
+        scc::lexer::Lexer lexer(sourceCode, diagnostics);
 
         auto vec = lexer.analyze();
+        
+        diagnostics.report();
+        
+        if (diagnostics.hasErrors()) {
+            return 1;
+        }
 
         #ifdef DEBUG_MODE
 
@@ -155,8 +165,16 @@ int main (int argc, char **argv) {
         if (lexerStage) {
             return 0;
         }
+        
+        diagnostics.clear();
 
-        auto parser {scc::parser::Parser(vec)};
+        auto parser {scc::parser::Parser(vec, diagnostics)};
+        
+        diagnostics.report();
+        
+        if (diagnostics.hasErrors()) {
+            return 1;
+        }
 
         #ifdef DEBUG_MODE
 
@@ -205,10 +223,8 @@ int main (int argc, char **argv) {
         
         return 0;
     }
-    catch(const std::exception& e)
-    {
-        std::cerr << e.what() << '\n';
-        return 1;
+    catch (std::exception& e) {
+        std::cerr << e.what();
     }
 
 }

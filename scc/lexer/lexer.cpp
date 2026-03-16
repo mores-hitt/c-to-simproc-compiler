@@ -2,7 +2,6 @@
 #include <string_view>
 #include <iostream>
 #include <cctype>
-#include <stdexcept>
 
 #include "lexer/lexer.h"
 #include "lexer/token.h"
@@ -15,7 +14,7 @@ namespace scc::lexer {
     }
 
     char Lexer::advance() {
-        ++columnNumber;
+        ++m_columnNumber;
         return m_sourceCode[m_pos++];
     }
 
@@ -44,9 +43,8 @@ namespace scc::lexer {
     }
 
     void Lexer::handleLine(){
-        std::cerr << "here, a new line: ... " << "\n";
-        lineNumber++;
-        columnNumber = 0;
+        m_lineNumber++;
+        m_columnNumber = 0;
     }
 
     void Lexer::handleKeywordOrId(){
@@ -56,7 +54,7 @@ namespace scc::lexer {
         }
         
         std::string_view tokenValue {getTokenView()};
-        tokenVector.emplace_back(scc::lexer::makeKeywordToken(tokenValue, lineNumber, columnNumber - 1));
+        m_tokenVector.emplace_back(scc::lexer::makeKeywordOrIdentifierToken(tokenValue, m_lineNumber, m_columnNumber - 1));
     }
 
     void Lexer::handleIntegerConstant() {
@@ -66,19 +64,24 @@ namespace scc::lexer {
         }
         
         if (!isAtEnd() && !isDelimiter(peek()) && peek() != ' ' && peek() != '\n') {
-            std::cerr << "Broken integer constant at line:" << lineNumber
-                      << "  column:"<< columnNumber << ".\n";
-            throw std::runtime_error("\nInvalid integer constant\n");
+            m_diagnostics.warning("Invalid character in integer constant", {m_lineNumber, m_columnNumber});
+            return;
         }
 
         std::string_view tokenValue {getTokenView()};
-        Token token {TokenType::integer_constant, tokenValue, lineNumber, columnNumber - 1};
-        tokenVector.emplace_back(token);
+        Token token {TokenType::integer_constant, tokenValue, m_lineNumber, m_columnNumber - 1};
+        m_tokenVector.emplace_back(token);
     }
 
     void Lexer::handleDelimiter() {
         m_tokenStart = m_pos;
-        tokenVector.push_back(scc::lexer::makeDelimiterToken(getTokenView(), lineNumber, columnNumber));
+        Token token {makeDelimiterToken(getTokenView(), m_lineNumber, m_columnNumber)};
+        
+        if (token.type == TokenType::undefined) {
+            std::cerr << "something";
+        }
+        
+        m_tokenVector.emplace_back(token);
     }
 
     std::vector<Token> Lexer::analyze() {        
@@ -107,9 +110,10 @@ namespace scc::lexer {
                 handleDelimiter();
                 advance();
                 continue;
-                
+            } else {
+                m_diagnostics.error("Character is not tokenizeable", {m_lineNumber, m_columnNumber});
             }
         }
-        return tokenVector;
+        return m_tokenVector;
     }
 }

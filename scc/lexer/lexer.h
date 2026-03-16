@@ -1,6 +1,8 @@
 #pragma once
 
 #include "lexer/token.h"
+#include "errors/diagnostic.h"
+
 #include <string_view>
 #include <vector>
 
@@ -12,10 +14,11 @@ namespace scc::lexer {
         std::string_view m_sourceCode;
         size_t m_pos {};
         size_t m_tokenStart {};
-
-        int lineNumber {1};
-        int columnNumber {1};
-        std::vector<Token> tokenVector;
+        int m_lineNumber {1};
+        int m_columnNumber {1};
+        std::vector<Token> m_tokenVector;
+        Diagnostics& m_diagnostics;
+        
 
         std::string_view getTokenView();
 
@@ -35,15 +38,16 @@ namespace scc::lexer {
         [[nodiscard]] bool isAtEnd() const;
 
         public:
-        Lexer(std::string_view sourceCode)
+        Lexer(std::string_view sourceCode, Diagnostics& diagnostics)
             : m_sourceCode(sourceCode)
-            , tokenVector() { tokenVector.reserve(sourceCode.size() / 4); }
+            , m_tokenVector()
+            , m_diagnostics(diagnostics) { m_tokenVector.reserve(sourceCode.size() / 4); }
 
         Lexer(const Lexer&) = delete;
         Lexer& operator=(const Lexer&) = delete;
 
         Lexer(Lexer&&) = default;
-        Lexer& operator=(Lexer&&) = default;
+        // No move assignment because Lexer takes diagnostic as a reference
 
         [[nodiscard]] std::vector<Token> analyze();
         

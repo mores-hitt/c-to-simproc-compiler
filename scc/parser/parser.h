@@ -5,6 +5,7 @@
 
 #include "parser/ast/ast.h"
 #include "lexer/token.h"
+#include "errors/diagnostic.h"
 
 namespace scc::parser
 {
@@ -12,10 +13,14 @@ namespace scc::parser
     private:
         std::vector<scc::lexer::Token> m_tokens;
         std::unique_ptr<AST> m_ast;
+        Diagnostics& m_diagnostics;
+        
         size_t m_pos {0};
 
         scc::lexer::Token popFront();
         scc::lexer::Token peekFront();
+        
+        void jumpToSemicolon();
 
         void expect(scc::lexer::TokenType expectedType);
         void expect(scc::lexer::TokenType expectedType, const scc::lexer::Token& token);
@@ -29,9 +34,10 @@ namespace scc::parser
     
     public:
 
-        Parser(std::vector<scc::lexer::Token> tokens)
+        Parser(std::vector<scc::lexer::Token> tokens, Diagnostics& diagnostics)
             : m_tokens(std::move(tokens))
-            , m_ast(nullptr){
+            , m_ast(nullptr)
+            , m_diagnostics(diagnostics){
                 parse();
             }
 
@@ -41,7 +47,7 @@ namespace scc::parser
         Parser& operator=(const Parser&) = delete;
 
         Parser(Parser&&) = default;
-        Parser& operator=(Parser&&) = default;
+        // No move assignment because Parser takes diagnostic as a reference
 
         void parse();
 

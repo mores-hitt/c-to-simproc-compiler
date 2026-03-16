@@ -2,6 +2,7 @@ include_directories(${CMAKE_SOURCE_DIR}/include)
 
 # Compiler library with all components
 add_library(scc_lib STATIC
+    errors/diagnostics.cpp
     lexer/lexer.cpp
     lexer/token.cpp
     parser/ast/ast.cpp
@@ -14,6 +15,7 @@ add_library(scc_lib STATIC
     assembly-gen/visitors/ast-printer.cpp
     #code-emission/linux/emitter.cpp
     code-emission/simuproc/emitter.cpp
+    
 )
 
 target_include_directories(scc_lib PUBLIC

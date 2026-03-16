@@ -1,58 +1,26 @@
-#include <iostream>
 #include <charconv>
 #include <memory>
-#include <stdexcept>
 
 #include "parser/parser.h"
 #include "lexer/token.h"
 
 namespace scc::parser
 {
-
-    namespace {
-        void printUnexpectedTokenError(scc::lexer::Token token, scc::lexer::TokenType expectedType) {
-            std::cerr << "Syntax error (line " << token.lineNumber
-                      << ", column " << token.columnNumber
-                      << "): Expected " << expectedType
-                      << ", but found " << token.type << ".\n";
-        }
-
-        void printUnexpectedValueError(scc::lexer::Token token, std::string_view expectedValue) {
-            std::cerr << "Syntax error (line " << token.lineNumber
-                      << ", column " << token.columnNumber
-                      << "): Expected the following value: " << expectedValue
-                      << ", but found:" << token.value << ".\n";
-        }
-    }
-
     void Parser::expect(scc::lexer::TokenType expectedType) {
         scc::lexer::Token token {m_tokens.at(m_pos++)};
         if (expectedType != token.type) {
-            printUnexpectedTokenError(token, scc::lexer::TokenType::integer_constant);
-            throw std::runtime_error("Syntax error");
+            m_diagnostics.error("Unexpected token", {token.lineNumber, token.columnNumber});
+            jumpToSemicolon();
         } else {
             return;
         }
     }
-
-    void Parser::expect(scc::lexer::TokenType expectedType, const scc::lexer::Token& token) {
-        if (expectedType != token.type) {
-            printUnexpectedTokenError(token, expectedType);
-            throw std::runtime_error("Syntax error");
-        } else {
-            return;
-        }
-    }
-
-    void Parser::expect(scc::lexer::TokenType expectedType, std::string expectedValue, const scc::lexer::Token& token) {
-        if (expectedType != token.type)  {
-            printUnexpectedTokenError(token, expectedType);
-            throw std::runtime_error("Syntax error");
-        } else if (expectedValue != token.value) {
-            printUnexpectedValueError(token, expectedValue);
-            throw std::runtime_error("Syntax error");
-        } else {
-            return;
+    
+    void Parser::jumpToSemicolon() {
+        lexer::Token token {m_tokens.at(m_pos)};
+        
+        while (token.type != lexer::TokenType::semicolon) {
+            token = m_tokens.at(m_pos++);
         }
     }
 
@@ -108,8 +76,7 @@ namespace scc::parser
     void Parser::parse() {
         m_ast = std::make_unique<AST>(parseProgram(m_pos));
         if (m_pos < m_tokens.size()) {
-            printUnexpectedTokenError(m_tokens.at(m_pos), scc::lexer::TokenType::undefined);
-            throw std::runtime_error("Parsing Error");
+            m_diagnostics.error("Unexpected Token", {m_tokens.at(m_pos).lineNumber, m_tokens.at(m_pos).columnNumber});
         }
     }
     

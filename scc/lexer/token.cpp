@@ -1,41 +1,29 @@
 #include "lexer/token.h"
 
 #include <string_view>
-#include <iostream>
 #include <cctype>
 
 namespace scc::lexer {
 
-    namespace {
-
-        template<typename MapType, typename KeyType> scc::lexer::Token Map(
-            const KeyType& lookupKey,
-            std::string_view tokenValue,
-            int lineNumber,
-            int columnNumber,
-            const MapType& map,
-            const char* categoryName,
-            TokenType tokenFallback) {
-            
-            auto it = map.find(lookupKey);
-            
-            if (it != map.end()) {
-                return Token{it->second, tokenValue, lineNumber, columnNumber};
-            } else {
-                std::cerr << "Warning: unknown " << categoryName << " '" << tokenValue << "' on line " << lineNumber << "\n";
-                return Token{tokenFallback, tokenValue, lineNumber, columnNumber};
-            }
-        }
-
-    }
-
     scc::lexer::Token makeDelimiterToken(std::string_view tokenValue, int lineNumber, int columnNumber) {
-        return Map(tokenValue[0], tokenValue, lineNumber, columnNumber, delimiterMap, "delimiter", TokenType::undefined);
+        auto it = delimiterMap.find(tokenValue[0]);
+        
+        if (it != delimiterMap.end()) {
+            return Token{it->second, tokenValue, lineNumber, columnNumber};
+        } else {
+            return Token{TokenType::undefined, tokenValue, lineNumber, columnNumber};
+        }
     }
 
 
-    scc::lexer::Token makeKeywordToken(std::string_view word, int lineNumber, int columnNumber) {
-        return Map(word, word, lineNumber, columnNumber, keywordMap, "keyword", TokenType::identifier);
+    scc::lexer::Token makeKeywordOrIdentifierToken(std::string_view word, int lineNumber, int columnNumber) {
+        auto it = keywordMap.find(word);
+        
+        if (it != keywordMap.end()) {
+            return Token{it->second, word, lineNumber, columnNumber};
+        } else {
+            return Token{TokenType::identifier, word, lineNumber, columnNumber};
+        }
     }
 
 }
